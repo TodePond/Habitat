@@ -69,7 +69,7 @@ const exampleSource = `<!-- This file shows you how you can use the Habitat libr
 ${exampleTags.join("\n")}
 <script>
 	
-	greet("world")
+	Habitat.install(window)
 	
 </script>`
 

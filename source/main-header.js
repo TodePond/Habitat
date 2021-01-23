@@ -1,0 +1,4 @@
+
+const Habitat = {
+	installers: [],
+}
