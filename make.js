@@ -56,8 +56,8 @@ const readDir = async (path) => {
 
 const {base, module, paths} = await readDir("source")
 
-const baseSource = base.header.join("\n") + base.middle.join("\n") + base.footer.join("\n")
-const moduleSource = module.header.join("\n") + baseSource + module.middle.join("\n") + module.footer.join("\n")
+const baseSource = base.header.join("\n") + "\n\n" + base.middle.join("\n") + "\n\n" + base.footer.join("\n")
+const moduleSource = module.header.join("\n") + "\n\n" + baseSource + "\n\n" + module.middle.join("\n") + "\n\n" + module.footer.join("\n")
 
 await writeFile("build/build.js", baseSource)
 await writeFile("build/build-module.js", moduleSource)
