@@ -1,4 +1,11 @@
 
-const greet = (name) => console.log(`Hello ${name}!`)
-
-export {greet}
+const Habitat = {}
+//======//
+// Main //
+//======//
+Habitat.install = (global) => {
+	
+}
+export {Habitat}
+export default Habitat
+export const {install} = Habitat

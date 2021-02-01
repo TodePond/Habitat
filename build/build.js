@@ -1,2 +1,8 @@
 
-const greet = (name) => console.log(`Hello ${name}!`)
+const Habitat = {}
+//======//
+// Main //
+//======//
+Habitat.install = (global) => {
+	
+}
