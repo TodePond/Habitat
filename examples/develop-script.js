@@ -1,2 +1,1 @@
-
-
+Habitat.install(window)
