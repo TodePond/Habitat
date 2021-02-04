@@ -1,2 +1,3 @@
 // Use this file to tinker with the project
-greet("World")
+Habitat.install(window)
+print("Hello world!")
