@@ -1,5 +1,3 @@
-
-
 //=============//
 // Main Header //
 //=============//
@@ -16,6 +14,7 @@ const Habitat = {}
 	
 	Habitat.Console = {print, install}
 }
+
 //======//
 // Main //
 //======//
@@ -23,14 +22,11 @@ Habitat.install = (global) => {
 	Habitat.Console.install(global)
 }
 
-
-
-
-
 //================//
 // Console Footer //
 //================//
 export const {print} = Habitat.Console
+
 //====================//
 // Main Module Footer //
 //====================//

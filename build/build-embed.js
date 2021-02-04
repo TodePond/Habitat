@@ -14,10 +14,10 @@ const Habitat = {}
 	
 	Habitat.Console = {print, install}
 }
+
 //======//
 // Main //
 //======//
 Habitat.install = (global) => {
 	Habitat.Console.install(global)
 }
-
