@@ -3,9 +3,28 @@
 //=========//
 {
 	const print = console.log.bind(console)
-	const install = (global) => {
-		global.print = print
+	
+	let print9Counter = 0
+	const print9 = (message) => {
+		if (print9Counter >= 9) return
+		print9Counter++
+		console.log(message)
 	}
 	
-	Habitat.Console = {print, install}
+	const install = (global) => {
+		global.print = print
+		global.print9 = print9
+		
+		Reflect.defineProperty(Object.prototype, "d", {
+			get() {
+				console.log(this.valueOf())
+				return this.valueOf()
+			},
+			set(value) {
+				Reflect.defineProperty(this, "d", {value})
+			}
+		}, {configurable: true})
+	}
+	
+	Habitat.Console = {install, print, print9}
 }
