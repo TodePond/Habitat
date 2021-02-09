@@ -29,6 +29,12 @@ const readDir = async (path) => {
 		footer: [],
 	}
 	
+	const embed = {
+		header: [],
+		middle: [],
+		footer: [],
+	}
+	
 	const module = {
 		header: [],
 		middle: [],
@@ -43,29 +49,30 @@ const readDir = async (path) => {
 			const name = entry.name.split(".")[0]
 			const args = name.split("-").slice(1)
 			
-			const target = args.includes("module")? module : base
+			const target = args.includes("import")? module : (args.includes("embed")? embed : base)
 			const position = args.includes("footer")? "footer" : (args.includes("header")? "header" : "middle")
 			
 			const source = await readFile(entryPath)
 			target[position].push(source)
-			if (target === base) paths[position].push(entryPath)
+			if (target !== module) paths[position].push(entryPath)
 		}
 	}
-	return {base, module, paths}
+	return {base, embed, module, paths}
 }
 
 //============//
 // Read Stuff //
 //============//
-const {base, module, paths} = await readDir("source")
+const {base, embed, module, paths} = await readDir("source")
 
 //===============//
 // Build Project //
 //===============//
 const baseSource = [...base.header, ...base.middle, ...base.footer].join("\n\n")
+const embedSource = [...embed.header, baseSource, ...embed.middle, ...embed.footer].join("\n\n")
 const moduleSource = [...module.header, baseSource, ...module.middle, ...module.footer].join("\n\n")
-await writeFile("build/build-embed.js", baseSource)
-await writeFile("build/build-module.js", moduleSource)
+await writeFile("build/build-embed.js", embedSource)
+await writeFile("build/build-import.js", moduleSource)
 
 //===============//
 // Build Example //
