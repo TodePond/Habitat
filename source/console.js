@@ -26,7 +26,7 @@
 			set(value) {
 				Reflect.defineProperty(this, "d", {value, configurable: true, writable: true, enumerable: true})
 			}
-		}, {configurable: true})
+		}, {configurable: true, enumerable: false, writable: true})
 		
 		Reflect.defineProperty(Object.prototype, "dir", {
 			get() {
@@ -36,7 +36,7 @@
 			set(value) {
 				Reflect.defineProperty(this, "dir", {value, configurable: true, writable: true, enumerable: true})
 			}
-		}, {configurable: true})
+		}, {configurable: true, enumerable: false, writable: true})
 		
 		let d9Counter = 0
 		Reflect.defineProperty(Object.prototype, "d9", {
@@ -51,7 +51,7 @@
 			set(value) {
 				Reflect.defineProperty(this, "d9", {value, configurable: true, writable: true, enumerable: true})
 			}
-		}, {configurable: true})
+		}, {configurable: true, enumerable: false, writable: true})
 		
 	}
 	

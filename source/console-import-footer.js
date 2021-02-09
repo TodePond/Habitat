@@ -1,4 +1,4 @@
 //================//
 // Console Footer //
 //================//
-export const {install, print, print9} = Habitat.Console
+export const {install, print, dir, print9} = Habitat.Console

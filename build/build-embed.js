@@ -3,6 +3,19 @@
 //=============//
 const Habitat = {}
 
+//=======//
+// Array //
+//=======//
+{
+	
+	const install = (global) => {
+		
+	}
+	
+	Habitat.Array = {install}
+	
+}
+
 //=========//
 // Console //
 //=========//
@@ -31,7 +44,7 @@ const Habitat = {}
 			set(value) {
 				Reflect.defineProperty(this, "d", {value, configurable: true, writable: true, enumerable: true})
 			}
-		}, {configurable: true})
+		}, {configurable: true, enumerable: false, writable: true})
 		
 		Reflect.defineProperty(Object.prototype, "dir", {
 			get() {
@@ -41,7 +54,7 @@ const Habitat = {}
 			set(value) {
 				Reflect.defineProperty(this, "dir", {value, configurable: true, writable: true, enumerable: true})
 			}
-		}, {configurable: true})
+		}, {configurable: true, enumerable: false, writable: true})
 		
 		let d9Counter = 0
 		Reflect.defineProperty(Object.prototype, "d9", {
@@ -56,7 +69,7 @@ const Habitat = {}
 			set(value) {
 				Reflect.defineProperty(this, "d9", {value, configurable: true, writable: true, enumerable: true})
 			}
-		}, {configurable: true})
+		}, {configurable: true, enumerable: false, writable: true})
 		
 	}
 	
@@ -67,5 +80,38 @@ const Habitat = {}
 // Main //
 //======//
 Habitat.install = (global) => {
+	Habitat.Array.install(global)
 	Habitat.Console.install(global)
+	Habitat.Number.install(global)
+}
+
+//========//
+// Number //
+//========//
+{
+	
+	const install = (global) => {
+		
+		Reflect.defineProperty(Number.prototype, "to", {
+			value: function* (v) {
+				let i = this.valueOf()
+				if (i <= v) {
+					while (i <= v) {
+						yield i
+						i++
+					}
+				}
+				else {
+					while (i >= v) {
+						yield i
+						i--
+					}
+				}
+			},
+		}, {configurable: true, enumerable: false, writable: true})
+		
+	}
+	
+	Habitat.Number = {install}
+	
 }
