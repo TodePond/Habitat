@@ -17,13 +17,30 @@
 		
 		Reflect.defineProperty(Object.prototype, "d", {
 			get() {
-				console.log(this.valueOf())
-				return this.valueOf()
+				const value = this.valueOf()
+				console.log(value)
+				return value
 			},
 			set(value) {
-				Reflect.defineProperty(this, "d", {value})
+				Reflect.defineProperty(this, "d", {value, configurable: true, writable: true, enumerable: true})
 			}
 		}, {configurable: true})
+		
+		let d9Counter = 0
+		Reflect.defineProperty(Object.prototype, "d9", {
+			get() {
+				const value = this.valueOf()
+				if (d9Counter < 9) {
+					console.log(value)
+					d9Counter++
+				}
+				return value
+			},
+			set(value) {
+				Reflect.defineProperty(this, "d9", {value, configurable: true, writable: true, enumerable: true})
+			}
+		}, {configurable: true})
+		
 	}
 	
 	Habitat.Console = {install, print, print9}
