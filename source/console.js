@@ -3,6 +3,7 @@
 //=========//
 {
 	const print = console.log.bind(console)
+	const dir = (value) => console.dir(Object(value))
 	
 	let print9Counter = 0
 	const print9 = (message) => {
@@ -13,6 +14,7 @@
 	
 	const install = (global) => {
 		global.print = print
+		global.dir = dir
 		global.print9 = print9
 		
 		Reflect.defineProperty(Object.prototype, "d", {
@@ -23,6 +25,16 @@
 			},
 			set(value) {
 				Reflect.defineProperty(this, "d", {value, configurable: true, writable: true, enumerable: true})
+			}
+		}, {configurable: true})
+		
+		Reflect.defineProperty(Object.prototype, "dir", {
+			get() {
+				console.dir(this)
+				return this.valueOf()
+			},
+			set(value) {
+				Reflect.defineProperty(this, "dir", {value, configurable: true, writable: true, enumerable: true})
 			}
 		}, {configurable: true})
 		
@@ -43,5 +55,5 @@
 		
 	}
 	
-	Habitat.Console = {install, print, print9}
+	Habitat.Console = {install, print, dir, print9}
 }
