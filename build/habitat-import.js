@@ -1,6 +1,3 @@
-//=============//
-// Main Header //
-//=============//
 const Habitat = {}
 
 //=======//
@@ -103,6 +100,10 @@ const Habitat = {}
 	
 }
 
+//=======//
+// Async //
+//=======//
+
 //=========//
 // Console //
 //=========//
@@ -168,6 +169,7 @@ const Habitat = {}
 //======//
 Habitat.install = (global) => {
 	Habitat.Array.install(global)
+	//Habitat.Async.install(global)
 	Habitat.Console.install(global)
 	Habitat.Number.install(global)
 }
@@ -203,24 +205,10 @@ Habitat.install = (global) => {
 	
 }
 
-//==============//
-// Array Footer //
-//==============//
-export const {} = Habitat.Array
 
-//================//
-// Console Footer //
-//================//
+
 export const {print, dir, print9} = Habitat.Console
 
-//====================//
-// Main Module Footer //
-//====================//
 export {Habitat}
 export default Habitat
 export const {install} = Habitat
-
-//===============//
-// Number Footer //
-//===============//
-export const {} = Habitat.Number
