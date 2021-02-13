@@ -1,4 +1,4 @@
 //===============//
 // Number Footer //
 //===============//
-export const {install} = Habitat.Number
+export const {} = Habitat.Number

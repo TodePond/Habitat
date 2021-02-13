@@ -1,4 +1,4 @@
 //==============//
 // Array Footer //
 //==============//
-export const {install} = Habitat.Array
+export const {} = Habitat.Array
