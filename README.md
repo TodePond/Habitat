@@ -1,7 +1,7 @@
 <img align="right" height="100" src="http://todepond.com/IMG/CleanTode.png">
 
 # Habitat
-I'm remaking my javascript library, using the [Frogasaurus](https://github.com/l2wilson94/Frogasaurus) template.
+Habitat is a collection of JavaScript tools and libraries that I have built up for my personal use over the last 10 years.
 
 # How to use it
 You can embed it, like this:
@@ -26,4 +26,3 @@ Or, you can import specific global functions:
 import {print} from "./habitat-import.js"
 ```
 There are more examples of how to use Habitat in the `examples` folder.
-
