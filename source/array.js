@@ -5,7 +5,7 @@
 	
 	const install = (global) => {
 	
-		Reflect.defineProperty(Array.prototype, "last", {
+		Reflect.defineProperty(global.Array.prototype, "last", {
 			get() {
 				return this[this.length-1]
 			},
@@ -14,7 +14,7 @@
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "first", {
+		Reflect.defineProperty(global.Array.prototype, "first", {
 			get() {
 				return this[0]
 			},
@@ -23,7 +23,7 @@
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "clone", {
+		Reflect.defineProperty(global.Array.prototype, "clone", {
 			get() {
 				return [...this]
 			},
@@ -32,14 +32,14 @@
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "at", {
+		Reflect.defineProperty(global.Array.prototype, "at", {
 			value(position) {
 				if (position >= 0) return this[position]
 				return this[this.length + position]
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "shuffle", {
+		Reflect.defineProperty(global.Array.prototype, "shuffle", {
 			value() {
 				for (let i = this.length - 1; i > 0; i--) {
 					const r = Math.floor(Math.random() * (i+1))
@@ -49,7 +49,7 @@
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "trim", {
+		Reflect.defineProperty(global.Array.prototype, "trim", {
 			value() {
 				if (this.length == 0) return this
 				let start = this.length - 1
@@ -74,7 +74,7 @@
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "repeat", {
+		Reflect.defineProperty(global.Array.prototype, "repeat", {
 			value(n) {
 				if (n === 0) {
 					this.splice(0)

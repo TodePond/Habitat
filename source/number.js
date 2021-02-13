@@ -5,7 +5,7 @@
 	
 	const install = (global) => {
 		
-		Reflect.defineProperty(Number.prototype, "to", {
+		Reflect.defineProperty(global.Number.prototype, "to", {
 			value: function* (v) {
 				let i = this.valueOf()
 				if (i <= v) {

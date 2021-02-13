@@ -17,7 +17,7 @@
 		global.dir = dir
 		global.print9 = print9
 		
-		Reflect.defineProperty(Object.prototype, "d", {
+		Reflect.defineProperty(global.Object.prototype, "d", {
 			get() {
 				const value = this.valueOf()
 				console.log(value)
@@ -28,7 +28,7 @@
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Object.prototype, "dir", {
+		Reflect.defineProperty(global.Object.prototype, "dir", {
 			get() {
 				console.dir(this)
 				return this.valueOf()
@@ -39,7 +39,7 @@
 		}, {configurable: true, enumerable: false, writable: true})
 		
 		let d9Counter = 0
-		Reflect.defineProperty(Object.prototype, "d9", {
+		Reflect.defineProperty(global.Object.prototype, "d9", {
 			get() {
 				const value = this.valueOf()
 				if (d9Counter < 9) {
