@@ -191,12 +191,27 @@ const Habitat = {}
 {
 
 	const Keyboard = {}
-	const Touch = []
+	const Touches = []
 	const Mouse = {
 		position: [undefined, undefined],
 	}
 	
 	const buttonMap = ["Left", "Middle", "Right", "Back", "Forward"]
+	
+	const filterEmpties = (a) => {
+		let i = 0
+		let j = 0
+		while (i < a.length) {
+			const v = a[i]
+			if (v !== undefined) {
+				if (i !== j) a[j] = v
+				j++
+			}
+			i++
+		}
+		a.length = j
+		return a
+	}
 	
 	const install = (global) => {
 		
@@ -227,22 +242,43 @@ const Habitat = {}
 			Keyboard[e.key] = false
 		})
 		
-		// Touch
+		// Touches
+		global.Touches = Touches
 		global.addEventListener("touchstart", e => {
 			for (const changedTouch of e.changedTouches) {
 				const x = changedTouch.clientX
 				const y = changedTouch.clientY
 				const id = changedTouch.identifier
-				if (Touch[id] === undefined) Touch[id] = [undefined, undefined]
-				const touch = Touch[id]
+				if (Touches[id] === undefined) Touches[id] = [undefined, undefined]
+				const touch = Touches[id]
 				touch[0] = x
 				touch[1] = y
 			}
 		})
 		
+		global.addEventListener("touchmove", e => {
+			for (const changedTouch of e.changedTouches) {
+				const x = changedTouch.clientX
+				const y = changedTouch.clientY
+				const id = changedTouch.identifier
+				if (Touches[id] === undefined) Touches[id] = {position: [undefined, undefined]}
+				const touch = Touches[id]
+				touch.position[0] = x
+				touch.position[1] = y
+			}
+		})
+		
+		global.addEventListener("touchend", e => {
+			for (const changedTouch of e.changedTouches) {
+				const id = changedTouch.identifier
+				Touches[id] = undefined
+			}
+			filterEmpties(Touches)
+		})
+		
 	}
 	
-	Habitat.Input = {install, Mouse, Keyboard}
+	Habitat.Input = {install, Mouse, Keyboard, Touches}
 	
 }
 
@@ -294,7 +330,7 @@ export const {sleep} = Habitat.Async
 
 export const {print, dir, print9} = Habitat.Console
 
-export const {Keyboard, Mouse} = Habitat.Input
+export const {Keyboard, Mouse, Touches} = Habitat.Input
 
 export {Habitat}
 export default Habitat

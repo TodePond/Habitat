@@ -1,1 +1,1 @@
-export const {Keyboard, Mouse, Touch} = Habitat.Input
+export const {Keyboard, Mouse, Touches} = Habitat.Input

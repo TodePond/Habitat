@@ -4,7 +4,7 @@
 {
 
 	const Keyboard = {}
-	const Touch = []
+	const Touches = []
 	const Mouse = {
 		position: [undefined, undefined],
 	}
@@ -55,15 +55,15 @@
 			Keyboard[e.key] = false
 		})
 		
-		// Touch
-		global.Touch = Touch
+		// Touches
+		global.Touches = Touches
 		global.addEventListener("touchstart", e => {
 			for (const changedTouch of e.changedTouches) {
 				const x = changedTouch.clientX
 				const y = changedTouch.clientY
 				const id = changedTouch.identifier
-				if (Touch[id] === undefined) Touch[id] = [undefined, undefined]
-				const touch = Touch[id]
+				if (Touches[id] === undefined) Touches[id] = [undefined, undefined]
+				const touch = Touches[id]
 				touch[0] = x
 				touch[1] = y
 			}
@@ -74,23 +74,23 @@
 				const x = changedTouch.clientX
 				const y = changedTouch.clientY
 				const id = changedTouch.identifier
-				if (Touch[id] === undefined) Touch[id] = [undefined, undefined]
-				const touch = Touch[id]
-				touch[0] = x
-				touch[1] = y
+				if (Touches[id] === undefined) Touches[id] = {position: [undefined, undefined]}
+				const touch = Touches[id]
+				touch.position[0] = x
+				touch.position[1] = y
 			}
 		})
 		
 		global.addEventListener("touchend", e => {
 			for (const changedTouch of e.changedTouches) {
 				const id = changedTouch.identifier
-				Touch[id] = undefined
+				Touches[id] = undefined
 			}
-			filterEmpties(Touch)
+			filterEmpties(Touches)
 		})
 		
 	}
 	
-	Habitat.Input = {install, Mouse, Keyboard, Touch}
+	Habitat.Input = {install, Mouse, Keyboard, Touches}
 	
 }
