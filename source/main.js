@@ -8,5 +8,4 @@ Habitat.install = (global) => {
 	Habitat.Function.install(global)
 	Habitat.Input.install(global)
 	Habitat.Number.install(global)
-	Habitat.Pointer.install(global)
 }

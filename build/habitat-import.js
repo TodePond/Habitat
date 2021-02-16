@@ -191,6 +191,7 @@ const Habitat = {}
 {
 
 	const Keyboard = {}
+	const Touch = []
 	const Mouse = {
 		position: [undefined, undefined],
 	}
@@ -219,11 +220,24 @@ const Habitat = {}
 		// Keyboard
 		global.Keyboard = Keyboard
 		global.addEventListener("keydown", e => {
-			Habitat.Keyboard[e.key] = true
+			Keyboard[e.key] = true
 		})
 		
 		global.addEventListener("keyup", e => {
-			Habitat.Keyboard[e.key] = false
+			Keyboard[e.key] = false
+		})
+		
+		// Touch
+		global.addEventListener("touchstart", e => {
+			for (const changedTouch of e.changedTouches) {
+				const x = changedTouch.clientX
+				const y = changedTouch.clientY
+				const id = changedTouch.identifier
+				if (Touch[id] === undefined) Touch[id] = [undefined, undefined]
+				const touch = Touch[id]
+				touch[0] = x
+				touch[1] = y
+			}
 		})
 		
 	}
@@ -243,7 +257,6 @@ Habitat.install = (global) => {
 	Habitat.Function.install(global)
 	Habitat.Input.install(global)
 	Habitat.Number.install(global)
-	Habitat.Pointer.install(global)
 }
 
 //========//
@@ -274,19 +287,6 @@ Habitat.install = (global) => {
 	}
 	
 	Habitat.Number = {install}
-	
-}
-
-//=========//
-// Pointer //
-//=========//
-{
-	
-	const install = (global) => {
-		
-	}
-	
-	Habitat.Pointer = {install}
 	
 }
 
