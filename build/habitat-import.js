@@ -103,6 +103,14 @@ const Habitat = {}
 //=======//
 // Async //
 //=======//
+{
+	const sleep = (duration) => new Promise(resolve => setTimeout(resolve, duration))
+	const install = (global) => {
+		global.sleep = sleep
+	}
+	
+	Habitat.Async = {install, sleep}
+}
 
 //=========//
 // Console //
@@ -164,13 +172,27 @@ const Habitat = {}
 	Habitat.Console = {install, print, dir, print9}
 }
 
+//==========//
+// Function //
+//==========//
+{
+
+	const install = (global) => {
+		
+	}
+	
+	Habitat.Function = {install}
+	
+}
+
 //======//
 // Main //
 //======//
 Habitat.install = (global) => {
 	Habitat.Array.install(global)
-	//Habitat.Async.install(global)
+	Habitat.Async.install(global)
 	Habitat.Console.install(global)
+	Habitat.Function.install(global)
 	Habitat.Number.install(global)
 }
 
