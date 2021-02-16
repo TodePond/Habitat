@@ -227,7 +227,7 @@ Habitat.install = (global) => {
 	
 }
 
-
+export const {sleep} = Habitat.Async
 
 export const {print, dir, print9} = Habitat.Console
 
