@@ -185,6 +185,29 @@ const Habitat = {}
 	
 }
 
+//==========//
+// Keyboard //
+//==========//
+{
+	
+	const install = (global) => {
+		
+		global.addEventListener("keydown", e => {
+			Habitat.Keyboard[e.key] = true
+		})
+		
+		global.addEventListener("keyup", e => {
+			Habitat.Keyboard[e.key] = false
+		})
+		
+		global.Keyboard = Habitat.Keyboard
+		
+	}
+	
+	Habitat.Keyboard = {install}
+	
+}
+
 //======//
 // Main //
 //======//
@@ -193,6 +216,7 @@ Habitat.install = (global) => {
 	Habitat.Async.install(global)
 	Habitat.Console.install(global)
 	Habitat.Function.install(global)
+	Habitat.Keyboard.install(global)
 	Habitat.Number.install(global)
 }
 
