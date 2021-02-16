@@ -16,6 +16,12 @@
 			},
 		}, {configurable: true, enumerable: false, writable: true})
 		
+		Reflect.defineProperty(global.EventTarget.prototype, "trigger", {
+			value() {
+				
+			},
+		}, {configurable: true, enumerable: false, writable: true})
+		
 	}
 	
 	Habitat.Event = {install}

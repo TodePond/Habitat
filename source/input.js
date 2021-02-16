@@ -11,18 +11,26 @@
 	
 	const buttonMap = ["Left", "Middle", "Right", "Back", "Forward"]
 	
-	const filterEmpties = (a) => {
-		let i = 0
-		let j = 0
-		while (i < a.length) {
-			const v = a[i]
-			if (v !== undefined) {
-				if (i !== j) a[j] = v
-				j++
+	const trim = (a) => {
+		if (a.length == 0) return a
+		let start = a.length - 1
+		let end = 0
+		for (let i = 0; i < a.length; i++) {
+			const value = a[i]
+			if (value !== undefined) {
+				start = i
+				break
 			}
-			i++
 		}
-		a.length = j
+		for (let i = a.length - 1; i >= 0; i--) {
+			const value = a[i]
+			if (value !== undefined) {
+				end = i + 1
+				break
+			}
+		}
+		a.splice(end)
+		a.splice(0, start)
 		return a
 	}
 	
@@ -86,7 +94,7 @@
 				const id = changedTouch.identifier
 				Touches[id] = undefined
 			}
-			filterEmpties(Touches)
+			trim(Touches)
 		})
 		
 	}
