@@ -209,7 +209,7 @@ const Habitat = {}
 
 	const install = (global) => {
 	
-		Reflect.defineProperty(global, "on", {
+		Reflect.defineProperty(global.EventTarget.prototype, "on", {
 			get() {
 				return new Proxy(this, {
 					get: (element, eventName, callback) => (...args) => element.addEventListener(eventName, ...args),
