@@ -7,7 +7,7 @@ const Habitat = {}
 	
 	const install = (global) => {
 	
-		Reflect.defineProperty(Array.prototype, "last", {
+		Reflect.defineProperty(global.Array.prototype, "last", {
 			get() {
 				return this[this.length-1]
 			},
@@ -16,7 +16,7 @@ const Habitat = {}
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "first", {
+		Reflect.defineProperty(global.Array.prototype, "first", {
 			get() {
 				return this[0]
 			},
@@ -25,7 +25,7 @@ const Habitat = {}
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "clone", {
+		Reflect.defineProperty(global.Array.prototype, "clone", {
 			get() {
 				return [...this]
 			},
@@ -34,14 +34,14 @@ const Habitat = {}
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "at", {
+		Reflect.defineProperty(global.Array.prototype, "at", {
 			value(position) {
 				if (position >= 0) return this[position]
 				return this[this.length + position]
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "shuffle", {
+		Reflect.defineProperty(global.Array.prototype, "shuffle", {
 			value() {
 				for (let i = this.length - 1; i > 0; i--) {
 					const r = Math.floor(Math.random() * (i+1))
@@ -51,7 +51,7 @@ const Habitat = {}
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "trim", {
+		Reflect.defineProperty(global.Array.prototype, "trim", {
 			value() {
 				if (this.length == 0) return this
 				let start = this.length - 1
@@ -76,7 +76,7 @@ const Habitat = {}
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Array.prototype, "repeat", {
+		Reflect.defineProperty(global.Array.prototype, "repeat", {
 			value(n) {
 				if (n === 0) {
 					this.splice(0)
@@ -123,7 +123,7 @@ const Habitat = {}
 		global.dir = dir
 		global.print9 = print9
 		
-		Reflect.defineProperty(Object.prototype, "d", {
+		Reflect.defineProperty(global.Object.prototype, "d", {
 			get() {
 				const value = this.valueOf()
 				console.log(value)
@@ -134,7 +134,7 @@ const Habitat = {}
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(Object.prototype, "dir", {
+		Reflect.defineProperty(global.Object.prototype, "dir", {
 			get() {
 				console.dir(this)
 				return this.valueOf()
@@ -145,7 +145,7 @@ const Habitat = {}
 		}, {configurable: true, enumerable: false, writable: true})
 		
 		let d9Counter = 0
-		Reflect.defineProperty(Object.prototype, "d9", {
+		Reflect.defineProperty(global.Object.prototype, "d9", {
 			get() {
 				const value = this.valueOf()
 				if (d9Counter < 9) {
@@ -181,7 +181,7 @@ Habitat.install = (global) => {
 	
 	const install = (global) => {
 		
-		Reflect.defineProperty(Number.prototype, "to", {
+		Reflect.defineProperty(global.Number.prototype, "to", {
 			value: function* (v) {
 				let i = this.valueOf()
 				if (i <= v) {
