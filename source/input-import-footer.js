@@ -1,0 +1,1 @@
+export const {Keyboard, Mouse} = Habitat.Input

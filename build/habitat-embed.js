@@ -185,13 +185,39 @@ const Habitat = {}
 	
 }
 
-//==========//
-// Keyboard //
-//==========//
+//=======//
+// Input //
+//=======//
 {
+
+	const Keyboard = {}
+	const Mouse = {
+		position: [undefined, undefined],
+	}
+	
+	const buttonMap = ["Left", "Middle", "Right", "Back", "Forward"]
 	
 	const install = (global) => {
 		
+		// Mouse
+		global.Mouse = Mouse
+		global.addEventListener("mousedown", e => {
+			const buttonName = buttonMap[e.button]
+			Mouse[buttonName] = true
+		})
+		
+		global.addEventListener("mouseup", e => {
+			const buttonName = buttonMap[e.button]
+			Mouse[buttonName] = false
+		})
+		
+		global.addEventListener("mousemove", e => {
+			Mouse.position[0] = event.clientX
+			Mouse.position[1] = event.clientY
+		})
+		
+		// Keyboard
+		global.Keyboard = Keyboard
 		global.addEventListener("keydown", e => {
 			Habitat.Keyboard[e.key] = true
 		})
@@ -200,13 +226,12 @@ const Habitat = {}
 			Habitat.Keyboard[e.key] = false
 		})
 		
-		global.Keyboard = Habitat.Keyboard
-		
 	}
 	
-	Habitat.Keyboard = {install}
+	Habitat.Input = {install, Mouse, Keyboard}
 	
 }
+
 
 //======//
 // Main //
@@ -216,8 +241,9 @@ Habitat.install = (global) => {
 	Habitat.Async.install(global)
 	Habitat.Console.install(global)
 	Habitat.Function.install(global)
-	Habitat.Keyboard.install(global)
+	Habitat.Input.install(global)
 	Habitat.Number.install(global)
+	Habitat.Pointer.install(global)
 }
 
 //========//
@@ -248,5 +274,18 @@ Habitat.install = (global) => {
 	}
 	
 	Habitat.Number = {install}
+	
+}
+
+//=========//
+// Pointer //
+//=========//
+{
+	
+	const install = (global) => {
+		
+	}
+	
+	Habitat.Pointer = {install}
 	
 }
