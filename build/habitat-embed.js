@@ -172,6 +172,34 @@ const Habitat = {}
 	Habitat.Console = {install, print, dir, print9}
 }
 
+//=========//
+// Element //
+//=========//
+{
+
+	const $ = document.querySelector.bind(document)
+	const $$ = document.querySelectorAll.bind(document)
+
+	const install = (global) => {
+	
+		global.$ = $
+		global.$$ = $$
+		
+		Reflect.defineProperty(global.Element.prototype, "$", {
+			value: global.Element.prototype.querySelector,
+		}, {configurable: true, enumerable: false, writable: true})
+		
+		Reflect.defineProperty(global.Element.prototype, "$$", {
+			value: global.Element.prototype.querySelectorAll,
+		}, {configurable: true, enumerable: false, writable: true})
+		
+	}
+	
+	Habitat.Element = {install, $, $$}
+	
+}
+
+
 //==========//
 // Function //
 //==========//
@@ -290,6 +318,7 @@ Habitat.install = (global) => {
 	Habitat.Array.install(global)
 	Habitat.Async.install(global)
 	Habitat.Console.install(global)
+	Habitat.Element.install(global)
 	Habitat.Function.install(global)
 	Habitat.Input.install(global)
 	Habitat.Number.install(global)
