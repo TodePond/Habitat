@@ -1,12 +1,14 @@
-//=========//
-// Element //
-//=========//
+//==========//
+// Document //
+//==========//
 {
 
-	const $ = document.querySelector.bind(document)
-	const $$ = document.querySelectorAll.bind(document)
+	const $ = (...args) => document.querySelector(...args)
+	const $$ = (...args) => document.querySelectorAll(...args)
 
 	const install = (global) => {
+	
+		if (global.Element === undefined) return
 	
 		global.$ = $
 		global.$$ = $$
@@ -21,6 +23,6 @@
 		
 	}
 	
-	Habitat.Element = {install, $, $$}
+	Habitat.Document = {install, $, $$}
 	
 }

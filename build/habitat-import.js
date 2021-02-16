@@ -172,15 +172,17 @@ const Habitat = {}
 	Habitat.Console = {install, print, dir, print9}
 }
 
-//=========//
-// Element //
-//=========//
+//==========//
+// Document //
+//==========//
 {
 
-	const $ = document.querySelector.bind(document)
-	const $$ = document.querySelectorAll.bind(document)
+	const $ = (...args) => document.querySelector(...args)
+	const $$ = (...args) => document.querySelectorAll(...args)
 
 	const install = (global) => {
+	
+		if (global.Element === undefined) return
 	
 		global.$ = $
 		global.$$ = $$
@@ -195,7 +197,32 @@ const Habitat = {}
 		
 	}
 	
-	Habitat.Element = {install, $, $$}
+	Habitat.Document = {install, $, $$}
+	
+}
+
+
+//=======//
+// Event //
+//=======//
+{
+
+	const install = (global) => {
+	
+		Reflect.defineProperty(global, "on", {
+			get() {
+				return new Proxy(this, {
+					get: (element, eventName, callback) => (...args) => element.addEventListener(eventName, ...args),
+				})
+			},
+			set(value) {
+				Reflect.defineProperty(this, "on", {value, configurable: true, writable: true, enumerable: true})
+			},
+		}, {configurable: true, enumerable: false, writable: true})
+		
+	}
+	
+	Habitat.Event = {install}
 	
 }
 
@@ -339,7 +366,8 @@ Habitat.install = (global) => {
 	Habitat.Array.install(global)
 	Habitat.Async.install(global)
 	Habitat.Console.install(global)
-	Habitat.Element.install(global)
+	Habitat.Document.install(global)
+	Habitat.Event.install(global)
 	Habitat.Function.install(global)
 	Habitat.HTML.install(global)
 	Habitat.Input.install(global)
@@ -381,7 +409,7 @@ export const {sleep} = Habitat.Async
 
 export const {print, dir, print9} = Habitat.Console
 
-export const {$, $$} = Habitat.Element
+export const {$, $$} = Habitat.Document
 
 export const {HTML} = Habitat.HTML
 
