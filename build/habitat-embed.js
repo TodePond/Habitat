@@ -213,6 +213,27 @@ const Habitat = {}
 	
 }
 
+//======//
+// HTML //
+//======//
+{
+
+	const HTML = (args) => {
+		const source = String.raw(args)
+		const template = document.createElement("template")
+		template.innerHTML = source
+		return template.content
+	}
+
+	const install = (global) => {
+		global.HTML = HTML		
+	}
+	
+	Habitat.HTML = {install, HTML}
+	
+}
+
+
 //=======//
 // Input //
 //=======//
@@ -320,6 +341,7 @@ Habitat.install = (global) => {
 	Habitat.Console.install(global)
 	Habitat.Element.install(global)
 	Habitat.Function.install(global)
+	Habitat.HTML.install(global)
 	Habitat.Input.install(global)
 	Habitat.Number.install(global)
 }
