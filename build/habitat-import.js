@@ -182,17 +182,22 @@ const Habitat = {}
 
 	const install = (global) => {
 	
-		if (global.Element === undefined) return
 	
 		global.$ = $
 		global.$$ = $$
 		
-		Reflect.defineProperty(global.Element.prototype, "$", {
-			value: global.Element.prototype.querySelector,
+		if (global.Node === undefined) return
+		
+		Reflect.defineProperty(global.Node.prototype, "$", {
+			value(...args) {
+				return this.querySelector(...args)
+			},
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(global.Element.prototype, "$$", {
-			value: global.Element.prototype.querySelectorAll,
+		Reflect.defineProperty(global.Node.prototype, "$$", {
+			value(...args) {
+				return this.querySelectorAll(...args)
+			},
 		}, {configurable: true, enumerable: false, writable: true})
 		
 	}
