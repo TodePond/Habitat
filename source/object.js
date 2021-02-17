@@ -17,36 +17,30 @@
 		})
 		
 		Reflect.defineProperty(global.Object.prototype, "keys", {
-			get() {
+			value() {
 				return Object.keys(this)
-			},
-			set(value) {
-				Reflect.defineProperty(this, "keys", {value, configurable: true, writable: true, enumerable: true})
 			},
 			configurable: true,
 			enumerable: false,
+			writable: true,
 		})
 		
 		Reflect.defineProperty(global.Object.prototype, "values", {
-			get() {
+			value() {
 				return Object.values(this)
-			},
-			set(value) {
-				Reflect.defineProperty(this, "values", {value, configurable: true, writable: true, enumerable: true})
 			},
 			configurable: true,
 			enumerable: false,
+			writable: true,
 		})
 		
 		Reflect.defineProperty(global.Object.prototype, "entries", {
-			get() {
+			value() {
 				return Object.entries(this)
-			},
-			set(value) {
-				Reflect.defineProperty(this, "entries", {value, configurable: true, writable: true, enumerable: true})
 			},
 			configurable: true,
 			enumerable: false,
+			writable: true,
 		})
 		
 		Habitat.Object.installed = true
