@@ -8,14 +8,6 @@
 		convert: (n) => parseInt(n),
 	}
 
-	const Even = {
-		check: (n) => n % 2 == 0,
-	}
-
-	const Odd = {
-		check: (n) => n % 2 != 0,
-	}
-
 	const Positive = {
 		check: (n) => n >= 0,
 		convert: (n) => Math.abs(n),
@@ -28,6 +20,7 @@
 
 	const UInt = {
 		check: (n) => n % 1 == 0 && n >= 0,
+		convert: (n) => Math.abs(parseInt(n)),
 	}
 
 	const UpperCase = {
@@ -44,12 +37,7 @@
 		check: (s) => /^[ |	]*$/.test(s),
 	}
 
-	const Capitalised = {
-		check: s => s[0] == s[0].toUpperCase(),
-		convert: s => s.slice(0, 1).toUpperCase() + s.slice(1),
-	}
-
-	const ObjectLiteral = {
+	const PureObject = {
 		check: (o) => o.constructor == Object,
 	}
 
@@ -60,16 +48,13 @@
 	const install = (global) => {
 	
 		global.Int = Int
-		global.Even = Even
-		global.Odd = Odd
 		global.Positive = Positive
 		global.Negative = Negative
 		global.UInt = UInt
 		global.UpperCase = UpperCase
 		global.LowerCase = LowerCase
 		global.WhiteSpace = WhiteSpace
-		global.Capitalised = Capitalised
-		global.ObjectLiteral = ObjectLiteral
+		global.PureObject = PureObject
 		global.Primitive = Primitive
 	
 		Reflect.defineProperty(global.Object.prototype, "is", {
@@ -103,6 +88,6 @@
 		
 	}
 	
-	Habitat.Type = {install, Int, Even, Odd, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, Capitalised, ObjectLiteral, Primitive}
+	Habitat.Type = {install, Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive}
 	
 }
