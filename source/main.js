@@ -19,6 +19,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Object.installed)     Habitat.Object.install(global)
 	if (!Habitat.Property.installed)   Habitat.Property.install(global)
 	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
+	if (!Habitat.Type.installed)       Habitat.Type.install(global)
 	
 	Habitat.installed = true
 	

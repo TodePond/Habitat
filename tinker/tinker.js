@@ -3,6 +3,8 @@ Habitat.install(window)
 const luke = {name: "Luke", age: 27}
 const scores = [2, 3, 5]
 
+const name = "Luke"
+const age = 27
 
 const greeting = HTML `<p>Hello world!</p><p>Ribbit world!</p>`
 document.body.appendChild(greeting)

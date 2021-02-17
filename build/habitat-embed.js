@@ -368,6 +368,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Object.installed)     Habitat.Object.install(global)
 	if (!Habitat.Property.installed)   Habitat.Property.install(global)
 	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
+	if (!Habitat.Type.installed)       Habitat.Type.install(global)
 	
 	Habitat.installed = true
 	
@@ -718,5 +719,43 @@ Habitat.install = (global) => {
 		writable: true,
 	})
 	
+	
+}
+
+
+//======//
+// Type //
+//======//
+{
+	
+	const install = (global) => {
+	
+		Reflect.defineProperty(global.Object.prototype, "is", {
+			value(type) {
+				if ("check" in type) {
+					try { return type.check(this) }
+					catch {
+						try   { return this instanceof type }
+						catch { return false }
+					}
+				}
+				try   { return this instanceof type }
+				catch { return false }
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
+		
+		Habitat.Type.installed = true
+		
+	}
+	
+	Int = {
+		check: (n) => n % 1 == 0,
+		convert: (n) => parseInt(n),
+	}
+	
+	Habitat.Type = {install}
 	
 }
