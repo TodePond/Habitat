@@ -323,6 +323,7 @@ Habitat.install = (global) => {
 	if (!Habitat.HTML.installed)       Habitat.HTML.install(global)
 	if (!Habitat.JavaScript.installed) Habitat.JavaScript.install(global)
 	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
+	if (!Habitat.Math.installed)       Habitat.Math.install(global)
 	if (!Habitat.Mouse.installed)      Habitat.Mouse.install(global)
 	if (!Habitat.Number.installed)     Habitat.Number.install(global)
 	if (!Habitat.Object.installed)     Habitat.Object.install(global)
@@ -331,6 +332,43 @@ Habitat.install = (global) => {
 	Habitat.installed = true
 	
 }
+
+//======//
+// Math //
+//======//
+{
+	
+	const gcd = (...numbers) => {
+		const [head, ...tail] = numbers
+		if (numbers.length === 1) return head
+		if (numbers.length  >  2) return gcd(head, gcd(...tail))
+		
+		let [a, b] = [head, ...tail]
+		
+		while (true) {
+			if (b === 0) return a
+			a = a % b
+			if (a === 0) return b
+			b = b % a
+		}
+		
+	}
+	
+	const reduce = (...numbers) => {
+		const divisor = gcd(...numbers)
+		return numbers.map(n => n / divisor)
+	}
+	
+	const install = (global) => {
+		global.Math.gcd = Habitat.Math.gcd
+		global.Math.reduce = Habitat.Math.reduce
+	}
+	
+	
+	Habitat.Math = {install, gcd, reduce}
+	
+}
+
 
 //=======//
 // Mouse //
