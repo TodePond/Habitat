@@ -11,9 +11,11 @@ Habitat.install = (global) => {
 	if (!Habitat.Document.installed)   Habitat.Document.install(global)
 	if (!Habitat.Event.installed)      Habitat.Event.install(global)
 	if (!Habitat.HTML.installed)       Habitat.HTML.install(global)
-	if (!Habitat.Input.installed)      Habitat.Input.install(global)
 	if (!Habitat.JavaScript.installed) Habitat.JavaScript.install(global)
+	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
+	if (!Habitat.Mouse.installed)      Habitat.Mouse.install(global)
 	if (!Habitat.Number.installed)     Habitat.Number.install(global)
+	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
 	
 	Habitat.installed = true
 	
