@@ -15,6 +15,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
 	if (!Habitat.Mouse.installed)      Habitat.Mouse.install(global)
 	if (!Habitat.Number.installed)     Habitat.Number.install(global)
+	if (!Habitat.Object.installed)     Habitat.Object.install(global)
 	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
 	
 	Habitat.installed = true

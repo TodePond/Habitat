@@ -325,6 +325,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
 	if (!Habitat.Mouse.installed)      Habitat.Mouse.install(global)
 	if (!Habitat.Number.installed)     Habitat.Number.install(global)
+	if (!Habitat.Object.installed)     Habitat.Object.install(global)
 	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
 	
 	Habitat.installed = true
@@ -399,6 +400,25 @@ Habitat.install = (global) => {
 	}
 	
 	Habitat.Number = {install}
+	
+}
+
+//========//
+// Object //
+//========//
+{
+	Habitat.Object = {}
+	Habitat.Object.install = (global) => {
+		
+		Object.prototype[Symbol.iterator] = function*() {
+			for (const key in this) {
+				yield this[key]
+			}
+		}
+		
+		Habitat.Object.installed = true
+		
+	}
 	
 }
 
