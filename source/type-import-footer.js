@@ -1,0 +1,1 @@
+export const {Int, Even, Odd, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, Capitalised, ObjectLiteral, Primitive} = Habitat.Type
