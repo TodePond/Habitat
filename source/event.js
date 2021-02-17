@@ -17,8 +17,11 @@
 		}, {configurable: true, enumerable: false, writable: true})
 		
 		Reflect.defineProperty(global.EventTarget.prototype, "trigger", {
-			value() {
-				
+			value(name, options = {}) {
+				const {bubbles = true, cancelable = true, ...data} = options
+				const event = new Event(name, {bubbles, cancelable})
+				for (const key in data) event[key] = data[key]
+				this.dispatchEvent(event)
 			},
 		}, {configurable: true, enumerable: false, writable: true})
 		

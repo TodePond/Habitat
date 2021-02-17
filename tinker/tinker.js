@@ -12,6 +12,12 @@ on.click(e => {
 	print("Click")
 })
 
-$("p").on.click(e => print("Paragraph"))
 
-document.on.click(e => print("Doc"))
+on.mousedown(e => print("Doc"))
+
+$("p").on.mousedown(e => print("Paragraph"))
+$("p").on.yeet(e => {
+	//print("Yeet")
+	//print(e)
+})
+$("p").trigger("yeet", {bubbles: true, target: "big"})
