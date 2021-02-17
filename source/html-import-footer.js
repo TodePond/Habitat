@@ -1,1 +1,1 @@
-export const {HTML} = Habitat.HTML
+export const {HTML} = Habitat

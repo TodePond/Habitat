@@ -246,21 +246,17 @@ const Habitat = {}
 //======//
 {
 
-	const HTML = (args) => {
-		const source = String.raw(args)
+	Habitat.HTML = (...args) => {
+		const source = String.raw(...args)
 		const template = document.createElement("template")
 		template.innerHTML = source
 		return template.content
 	}
 
-	const install = (global) => {
-		global.HTML = HTML	
-
+	Habitat.HTML.install = (global) => {
+		global.HTML = Habitat.HTML
 		Habitat.HTML.installed = true
-		
 	}
-	
-	Habitat.HTML = {install, HTML}
 	
 }
 
@@ -377,24 +373,19 @@ const Habitat = {}
 // JavaScript //
 //============//
 {
-
-	const JavaScript = (args) => {
-		const source = String.raw(args)
+	
+	Habitat.JavaScript = (...args) => {
+		const source = String.raw(...args)
 		const lines = source.split("\n")
-		let code = source
-		if (lines.length === 1) code = `return ${code}`
+		const code = `return ${source}`
 		const func = new Function(code)()
 		return func
 	}
-
-	const install = (global) => {
-		global.JavaScript = JavaScript	
-
-		Habitat.JavaScript.installed = true
-		
-	}
 	
-	Habitat.JavaScript = {install, JavaScript}
+	Habitat.JavaScript.install = (global) => {
+		global.JavaScript = Habitat.JavaScript	
+		Habitat.JavaScript.installed = true
+	}
 	
 }
 
@@ -459,11 +450,11 @@ export const {print, dir, print9} = Habitat.Console
 
 export const {$, $$} = Habitat.Document
 
-export const {HTML} = Habitat.HTML
+export const {HTML} = Habitat
 
 export const {Keyboard, Mouse, Touches} = Habitat.Input
 
-export const {JavaScript} = Habitat.JavaScript
+export const {JavaScript} = Habitat
 
 export {Habitat}
 export default Habitat

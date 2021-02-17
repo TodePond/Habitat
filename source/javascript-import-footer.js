@@ -1,1 +1,1 @@
-export const {JavaScript} = Habitat.JavaScript
+export const {JavaScript} = Habitat
