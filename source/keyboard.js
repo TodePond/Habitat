@@ -17,8 +17,14 @@
 			
 			Reflect.defineProperty(Keyboard, "installed", {
 				value: true,
-			}, {configurable: true, enumerable: false, writable: true})
-		}
-	}, {configurable: true, enumerable: false, writable: true})
+				configurable: true,
+				enumerable: false,
+				writable: true,
+			})
+		},
+		configurable: true,
+		enumerable: false,
+		writable: true,
+	})
 	
 }

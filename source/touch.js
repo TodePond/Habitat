@@ -67,9 +67,15 @@
 			
 			Reflect.defineProperty(Touch, "installed", {
 				value: true,
-			}, {configurable: true, enumerable: false, writable: true})
-		}
-	}, {configurable: true, enumerable: false, writable: true})
+				configurable: true,
+				enumerable: false,
+				writable: true,
+			})
+		},
+		configurable: true,
+		enumerable: false,
+		writable: true,
+	})
 	
 	
 }

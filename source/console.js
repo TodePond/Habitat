@@ -25,8 +25,10 @@
 			},
 			set(value) {
 				Reflect.defineProperty(this, "d", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Object.prototype, "dir", {
 			get() {
@@ -35,8 +37,10 @@
 			},
 			set(value) {
 				Reflect.defineProperty(this, "dir", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		let d9Counter = 0
 		Reflect.defineProperty(global.Object.prototype, "d9", {
@@ -50,8 +54,10 @@
 			},
 			set(value) {
 				Reflect.defineProperty(this, "d9", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Habitat.Console.installed = true
 		

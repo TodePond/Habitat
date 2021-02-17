@@ -14,7 +14,9 @@
 			set(value) {
 				Reflect.defineProperty(this, "on", {value, configurable: true, writable: true, enumerable: true})
 			},
-		}, {configurable: true, enumerable: false, writable: true})
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.EventTarget.prototype, "trigger", {
 			value(name, options = {}) {
@@ -23,7 +25,10 @@
 				for (const key in data) event[key] = data[key]
 				this.dispatchEvent(event)
 			},
-		}, {configurable: true, enumerable: false, writable: true})
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Habitat.Event.installed = true
 		

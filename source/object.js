@@ -10,8 +10,11 @@
 				for (const key in this) {
 					yield this[key]
 				}
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Reflect.defineProperty(global.Object.prototype, "keys", {
 			get() {
@@ -19,8 +22,10 @@
 			},
 			set(value) {
 				Reflect.defineProperty(this, "keys", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Object.prototype, "values", {
 			get() {
@@ -28,8 +33,10 @@
 			},
 			set(value) {
 				Reflect.defineProperty(this, "values", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Object.prototype, "entries", {
 			get() {
@@ -37,8 +44,10 @@
 			},
 			set(value) {
 				Reflect.defineProperty(this, "entries", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Habitat.Object.installed = true
 		

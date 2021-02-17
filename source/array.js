@@ -11,8 +11,10 @@
 			},
 			set(value) {
 				Reflect.defineProperty(this, "last", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "clone", {
 			get() {
@@ -20,15 +22,20 @@
 			},
 			set(value) {
 				Reflect.defineProperty(this, "clone", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "at", {
 			value(position) {
 				if (position >= 0) return this[position]
 				return this[this.length + position]
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "shuffle", {
 			value() {
@@ -37,8 +44,11 @@
 					;[this[i], this[r]] = [this[r], this[i]]
 				}
 				return this
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "trim", {
 			value() {
@@ -62,8 +72,11 @@
 				this.splice(end)
 				this.splice(0, start)
 				return this
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "repeat", {
 			value(n) {
@@ -80,8 +93,11 @@
 					this.push(...clone)
 				}
 				return this
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Habitat.Array.installed = true
 		

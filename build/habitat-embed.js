@@ -13,8 +13,10 @@ const Habitat = {}
 			},
 			set(value) {
 				Reflect.defineProperty(this, "last", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "clone", {
 			get() {
@@ -22,15 +24,20 @@ const Habitat = {}
 			},
 			set(value) {
 				Reflect.defineProperty(this, "clone", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "at", {
 			value(position) {
 				if (position >= 0) return this[position]
 				return this[this.length + position]
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "shuffle", {
 			value() {
@@ -39,8 +46,11 @@ const Habitat = {}
 					;[this[i], this[r]] = [this[r], this[i]]
 				}
 				return this
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "trim", {
 			value() {
@@ -64,8 +74,11 @@ const Habitat = {}
 				this.splice(end)
 				this.splice(0, start)
 				return this
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Reflect.defineProperty(global.Array.prototype, "repeat", {
 			value(n) {
@@ -82,8 +95,11 @@ const Habitat = {}
 					this.push(...clone)
 				}
 				return this
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Habitat.Array.installed = true
 		
@@ -133,8 +149,10 @@ const Habitat = {}
 			},
 			set(value) {
 				Reflect.defineProperty(this, "d", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Object.prototype, "dir", {
 			get() {
@@ -143,8 +161,10 @@ const Habitat = {}
 			},
 			set(value) {
 				Reflect.defineProperty(this, "dir", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		let d9Counter = 0
 		Reflect.defineProperty(global.Object.prototype, "d9", {
@@ -158,8 +178,10 @@ const Habitat = {}
 			},
 			set(value) {
 				Reflect.defineProperty(this, "d9", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Habitat.Console.installed = true
 		
@@ -188,13 +210,19 @@ const Habitat = {}
 			value(...args) {
 				return this.querySelector(...args)
 			},
-		}, {configurable: true, enumerable: false, writable: true})
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Reflect.defineProperty(global.Node.prototype, "$$", {
 			value(...args) {
 				return this.querySelectorAll(...args)
 			},
-		}, {configurable: true, enumerable: false, writable: true})
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Habitat.Document.installed = true
 		
@@ -221,7 +249,9 @@ const Habitat = {}
 			set(value) {
 				Reflect.defineProperty(this, "on", {value, configurable: true, writable: true, enumerable: true})
 			},
-		}, {configurable: true, enumerable: false, writable: true})
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.EventTarget.prototype, "trigger", {
 			value(name, options = {}) {
@@ -230,7 +260,10 @@ const Habitat = {}
 				for (const key in data) event[key] = data[key]
 				this.dispatchEvent(event)
 			},
-		}, {configurable: true, enumerable: false, writable: true})
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Habitat.Event.installed = true
 		
@@ -301,9 +334,15 @@ const Habitat = {}
 			
 			Reflect.defineProperty(Keyboard, "installed", {
 				value: true,
-			}, {configurable: true, enumerable: false, writable: true})
-		}
-	}, {configurable: true, enumerable: false, writable: true})
+				configurable: true,
+				enumerable: false,
+				writable: true,
+			})
+		},
+		configurable: true,
+		enumerable: false,
+		writable: true,
+	})
 	
 }
 
@@ -403,9 +442,15 @@ Habitat.install = (global) => {
 			
 			Reflect.defineProperty(Mouse, "installed", {
 				value: true,
-			}, {configurable: true, enumerable: false, writable: true})
-		}
-	}, {configurable: true, enumerable: false, writable: true})
+				configurable: true,
+				enumerable: false,
+				writable: true,
+			})
+		},
+		configurable: true,
+		enumerable: false,
+		writable: true,
+	})
 	
 }
 
@@ -433,7 +478,10 @@ Habitat.install = (global) => {
 					}
 				}
 			},
-		}, {configurable: true, enumerable: false, writable: true})
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Habitat.Number.installed = true
 		
@@ -455,8 +503,11 @@ Habitat.install = (global) => {
 				for (const key in this) {
 					yield this[key]
 				}
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Reflect.defineProperty(global.Object.prototype, "keys", {
 			get() {
@@ -464,8 +515,10 @@ Habitat.install = (global) => {
 			},
 			set(value) {
 				Reflect.defineProperty(this, "keys", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Object.prototype, "values", {
 			get() {
@@ -473,8 +526,10 @@ Habitat.install = (global) => {
 			},
 			set(value) {
 				Reflect.defineProperty(this, "values", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Reflect.defineProperty(global.Object.prototype, "entries", {
 			get() {
@@ -482,8 +537,10 @@ Habitat.install = (global) => {
 			},
 			set(value) {
 				Reflect.defineProperty(this, "entries", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
+			},
+			configurable: true,
+			enumerable: false,
+		})
 		
 		Habitat.Object.installed = true
 		
@@ -657,9 +714,15 @@ Habitat.install = (global) => {
 			
 			Reflect.defineProperty(Touch, "installed", {
 				value: true,
-			}, {configurable: true, enumerable: false, writable: true})
-		}
-	}, {configurable: true, enumerable: false, writable: true})
+				configurable: true,
+				enumerable: false,
+				writable: true,
+			})
+		},
+		configurable: true,
+		enumerable: false,
+		writable: true,
+	})
 	
 	
 }
