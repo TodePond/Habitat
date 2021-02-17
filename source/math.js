@@ -27,6 +27,7 @@
 	const install = (global) => {
 		global.Math.gcd = Habitat.Math.gcd
 		global.Math.reduce = Habitat.Math.reduce
+		Habitat.Math.installed = true
 	}
 	
 	
