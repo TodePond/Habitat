@@ -97,6 +97,8 @@
 			trim(Touches)
 		})
 		
+		Habitat.Input.installed = true
+		
 	}
 	
 	Habitat.Input = {install, Mouse, Keyboard, Touches}

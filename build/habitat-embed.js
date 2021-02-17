@@ -16,15 +16,6 @@ const Habitat = {}
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(global.Array.prototype, "first", {
-			get() {
-				return this[0]
-			},
-			set(value) {
-				Reflect.defineProperty(this, "first", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
-		
 		Reflect.defineProperty(global.Array.prototype, "clone", {
 			get() {
 				return [...this]
@@ -94,6 +85,8 @@ const Habitat = {}
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
+		Habitat.Array.installed = true
+		
 	}
 	
 	Habitat.Array = {install}
@@ -107,6 +100,7 @@ const Habitat = {}
 	const sleep = (duration) => new Promise(resolve => setTimeout(resolve, duration))
 	const install = (global) => {
 		global.sleep = sleep
+		Habitat.Async.installed = true
 	}
 	
 	Habitat.Async = {install, sleep}
@@ -167,6 +161,8 @@ const Habitat = {}
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
+		Habitat.Console.installed = true
+		
 	}
 	
 	Habitat.Console = {install, print, dir, print9}
@@ -199,6 +195,8 @@ const Habitat = {}
 				return this.querySelectorAll(...args)
 			},
 		}, {configurable: true, enumerable: false, writable: true})
+		
+		Habitat.Document.installed = true
 		
 	}
 	
@@ -234,6 +232,8 @@ const Habitat = {}
 			},
 		}, {configurable: true, enumerable: false, writable: true})
 		
+		Habitat.Event.installed = true
+		
 	}
 	
 	Habitat.Event = {install}
@@ -254,7 +254,10 @@ const Habitat = {}
 	}
 
 	const install = (global) => {
-		global.HTML = HTML		
+		global.HTML = HTML	
+
+		Habitat.HTML.installed = true
+		
 	}
 	
 	Habitat.HTML = {install, HTML}
@@ -361,9 +364,37 @@ const Habitat = {}
 			trim(Touches)
 		})
 		
+		Habitat.Input.installed = true
+		
 	}
 	
 	Habitat.Input = {install, Mouse, Keyboard, Touches}
+	
+}
+
+
+//============//
+// JavaScript //
+//============//
+{
+
+	const JavaScript = (args) => {
+		const source = String.raw(args)
+		const lines = source.split("\n")
+		let code = source
+		if (lines.length === 1) code = `return ${code}`
+		const func = new Function(code)()
+		return func
+	}
+
+	const install = (global) => {
+		global.JavaScript = JavaScript	
+
+		Habitat.JavaScript.installed = true
+		
+	}
+	
+	Habitat.JavaScript = {install, JavaScript}
 	
 }
 
@@ -372,14 +403,21 @@ const Habitat = {}
 // Main //
 //======//
 Habitat.install = (global) => {
-	Habitat.Array.install(global)
-	Habitat.Async.install(global)
-	Habitat.Console.install(global)
-	Habitat.Document.install(global)
-	Habitat.Event.install(global)
-	Habitat.HTML.install(global)
-	Habitat.Input.install(global)
-	Habitat.Number.install(global)
+
+	if (Habitat.installed) return
+
+	if (!Habitat.Array.installed)      Habitat.Array.install(global)
+	if (!Habitat.Async.installed)      Habitat.Async.install(global)
+	if (!Habitat.Console.installed)    Habitat.Console.install(global)
+	if (!Habitat.Document.installed)   Habitat.Document.install(global)
+	if (!Habitat.Event.installed)      Habitat.Event.install(global)
+	if (!Habitat.HTML.installed)       Habitat.HTML.install(global)
+	if (!Habitat.Input.installed)      Habitat.Input.install(global)
+	if (!Habitat.JavaScript.installed) Habitat.JavaScript.install(global)
+	if (!Habitat.Number.installed)     Habitat.Number.install(global)
+	
+	Habitat.installed = true
+	
 }
 
 //========//
@@ -406,6 +444,8 @@ Habitat.install = (global) => {
 				}
 			},
 		}, {configurable: true, enumerable: false, writable: true})
+		
+		Habitat.Number.installed = true
 		
 	}
 	

@@ -23,6 +23,8 @@
 			},
 		}, {configurable: true, enumerable: false, writable: true})
 		
+		Habitat.Number.installed = true
+		
 	}
 	
 	Habitat.Number = {install}

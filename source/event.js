@@ -25,6 +25,8 @@
 			},
 		}, {configurable: true, enumerable: false, writable: true})
 		
+		Habitat.Event.installed = true
+		
 	}
 	
 	Habitat.Event = {install}

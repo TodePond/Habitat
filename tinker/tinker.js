@@ -21,3 +21,9 @@ $("p").on.yeet(e => {
 	//print(e)
 })
 $("p").trigger("yeet", {bubbles: true, target: "big"})
+
+const NONE = (0).flag
+const FIRE = (1).flag
+const ELECTRIC = (2).flag
+const WATER = (3).flag
+

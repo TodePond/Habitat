@@ -53,6 +53,8 @@
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
+		Habitat.Console.installed = true
+		
 	}
 	
 	Habitat.Console = {install, print, dir, print9}

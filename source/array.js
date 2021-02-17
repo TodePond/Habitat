@@ -14,15 +14,6 @@
 			}
 		}, {configurable: true, enumerable: false, writable: true})
 		
-		Reflect.defineProperty(global.Array.prototype, "first", {
-			get() {
-				return this[0]
-			},
-			set(value) {
-				Reflect.defineProperty(this, "first", {value, configurable: true, writable: true, enumerable: true})
-			}
-		}, {configurable: true, enumerable: false, writable: true})
-		
 		Reflect.defineProperty(global.Array.prototype, "clone", {
 			get() {
 				return [...this]
@@ -91,6 +82,8 @@
 				return this
 			}
 		}, {configurable: true, enumerable: false, writable: true})
+		
+		Habitat.Array.installed = true
 		
 	}
 	

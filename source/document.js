@@ -26,6 +26,8 @@
 			},
 		}, {configurable: true, enumerable: false, writable: true})
 		
+		Habitat.Document.installed = true
+		
 	}
 	
 	Habitat.Document = {install, $, $$}

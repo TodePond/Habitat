@@ -11,7 +11,10 @@
 	}
 
 	const install = (global) => {
-		global.HTML = HTML		
+		global.HTML = HTML	
+
+		Habitat.HTML.installed = true
+		
 	}
 	
 	Habitat.HTML = {install, HTML}
