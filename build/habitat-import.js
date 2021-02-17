@@ -734,10 +734,7 @@ Habitat.install = (global) => {
 			value(type) {
 				if ("check" in type) {
 					try { return type.check(this) }
-					catch {
-						try   { return this instanceof type }
-						catch { return false }
-					}
+					catch {}
 				}
 				try   { return this instanceof type }
 				catch { return false }
@@ -747,13 +744,21 @@ Habitat.install = (global) => {
 			writable: true,
 		})
 		
+		Reflect.defineProperty(global.Object.prototype, "as", {
+			value(type) {
+				if ("convert" in type) {
+					try { return type.convert(this) }
+					catch {}
+				}
+				return type(this)
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
+		
 		Habitat.Type.installed = true
 		
-	}
-	
-	Int = {
-		check: (n) => n % 1 == 0,
-		convert: (n) => parseInt(n),
 	}
 	
 	Habitat.Type = {install}
