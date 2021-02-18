@@ -18,6 +18,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Number.installed)     Habitat.Number.install(global)
 	if (!Habitat.Object.installed)     Habitat.Object.install(global)
 	if (!Habitat.Property.installed)   Habitat.Property.install(global)
+	if (!Habitat.Random.installed)     Habitat.Random.install(global)
 	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
 	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
