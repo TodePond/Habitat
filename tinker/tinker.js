@@ -31,3 +31,10 @@ const WATER = (3).flag
 
 const foods = new Set(["pasta", "pizza", "pasta", "pancake"])
 
+const stage = Stage.make()
+document.body.appendChild(stage.canvas)
+
+stage.draw = () => {
+	stage.context.fillStyle = "red"
+	stage.context.fillRect(0, 0, 10, 10)
+}

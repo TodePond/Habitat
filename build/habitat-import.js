@@ -367,6 +367,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Number.installed)     Habitat.Number.install(global)
 	if (!Habitat.Object.installed)     Habitat.Object.install(global)
 	if (!Habitat.Property.installed)   Habitat.Property.install(global)
+	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
 	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
 	
@@ -641,6 +642,41 @@ Habitat.install = (global) => {
 }
 
 //=======//
+// Stage //
+//=======//
+{
+	
+	Habitat.Stage = {}
+	Habitat.Stage.make = () => {
+		
+		const canvas = document.createElement("canvas")
+		const context = canvas.getContext("2d")
+		
+		const stage = {
+			canvas,
+			context,
+			update: () => {},
+			draw: () => {},
+			tick: () => {
+				stage.update()
+				stage.draw()
+				requestAnimationFrame(stage.tick)
+			},
+		}
+		
+		requestAnimationFrame(stage.tick)
+		return stage
+	}
+	
+	Habitat.Stage.install = (global) => {
+		global.Stage = Habitat.Stage
+		Habitat.Stage.installed = true
+		
+	}
+	
+}
+
+//=======//
 // Touch //
 //=======//
 {
@@ -836,6 +872,8 @@ export const {install} = Habitat
 export const {gcd, reduce} = Habitat.Math
 
 export const {Mouse} = Habitat
+
+export const {Stage} = Habitat
 
 export const {Touch} = Habitat
 
