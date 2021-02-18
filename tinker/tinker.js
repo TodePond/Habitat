@@ -30,3 +30,4 @@ const ELECTRIC = (2).flag
 const WATER = (3).flag
 
 const foods = new Set(["pasta", "pizza", "pasta", "pancake"])
+
