@@ -6,7 +6,7 @@ const scores = [2, 3, 5]
 const name = "Luke"
 const age = 27
 
-const greeting = HTML `<p>Hello world!</p><p>Ribbit world!</p>`
+/*const greeting = HTML `<p>Hello world!</p><p>Ribbit world!</p>`
 document.body.appendChild(greeting)
 
 
@@ -37,4 +37,24 @@ document.body.appendChild(stage.canvas)
 stage.draw = () => {
 	stage.context.fillStyle = "red"
 	stage.context.fillRect(0, 0, 10, 10)
-}
+}*/
+
+/*const resulter = Term.result({
+    success: true,
+    output: "",
+    source: "",
+    tail: "",
+    children: [],
+})
+resulter("Hello world!").d
+
+const succeeder = Term.succeed({
+    output: "",
+    source: "",
+    tail: "",
+    children: [],
+})
+succeeder("Hi").d*/
+
+
+

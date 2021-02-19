@@ -301,7 +301,6 @@ const Habitat = {}
 	
 	Habitat.JavaScript = (...args) => {
 		const source = String.raw(...args)
-		const lines = source.split("\n")
 		const code = `return ${source}`
 		const func = new Function(code)()
 		return func
@@ -363,12 +362,14 @@ Habitat.install = (global) => {
 	if (!Habitat.JavaScript.installed) Habitat.JavaScript.install(global)
 	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
 	if (!Habitat.Math.installed)       Habitat.Math.install(global)
+	if (!Habitat.MotherTode.installed) Habitat.MotherTode.install(global)
 	if (!Habitat.Mouse.installed)      Habitat.Mouse.install(global)
 	if (!Habitat.Number.installed)     Habitat.Number.install(global)
 	if (!Habitat.Object.installed)     Habitat.Object.install(global)
 	if (!Habitat.Property.installed)   Habitat.Property.install(global)
 	if (!Habitat.Random.installed)     Habitat.Random.install(global)
 	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
+	if (!Habitat.Term.installed)       Habitat.Term.install(global)
 	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
 	
@@ -410,6 +411,24 @@ Habitat.install = (global) => {
 	
 	
 	Habitat.Math = {install, gcd, reduce}
+	
+}
+
+
+//============//
+// MotherTode //
+//============//
+{
+	
+	Habitat.MotherTode = (...args) => {
+		const source = String.raw(...args)
+		return source
+	}
+	
+	Habitat.MotherTode.install = (global) => {
+		global.MotherTode = Habitat.MotherTode	
+		Habitat.MotherTode.installed = true
+	}
 	
 }
 
@@ -742,6 +761,57 @@ Habitat.install = (global) => {
 	}
 	
 }
+
+//======//
+// Term //
+//======//
+{
+	
+	const Term = {}
+	
+	Term.result = ({success, source, output = source, tail, term, children = []} = {}) => {
+		const self = (input, args=[]) => {			
+			const result = [...children]
+			result.success = success
+			result.output = output
+			result.source = source
+			result.tail = tail === undefined? input : tail
+			result.term = term
+			
+			result.input = input
+			result.args = args
+			result.toString = function() { return this.output }
+			return result
+		}
+		return self
+	}
+	
+	Term.succeed = (properties = {}) => Term.result({...properties, success: true})
+	Term.fail    = (properties = {}) => Term.result({...properties, success: false})
+	
+	Term.string = (string) => {
+		const term = (input, args=[]) => {
+			const success = input.slice(0, string.length) === string
+			if (!success) return Term.fail({term})(input, args)
+			return Term.succeed({
+				source: string,
+				tail: input.slice(string.length),
+				term,
+				children: [],
+			})(input, args)
+		}
+		term.string = string
+		return term
+	}
+	
+	Habitat.Term = Term
+	Habitat.Term.install = (global) => {
+		global.Term = Habitat.Term	
+		Habitat.Term.installed = true
+	}
+	
+}
+
 
 //=======//
 // Touch //
