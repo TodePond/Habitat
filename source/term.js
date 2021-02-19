@@ -61,6 +61,45 @@
 		return term
 	}
 	
+	// Written non-recusively for performance reasons
+	Term.list = (terms) => {
+		const self = (input, args = []) => {
+			
+			const state = {
+				input,
+				i: 0,
+			}
+			
+			const results = []
+			
+			while (state.i < terms.length) {
+				const term = terms[state.i]
+				const result = term(state.input, args)
+				results.push(result)
+				if (!result.success) break
+				else state.input = result.tail
+				state.i++
+			}
+			
+			const success = state.i >= terms.length
+			if (!success) return Term.fail({
+				self,
+				children: results,
+			})(input, args)
+			
+			return Term.succeed({
+				output: results.map(result => result.output).join(""),
+				source: results.map(result => result.source).join(""),
+				tail: state.input,
+				term: self,
+				children: results,
+			})(input, args)
+			
+		}
+		self.terms = terms
+		return self
+	}
+	
 	Habitat.Term = Term
 	Habitat.Term.install = (global) => {
 		global.Term = Habitat.Term	

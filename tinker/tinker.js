@@ -56,6 +56,9 @@ const succeeder = Term.succeed({
 })
 succeeder("Hi").d*/
 
-const greeting = Term.string("hello")
+const hello = Term.string("hello")
+const world = Term.string("world")
 const digit = Term.regExp(/[0-9]/)
 
+const ruGreeting = Term.list([hello, hello, hello])
+const greeting = Term.list([ruGreeting, world])
