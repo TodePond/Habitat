@@ -1,10 +1,10 @@
 // Use this file to tinker with the project
 Habitat.install(window)
-const luke = {name: "Luke", age: 27}
+/*const luke = {name: "Luke", age: 27}
 const scores = [2, 3, 5]
 
 const name = "Luke"
-const age = 27
+const age = 27*/
 
 /*const greeting = HTML `<p>Hello world!</p><p>Ribbit world!</p>`
 document.body.appendChild(greeting)
@@ -56,5 +56,6 @@ const succeeder = Term.succeed({
 })
 succeeder("Hi").d*/
 
-
+const greeting = Term.string("hello")
+const digit = Term.regExp(/[0-9]/)
 
