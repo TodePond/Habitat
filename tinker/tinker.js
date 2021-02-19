@@ -72,3 +72,8 @@ const space = Term.string(" ")
 const gap = Term.maybe(space)
 
 const greeting = Term.list([greet, gap, world])
+
+const ha = Term.string("ha")
+const laughter = Term.many(ha)
+
+const haGreeting = Term.list([laughter, gap, world])

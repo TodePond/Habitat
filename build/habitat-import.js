@@ -896,6 +896,42 @@ Habitat.install = (global) => {
 		return self
 	}
 	
+	Term.many = (term) => {
+		const self = (input, args) => {
+			
+			const state = {
+				input,
+				i: 0,
+			}
+			
+			const results = []
+			
+			while (true) {
+				const result = self.term(state.input, args)
+				results.push(result)
+				if (!result.success) break
+				state.input = result.tail
+				state.i++
+			}
+			
+			const success = results.length > 1
+			if (!success) return Term.fail({
+				term: self,
+				children: results,
+			})(input, args)
+			
+			return Term.succeed({
+				output: results.map(result => result.output).join(""),
+				source: results.map(result => result.source).join(""),
+				tail: state.input,
+				term: self,
+				children: results.slice(0, -1),
+			})(input, args)
+		}
+		self.term = term
+		return self
+	}
+	
 	Term.emit = (term, func) => {
 		const self = (input, args) => {
 			const result = self.term(input, args)
