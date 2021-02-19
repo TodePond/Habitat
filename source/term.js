@@ -27,11 +27,11 @@
 	
 	Term.string = (string) => {
 		const term = (input, args = []) => {
-			const success = input.slice(0, string.length) === string
+			const success = input.slice(0, term.string.length) === term.string
 			if (!success) return Term.fail({term})(input, args)
 			return Term.succeed({
-				source: string,
-				tail: input.slice(string.length),
+				source: term.string,
+				tail: input.slice(term.string.length),
 				term,
 				children: [],
 			})(input, args)
@@ -42,7 +42,7 @@
 	
 	Term.regExp = (regExp) => {
 		const term = (input, args = []) => {
-			const finiteRegExp = new RegExp("^" + regExp.source + "$")
+			const finiteRegExp = new RegExp("^" + term.regExp.source + "$")
 			let i = 0
 			while (i <= input.length) {
 				const snippet = input.slice(0, i)
@@ -72,8 +72,8 @@
 			
 			const results = []
 			
-			while (state.i < terms.length) {
-				const term = terms[state.i]
+			while (state.i < self.terms.length) {
+				const term = self.terms[state.i]
 				const result = term(state.input, args)
 				results.push(result)
 				if (!result.success) break
@@ -81,7 +81,7 @@
 				state.i++
 			}
 			
-			const success = state.i >= terms.length
+			const success = state.i >= self.terms.length
 			if (!success) return Term.fail({
 				self,
 				children: results,
@@ -97,6 +97,17 @@
 			
 		}
 		self.terms = terms
+		return self
+	}
+	
+	Term.emit = (term, func) => {
+		const self = (input, args = []) => {
+			const result = self.term(input, args)
+			if (result.success) result.output = self.func(result)
+			return result
+		}
+		self.term = term
+		self.func = func
 		return self
 	}
 	

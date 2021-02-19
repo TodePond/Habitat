@@ -62,3 +62,5 @@ const digit = Term.regExp(/[0-9]/)
 
 const ruGreeting = Term.list([hello, hello, hello])
 const greeting = Term.list([ruGreeting, world])
+
+const ribbit = Term.emit(greeting, ([[h1, h2], w]) => h2.output)
