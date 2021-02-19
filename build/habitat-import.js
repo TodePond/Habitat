@@ -770,7 +770,7 @@ Habitat.install = (global) => {
 	const Term = {}
 	
 	Term.result = ({success, source, output = source, tail, term, children = []} = {}) => {
-		const self = (input, args = []) => {			
+		const self = (input, args) => {			
 			const result = [...children]
 			result.success = success
 			result.output = output
@@ -790,7 +790,7 @@ Habitat.install = (global) => {
 	Term.fail    = (properties = {}) => Term.result({...properties, success: false})
 	
 	Term.string = (string) => {
-		const term = (input, args = []) => {
+		const term = (input, args) => {
 			const success = input.slice(0, term.string.length) === term.string
 			if (!success) return Term.fail({term})(input, args)
 			return Term.succeed({
@@ -805,7 +805,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.regExp = (regExp) => {
-		const term = (input, args = []) => {
+		const term = (input, args) => {
 			const finiteRegExp = new RegExp("^" + term.regExp.source + "$")
 			let i = 0
 			while (i <= input.length) {
@@ -825,9 +825,8 @@ Habitat.install = (global) => {
 		return term
 	}
 	
-	// Written non-recusively for performance reasons
 	Term.list = (terms) => {
-		const self = (input, args = []) => {
+		const self = (input, args) => {
 			
 			const state = {
 				input,
@@ -864,8 +863,41 @@ Habitat.install = (global) => {
 		return self
 	}
 	
+	Term.or = (terms) => {
+		const self = (input, args = {exceptions: []}) => {
+			
+			const state = {i: 0}
+			const {exceptions} = args
+			
+			while (state.i < self.terms.length) {
+				const term = self.terms[state.i]
+				const result = term(input, args)
+				if (result.success) return result
+				state.i++
+			}
+			
+			return Term.fail({self})(input, args)
+		}
+		self.terms = terms
+		return self
+	}
+	
+	Term.maybe = (term) => {
+		const self = (input, args) => {
+			const result = self.term(input, args)
+			if (!result.success) {
+				result.success = true
+				result.source = result.source === undefined? "": result.source
+				result.output = result.output === undefined? "": result.output
+			}
+			return result
+		}
+		self.term = term
+		return self
+	}
+	
 	Term.emit = (term, func) => {
-		const self = (input, args = []) => {
+		const self = (input, args) => {
 			const result = self.term(input, args)
 			if (result.success) result.output = self.func(result)
 			return result

@@ -61,6 +61,14 @@ const world = Term.string("world")
 const digit = Term.regExp(/[0-9]/)
 
 const ruGreeting = Term.list([hello, hello, hello])
-const greeting = Term.list([ruGreeting, world])
+const myGreeting = Term.list([ruGreeting, world])
 
-const ribbit = Term.emit(greeting, ([[h1, h2], w]) => h2.output)
+const ribbit = Term.emit(myGreeting, ([[h1, h2], w]) => h2.output)
+
+const hi = Term.string("hi")
+const greet = Term.or([hello, hi])
+
+const space = Term.string(" ")
+const gap = Term.maybe(space)
+
+const greeting = Term.list([greet, gap, world])
