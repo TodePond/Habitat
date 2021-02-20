@@ -203,7 +203,7 @@
 			
 			const errorLines = []
 			errorLines.push(`Found multiple terms:`)
-			errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
+			errorLines.push(...results.slice(0, -1).map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
 			const error = errorLines.join("\n")
 			
 			return Term.succeed({

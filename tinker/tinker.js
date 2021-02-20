@@ -55,7 +55,7 @@ const succeeder = Term.succeed({
     children: [],
 })
 succeeder("Hi").d*/
-
+/*
 const hello = Term.string("hello")
 const world = Term.string("world")
 const digit = Term.regExp(/[0-9]/)
@@ -86,3 +86,11 @@ const name = Term.error(luke, (n) => `Unrecognised name: '${n.input}'`)
 const greeting = Term.list([greet, gap, name, Term.eof])
 
 const expression = Term.error(greeting, (e) => `Unrecognised expression: '${e.input}'`)
+*/
+
+const digit = Term.regExp(/[0-9]/)
+const numberLiteral = Term.many(digit)
+const gap = Term.many(Term.regExp(/[ 	]/))
+const number = Term.or([])
+const add = Term.list([numberLiteral, Term.string("+"), number])
+number.terms = [add, numberLiteral]
