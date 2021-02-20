@@ -39,6 +39,7 @@
 				tail: input.slice(term.string.length),
 				term,
 				children: [],
+				error: `Found string '${term.string}'`
 			})(input, args)
 		}
 		term.string = string
@@ -57,12 +58,13 @@
 					tail: input.slice(snippet.length),
 					term,
 					children: [],
+					error: `Found regular expression '/${term.regExp.source}/' with '${snippet}'`
 				})(input, args)
 				i++
 			}
 			return Term.fail({
 				term,
-				error: `Expected regular expression '${term.regExp.source}' but found:\n\n${input}`,
+				error: `Expected regular expression '/${term.regExp.source}/' but found: '${input}'`,
 			})(input, args)
 		}
 		term.regExp = regExp
@@ -101,12 +103,17 @@
 				})(input, args)
 			}
 			
+			const errorLines = []
+			errorLines.push(`Found a list of ${self.terms.length} terms:`)
+			errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
+			const error = errorLines.join("\n")
 			return Term.succeed({
 				output: results.map(result => result.output).join(""),
 				source: results.map(result => result.source).join(""),
 				tail: state.input,
 				term: self,
 				children: results,
+				error,
 			})(input, args)
 			
 		}
@@ -124,7 +131,10 @@
 			while (state.i < self.terms.length) {
 				const term = self.terms[state.i]
 				const result = term(input, args)
-				if (result.success) return result
+				if (result.success) {
+					result.error = `(Choice ${state.i+1} of ${self.terms.length}) ` + result.error
+					return result
+				}
 				failures.push(result)
 				state.i++
 			}
@@ -151,6 +161,7 @@
 				result.source = result.source === undefined? "": result.source
 				result.output = result.output === undefined? "": result.output
 			}
+			result.error = `(Optional) ` + result.error
 			return result
 		}
 		self.term = term
@@ -177,12 +188,23 @@
 			
 			const success = results.length > 1
 			if (!success) {
+			
+				const errorLines = []
+				errorLines.push(`Expected multiple terms:`)
+				errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
+				const error = errorLines.join("\n")
+			
 				return Term.fail({
 					term: self,
 					children: results,
-					error: results[0].error,
+					error,
 				})(input, args)
 			}
+			
+			const errorLines = []
+			errorLines.push(`Found multiple terms:`)
+			errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
+			const error = errorLines.join("\n")
 			
 			return Term.succeed({
 				output: results.map(result => result.output).join(""),
@@ -190,6 +212,7 @@
 				tail: state.input,
 				term: self,
 				children: results.slice(0, -1),
+				error,
 			})(input, args)
 		}
 		self.term = term
@@ -232,6 +255,19 @@
 		self.term = term
 		self.func = func
 		return self
+	}
+	
+	Term.eof = (input, args) => {
+		if (input.length === 0) return Term.succeed({
+			source: "",
+			tail: "",
+			term: Term.eof,
+			error: `Found end of file`,
+		})(input, args)
+		return Term.fail({
+			term: Term.eof,
+			error: `Expected end of file`,
+		})(input, args)
 	}
 	
 	Habitat.Term = Term
