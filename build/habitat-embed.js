@@ -1076,7 +1076,7 @@ Habitat.install = (global) => {
 		return self
 	}
 	
-	Term.translate = (first, second) => {
+	Term.chain = (first, second) => {
 		const self = (input, args) => {
 			const firstResult = self.first(input, args)
 			if (!firstResult.success) {
