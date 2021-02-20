@@ -125,7 +125,7 @@
 		const self = (input, args = {exceptions: []}) => {
 			
 			const state = {i: 0}
-			const {exceptions} = args
+			const exceptions = args.exceptions === undefined? [] : args.exceptions
 			const failures = []
 			
 			const terms = self.terms.filter(t => !exceptions.includes(t))
@@ -293,6 +293,7 @@
 	Term.term = (key, object) => {
 		const self = (input, args) => {
 			const term = self.object[self.key]
+			if (term === undefined) throw new Error(`[Habitat.Term] Unrecognised term: '${self.key}'`)
 			const result = term(input, args)
 			if (result.success) {
 				result.error = `Found ${self.key}: ` + result.error

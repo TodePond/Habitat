@@ -421,8 +421,13 @@ Habitat.install = (global) => {
 {
 	Habitat.MotherTode = (...args) => {
 		const source = String.raw(...args)
-		const result = Habitat.MotherTode.scope.MotherTode.Term(source)
-		return result
+		const result = Habitat.MotherTode.scope.MotherTode.Source(source)
+		if (!result.success) {
+			throw new Error(`[MotherTode]\n\n` + result.error + `\n\n`)
+			return
+		}
+		const func = new Function("scope", "return " + result.output.d)
+		return func({})
 	}
 	
 	Habitat.MotherTode.install = (global) => {
@@ -888,7 +893,7 @@ Habitat.install = (global) => {
 		const self = (input, args = {exceptions: []}) => {
 			
 			const state = {i: 0}
-			const {exceptions} = args
+			const exceptions = args.exceptions === undefined? [] : args.exceptions
 			const failures = []
 			
 			const terms = self.terms.filter(t => !exceptions.includes(t))
@@ -1056,6 +1061,7 @@ Habitat.install = (global) => {
 	Term.term = (key, object) => {
 		const self = (input, args) => {
 			const term = self.object[self.key]
+			if (term === undefined) throw new Error(`[Habitat.Term] Unrecognised term: '${self.key}'`)
 			const result = term(input, args)
 			if (result.success) {
 				result.error = `Found ${self.key}: ` + result.error
@@ -1283,10 +1289,35 @@ Habitat.install = (global) => {
 	const scope = Habitat.MotherTode.scope.MotherTode
 	const Term = Habitat.Term
 	
+	//========//
+	// Source //
+	//========//
+	scope.Source = Term.emit(
+		Term.list([
+			Term.term("Term", scope),
+			Term.eof,
+		]),
+		([{output}]) => output,
+	)
+	
+	//======//
+	// Term //
+	//======//
 	scope.Term = Term.or([
-		Term.term("StringLiteral", scope)
+		Term.term("StringLiteral", scope),
+		Term.term("RegExpLiteral", scope),
+		Term.term("TermReference", scope),
 	])
 	
+	//========//
+	// Basics //
+	//========//
+	scope.Letter = Term.regExp(/[a-zA-Z_$]/)
+	scope.TermName = Term.many(Term.term("Letter", scope))
+	
+	//===========//
+	// Primitive //
+	//===========//
 	scope.StringLiteral = Term.emit(
 		Term.list([
 			Term.string('"'),
@@ -1294,6 +1325,20 @@ Habitat.install = (global) => {
 			Term.string('"'),
 		]),
 		([left, inner, right]) => `Term.string(\`${inner}\`)`
+	)
+	
+	scope.RegExpLiteral = Term.emit(
+		Term.list([
+			Term.string('/'),
+			Term.maybe(Term.many(Term.regExp(/[^/]/))),
+			Term.string('/'),
+		]),
+		([left, inner, right]) => `Term.regExp(/${inner}/)`
+	)
+	
+	scope.TermReference = Term.emit(
+		Term.term("TermName", scope),
+		(name) => `Term.term(\`${name}\`, scope)`
 	)
 	
 }

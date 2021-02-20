@@ -105,3 +105,7 @@ const language = Term.list([number, Term.eof])
 const strip = Term.emit(Term.many(anything), (a) => a.output.trim())
 const stripLanguage = Term.translate(strip, language)
 */
+
+const hello = MotherTode `"Hello"`
+const letter = MotherTode `/[a-zA-Z]/`
+const name = MotherTode `Name`
