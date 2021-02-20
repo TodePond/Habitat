@@ -71,7 +71,6 @@ const greet = Term.or([hello, hi])
 const space = Term.string(" ")
 const gap = Term.maybe(space)
 
-const greeting = Term.list([greet, gap, world])
 
 const ha = Term.string("ha")
 const laughter = Term.many(ha)
@@ -79,3 +78,11 @@ const laughter = Term.many(ha)
 const haGreeting = Term.list([laughter, gap, world])
 
 const three = Term.check(digit, (d) => d.output === "3")
+
+const luke = Term.string("Luke")
+const name = Term.error(luke, (n) => `Unrecognised name: '${n.input}'`)
+
+
+const greeting = Term.list([greet, gap, name])
+
+const expression = Term.error(greeting, (e) => `Unrecognised expression: '${e.input}'`)

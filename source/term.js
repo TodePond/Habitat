@@ -5,7 +5,7 @@
 	
 	const Term = {}
 	
-	Term.result = ({success, source, output = source, tail, term, children = []} = {}) => {
+	Term.result = ({success, source, output = source, tail, term, error, children = []} = {}) => {
 		const self = (input, args) => {			
 			const result = [...children]
 			result.success = success
@@ -13,6 +13,7 @@
 			result.source = source
 			result.tail = tail === undefined? input : tail
 			result.term = term
+			result.error = error
 			
 			result.input = input
 			result.args = args
@@ -84,6 +85,7 @@
 			if (!success) return Term.fail({
 				self,
 				children: results,
+				error: results.map(result => result.error).filter(error => error !== undefined)
 			})(input, args)
 			
 			return Term.succeed({
@@ -104,15 +106,20 @@
 			
 			const state = {i: 0}
 			const {exceptions} = args
+			const failures = []
 			
 			while (state.i < self.terms.length) {
 				const term = self.terms[state.i]
 				const result = term(input, args)
 				if (result.success) return result
+				failures.push(result)
 				state.i++
 			}
 			
-			return Term.fail({self})(input, args)
+			return Term.fail({
+				term: self,
+				error: failures.map(f => f.error).filter(e => e !== undefined),
+			})(input, args)
 		}
 		self.terms = terms
 		return self
@@ -154,6 +161,7 @@
 			if (!success) return Term.fail({
 				term: self,
 				children: results,
+				error: results.map(result => result.error).filter(error => error !== undefined)
 			})(input, args)
 			
 			return Term.succeed({
@@ -172,6 +180,20 @@
 		const self = (input, args) => {
 			const result = self.term(input, args)
 			if (result.success) result.output = self.func(result)
+			return result
+		}
+		self.term = term
+		self.func = func
+		return self
+	}
+	
+	Term.error = (term, func) => {
+		const self = (input, args) => {
+			const result = self.term(input, args)
+			if (!result.success) {
+				if (result.error === undefined) result.error = []
+				result.error.push(self.func(result))
+			}
 			return result
 		}
 		self.term = term
