@@ -1042,14 +1042,15 @@ Habitat.install = (global) => {
 	}
 	
 	Term.except = (term, exceptions) => {
-		const self = (input, oldArgs = {exceptions: []}) => {
-			const oldExceptions = oldArgs.exceptions
-			const newExceptions = [...oldExceptions, ...self.exceptions]
-			const newArgs = {...oldArgs, exceptions: newExceptions}
-			return self.term(input, newArgs)
-		}
+		const self = (input, args = {exceptions: []}) => self.term(input, {...args, exceptions: [...args.exceptions, ...self.exceptions]})
 		self.term = term
 		self.exceptions = exceptions
+		return self
+	}
+	
+	Term.any = (term) => {
+		const self = (input, args = {exceptions: []}) => self.term(input, {...args, exceptions: []})
+		self.term = term
 		return self
 	}
 	
