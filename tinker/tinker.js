@@ -94,3 +94,6 @@ const gap = Term.many(Term.regExp(/[ 	]/))
 const number = Term.or([])
 const add = Term.list([numberLiteral, Term.string("+"), number])
 number.terms = [add, numberLiteral]
+
+const expression = Term.or([number])
+const language = Term.list([number, Term.eof])
