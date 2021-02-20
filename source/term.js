@@ -32,14 +32,14 @@
 			const success = snippet === term.string
 			if (!success) return Term.fail({
 				term,
-				error: `Expected string '${term.string}' but found: '${snippet}'`,
+				error: `Expected '${term.string}' but found: '${snippet}'`,
 			})(input, args)
 			return Term.succeed({
 				source: term.string,
 				tail: input.slice(term.string.length),
 				term,
 				children: [],
-				error: `Found string '${term.string}'`
+				error: `Found '${term.string}'`
 			})(input, args)
 		}
 		term.string = string
@@ -58,13 +58,13 @@
 					tail: input.slice(snippet.length),
 					term,
 					children: [],
-					error: `Found regular expression '/${term.regExp.source}/' with '${snippet}'`
+					error: `Found /${term.regExp.source}/ with '${snippet}'`
 				})(input, args)
 				i++
 			}
 			return Term.fail({
 				term,
-				error: `Expected regular expression '/${term.regExp.source}/' but found: '${input}'`,
+				error: `Expected /${term.regExp.source}/ but found: '${input}'`,
 			})(input, args)
 		}
 		term.regExp = regExp
@@ -93,7 +93,7 @@
 			const success = state.i >= self.terms.length
 			if (!success) {
 				const errorLines = []
-				errorLines.push(`Expected a list of ${self.terms.length} terms:`)
+				errorLines.push(`Expected ${self.terms.length} terms:`)
 				errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
 				const error = errorLines.join("\n")
 				return Term.fail({
@@ -104,7 +104,7 @@
 			}
 			
 			const errorLines = []
-			errorLines.push(`Found a list of ${self.terms.length} terms:`)
+			errorLines.push(`Found ${self.terms.length} terms:`)
 			errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
 			const error = errorLines.join("\n")
 			return Term.succeed({
@@ -128,11 +128,18 @@
 			const {exceptions} = args
 			const failures = []
 			
-			while (state.i < self.terms.length) {
-				const term = self.terms[state.i]
+			const terms = self.terms.filter(t => !exceptions.includes(t))
+			
+			while (state.i < terms.length) {
+				const term = terms[state.i]
 				const result = term(input, args)
 				if (result.success) {
-					result.error = `(Choice ${state.i+1} of ${self.terms.length}) ` + result.error
+					const errorLines = []
+					/*errorLines.push(`Found choice ${state.i+1} of ${terms.length}:`)
+					errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
+					const error = errorLines.join("\n")
+					result.error = error + `\n${state.i+1}.	` + result.error*/
+					result.error = `Choice ${state.i+1} of ${terms.length}: ` + result.error
 					return result
 				}
 				failures.push(result)
@@ -140,7 +147,7 @@
 			}
 			
 			const errorLines = []
-			errorLines.push(`Expected one of ${self.terms.length} choices:`)
+			errorLines.push(`Expected one of ${terms.length} choices:`)
 			errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
 			const error = errorLines.join("\n")
 			
@@ -266,8 +273,20 @@
 		})(input, args)
 		return Term.fail({
 			term: Term.eof,
-			error: `Expected end of file`,
+			error: `Expected end of file but got '${input}'`,
 		})(input, args)
+	}
+	
+	Term.except = (term, exceptions) => {
+		const self = (input, oldArgs = {exceptions: []}) => {
+			const oldExceptions = oldArgs.exceptions
+			const newExceptions = [...oldExceptions, ...self.exceptions]
+			const newArgs = {...oldArgs, exceptions: newExceptions}
+			return self.term(input, newArgs)
+		}
+		self.term = term
+		self.exceptions = exceptions
+		return self
 	}
 	
 	Habitat.Term = Term

@@ -67,6 +67,7 @@ const ribbit = Term.emit(myGreeting, ([[h1, h2], w]) => h2.output)
 
 const hi = Term.string("hi")
 const greet = Term.or([hello, hi])
+const greetFormal = Term.except(greet, [hi])
 
 const space = Term.string(" ")
 const gap = Term.many(space)
@@ -92,8 +93,10 @@ const digit = Term.regExp(/[0-9]/)
 const numberLiteral = Term.many(digit)
 const gap = Term.many(Term.regExp(/[ 	]/))
 const number = Term.or([])
-const add = Term.list([numberLiteral, Term.string("+"), number])
+const numberExceptAdd = Term.except(number, [])
+const add = Term.list([numberExceptAdd, Term.string("+"), number])
 number.terms = [add, numberLiteral]
+numberExceptAdd.exceptions = [add]
 
 const expression = Term.or([number])
 const language = Term.list([number, Term.eof])
