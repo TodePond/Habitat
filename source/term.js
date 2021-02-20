@@ -135,11 +135,11 @@
 				const result = term(input, args)
 				if (result.success) {
 					const errorLines = []
-					/*errorLines.push(`Found choice ${state.i+1} of ${terms.length}:`)
+					errorLines.push(`Found choice ${state.i+1} of ${terms.length}:`)
 					errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
 					const error = errorLines.join("\n")
-					result.error = error + `\n${state.i+1}.	` + result.error*/
-					result.error = `Choice ${state.i+1} of ${terms.length}: ` + result.error
+					result.error = error + `\n${state.i+1}.	` + result.error
+					//result.error = `Choice ${state.i+1} of ${terms.length}: ` + result.error
 					return result
 				}
 				failures.push(result)
@@ -290,21 +290,35 @@
 		return self
 	}
 	
+	const caches = new Map()
 	Term.term = (key, object) => {
+		
+		let cache = caches.get(object)
+		if (cache === undefined) {
+			cache = {}
+			caches.set(object, cache)
+		}
+		if (cache[key] !== undefined) {
+			return cache[key]
+		}
+		
 		const self = (input, args) => {
-			const term = self.object[self.key]
-			if (term === undefined) throw new Error(`[Habitat.Term] Unrecognised term: '${self.key}'`)
+			
+			const term = object[key]
+			
+			if (term === undefined) throw new Error(`[Habitat.Term] Unrecognised term: '${key}'`)
 			const result = term(input, args)
 			if (result.success) {
-				result.error = `Found ${self.key}: ` + result.error
+				result.error = `Found ${key}: ` + result.error
 			}
 			else {
-				result.error = `Expected ${self.key}: ` + result.error
+				result.error = `Expected ${key}: ` + result.error
 			}
 			return result
 		}
-		self.key = key
-		self.object = object
+		
+		cache[key] = self
+		
 		return self
 	}
 	

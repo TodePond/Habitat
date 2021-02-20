@@ -419,16 +419,24 @@ Habitat.install = (global) => {
 // MotherTode //
 //============//
 {
+
+	
+	
 	Habitat.MotherTode = (...args) => {
 		const source = String.raw(...args)
-		const result = Habitat.MotherTode.scope.MotherTode.Source(source)
+		const result = Habitat.MotherTode.scope.Source(source)
 		if (!result.success) {
 			throw new Error(`[MotherTode]\n\n` + result.error + `\n\n`)
 			return
 		}
 		const func = new Function("scope", "return " + result.output.d)
-		return func({})
+		const scope = {}
+		const finalResult = func(scope)
+		finalResult.scope = scope
+		return finalResult
 	}
+	
+	Habitat.MotherTode.scope = {}
 	
 	Habitat.MotherTode.install = (global) => {
 		global.MotherTode = Habitat.MotherTode	
@@ -903,11 +911,11 @@ Habitat.install = (global) => {
 				const result = term(input, args)
 				if (result.success) {
 					const errorLines = []
-					/*errorLines.push(`Found choice ${state.i+1} of ${terms.length}:`)
+					errorLines.push(`Found choice ${state.i+1} of ${terms.length}:`)
 					errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
 					const error = errorLines.join("\n")
-					result.error = error + `\n${state.i+1}.	` + result.error*/
-					result.error = `Choice ${state.i+1} of ${terms.length}: ` + result.error
+					result.error = error + `\n${state.i+1}.	` + result.error
+					//result.error = `Choice ${state.i+1} of ${terms.length}: ` + result.error
 					return result
 				}
 				failures.push(result)
@@ -1058,21 +1066,35 @@ Habitat.install = (global) => {
 		return self
 	}
 	
+	const caches = new Map()
 	Term.term = (key, object) => {
+		
+		let cache = caches.get(object)
+		if (cache === undefined) {
+			cache = {}
+			caches.set(object, cache)
+		}
+		if (cache[key] !== undefined) {
+			return cache[key]
+		}
+		
 		const self = (input, args) => {
-			const term = self.object[self.key]
-			if (term === undefined) throw new Error(`[Habitat.Term] Unrecognised term: '${self.key}'`)
+			
+			const term = object[key]
+			
+			if (term === undefined) throw new Error(`[Habitat.Term] Unrecognised term: '${key}'`)
 			const result = term(input, args)
 			if (result.success) {
-				result.error = `Found ${self.key}: ` + result.error
+				result.error = `Found ${key}: ` + result.error
 			}
 			else {
-				result.error = `Expected ${self.key}: ` + result.error
+				result.error = `Expected ${key}: ` + result.error
 			}
 			return result
 		}
-		self.key = key
-		self.object = object
+		
+		cache[key] = self
+		
 		return self
 	}
 	
@@ -1284,9 +1306,9 @@ Habitat.install = (global) => {
 // MotherTode //
 //============//
 {
-	Habitat.MotherTode.scope = {MotherTode: {}}
 	
-	const scope = Habitat.MotherTode.scope.MotherTode
+	// Shorthand
+	const scope = Habitat.MotherTode.scope
 	const Term = Habitat.Term
 	
 	//========//
@@ -1304,6 +1326,7 @@ Habitat.install = (global) => {
 	// Term //
 	//======//
 	scope.Term = Term.or([
+		Term.term("ListLiteral", scope),
 		Term.term("StringLiteral", scope),
 		Term.term("RegExpLiteral", scope),
 		Term.term("TermReference", scope),
@@ -1314,6 +1337,7 @@ Habitat.install = (global) => {
 	//========//
 	scope.Letter = Term.regExp(/[a-zA-Z_$]/)
 	scope.TermName = Term.many(Term.term("Letter", scope))
+	scope.Gap = Term.many(Term.regExp(/[ |	]/))
 	
 	//===========//
 	// Primitive //
@@ -1339,6 +1363,26 @@ Habitat.install = (global) => {
 	scope.TermReference = Term.emit(
 		Term.term("TermName", scope),
 		(name) => `Term.term(\`${name}\`, scope)`
+	)
+	
+	//======//
+	// List //
+	//======//
+	scope.ListLiteral = Term.emit(
+		Term.term("List", scope),
+		(list) => `Term.list([${list}])`,
+	)
+	
+	scope.List = Term.emit(
+		Term.list([
+			Term.except(Term.term("Term", scope), [Term.term("ListLiteral", scope)]),
+			Term.term("Gap", scope),
+			Term.or([
+				Term.term("List", scope),
+				Term.except(Term.term("Term", scope), [Term.term("ListLiteral", scope)]),
+			]),
+		]),
+		([left, gap, right]) => `${left}, ${right}`,
 	)
 	
 }
