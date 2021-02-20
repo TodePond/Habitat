@@ -419,17 +419,16 @@ Habitat.install = (global) => {
 // MotherTode //
 //============//
 {
-	
 	Habitat.MotherTode = (...args) => {
 		const source = String.raw(...args)
-		return source
+		const result = Habitat.MotherTode.scope.MotherTode.Term(source)
+		return result
 	}
 	
 	Habitat.MotherTode.install = (global) => {
 		global.MotherTode = Habitat.MotherTode	
 		Habitat.MotherTode.installed = true
 	}
-	
 }
 
 
@@ -1071,6 +1070,24 @@ Habitat.install = (global) => {
 		return self
 	}
 	
+	Term.translate = (first, second) => {
+		const self = (input, args) => {
+			const firstResult = self.first(input, args)
+			if (!firstResult.success) {
+				firstResult.error = `Expected translation: ` + firstResult.error
+				return firstResult
+			}
+			
+			const secondResult = self.second(firstResult.output, args)
+			secondResult.error = `Found translation: ` + firstResult.error + "\n\n" + secondResult.error
+			return secondResult
+			
+		}
+		self.first = first
+		self.second = second
+		return self
+	}
+	
 	Habitat.Term = Term
 	Habitat.Term.install = (global) => {
 		global.Term = Habitat.Term	
@@ -1256,6 +1273,31 @@ Habitat.install = (global) => {
 	Habitat.Type = {install, Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive}
 	
 }
+
+//============//
+// MotherTode //
+//============//
+{
+	Habitat.MotherTode.scope = {MotherTode: {}}
+	
+	const scope = Habitat.MotherTode.scope.MotherTode
+	const Term = Habitat.Term
+	
+	scope.Term = Term.or([
+		Term.term("StringLiteral", scope)
+	])
+	
+	scope.StringLiteral = Term.emit(
+		Term.list([
+			Term.string('"'),
+			Term.maybe(Term.many(Term.regExp(/[^"]/))),  //"
+			Term.string('"'),
+		]),
+		([left, inner, right]) => `Term.string(\`${inner}\`)`
+	)
+	
+}
+
 
 export const {sleep} = Habitat.Async
 

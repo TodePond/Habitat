@@ -88,7 +88,8 @@ const greeting = Term.list([greet, gap, name, Term.eof])
 
 const expression = Term.error(greeting, (e) => `Unrecognised expression: '${e.input}'`)
 */
-
+/*
+const anything = Term.regExp(/[^]/)
 const digit = Term.regExp(/[0-9]/)
 const numberLiteral = Term.many(digit)
 const gap = Term.many(Term.regExp(/[ 	]/))
@@ -101,4 +102,6 @@ numberExceptAdd.exceptions = [add]
 const expression = Term.or([number])
 const language = Term.list([number, Term.eof])
 
-
+const strip = Term.emit(Term.many(anything), (a) => a.output.trim())
+const stripLanguage = Term.translate(strip, language)
+*/

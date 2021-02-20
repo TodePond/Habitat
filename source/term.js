@@ -307,6 +307,24 @@
 		return self
 	}
 	
+	Term.translate = (first, second) => {
+		const self = (input, args) => {
+			const firstResult = self.first(input, args)
+			if (!firstResult.success) {
+				firstResult.error = `Expected translation: ` + firstResult.error
+				return firstResult
+			}
+			
+			const secondResult = self.second(firstResult.output, args)
+			secondResult.error = `Found translation: ` + firstResult.error + "\n\n" + secondResult.error
+			return secondResult
+			
+		}
+		self.first = first
+		self.second = second
+		return self
+	}
+	
 	Habitat.Term = Term
 	Habitat.Term.install = (global) => {
 		global.Term = Habitat.Term	
