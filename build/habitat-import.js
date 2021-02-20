@@ -769,7 +769,7 @@ Habitat.install = (global) => {
 	
 	const Term = {}
 	
-	Term.result = ({success, source, output = source, tail, term, error, children = []} = {}) => {
+	Term.result = ({success, source, output = source, tail, term, error = "", children = []} = {}) => {
 		const self = (input, args) => {			
 			const result = [...children]
 			result.success = success
@@ -792,8 +792,12 @@ Habitat.install = (global) => {
 	
 	Term.string = (string) => {
 		const term = (input, args) => {
-			const success = input.slice(0, term.string.length) === term.string
-			if (!success) return Term.fail({term})(input, args)
+			const snippet = input.slice(0, term.string.length)
+			const success = snippet === term.string
+			if (!success) return Term.fail({
+				term,
+				error: `Expected string '${term.string}' but found: '${snippet}'`,
+			})(input, args)
 			return Term.succeed({
 				source: term.string,
 				tail: input.slice(term.string.length),
@@ -820,7 +824,10 @@ Habitat.install = (global) => {
 				})(input, args)
 				i++
 			}
-			return Term.fail({term})(input, args)
+			return Term.fail({
+				term,
+				error: `Expected regular expression '${term.regExp.source}' but found:\n\n${input}`,
+			})(input, args)
 		}
 		term.regExp = regExp
 		return term
@@ -846,11 +853,17 @@ Habitat.install = (global) => {
 			}
 			
 			const success = state.i >= self.terms.length
-			if (!success) return Term.fail({
-				self,
-				children: results,
-				error: results.map(result => result.error).filter(error => error !== undefined)
-			})(input, args)
+			if (!success) {
+				const errorLines = []
+				errorLines.push(`Expected a list of ${self.terms.length} terms:`)
+				errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
+				const error = errorLines.join("\n")
+				return Term.fail({
+					self,
+					children: results,
+					error,
+				})(input, args)
+			}
 			
 			return Term.succeed({
 				output: results.map(result => result.output).join(""),
@@ -880,9 +893,14 @@ Habitat.install = (global) => {
 				state.i++
 			}
 			
+			const errorLines = []
+			errorLines.push(`Expected one of ${self.terms.length} choices:`)
+			errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
+			const error = errorLines.join("\n")
+			
 			return Term.fail({
 				term: self,
-				error: failures.map(f => f.error).filter(e => e !== undefined),
+				error,
 			})(input, args)
 		}
 		self.terms = terms
@@ -922,11 +940,13 @@ Habitat.install = (global) => {
 			}
 			
 			const success = results.length > 1
-			if (!success) return Term.fail({
-				term: self,
-				children: results,
-				error: results.map(result => result.error).filter(error => error !== undefined)
-			})(input, args)
+			if (!success) {
+				return Term.fail({
+					term: self,
+					children: results,
+					error: results[0].error,
+				})(input, args)
+			}
 			
 			return Term.succeed({
 				output: results.map(result => result.output).join(""),
@@ -954,10 +974,7 @@ Habitat.install = (global) => {
 	Term.error = (term, func) => {
 		const self = (input, args) => {
 			const result = self.term(input, args)
-			if (!result.success) {
-				if (result.error === undefined) result.error = []
-				result.error.push(self.func(result))
-			}
+			if (!result.success) result.error = self.func(result)
 			return result
 		}
 		self.term = term
