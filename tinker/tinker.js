@@ -77,3 +77,5 @@ const ha = Term.string("ha")
 const laughter = Term.many(ha)
 
 const haGreeting = Term.list([laughter, gap, world])
+
+const three = Term.check(digit, (d) => d.output === "3")

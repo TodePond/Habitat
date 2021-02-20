@@ -943,6 +943,22 @@ Habitat.install = (global) => {
 		return self
 	}
 	
+	Term.check = (term, func) => {
+		const self = (input, args) => {
+			const result = self.term(input, args)
+			if (!result.success) return result
+			const checkResult = self.func(result)
+			if (checkResult) return result
+			return Term.fail({
+				term: self.term,
+				children: result.children,
+			})(input, args)
+		}
+		self.term = term
+		self.func = func
+		return self
+	}
+	
 	Habitat.Term = Term
 	Habitat.Term.install = (global) => {
 		global.Term = Habitat.Term	
