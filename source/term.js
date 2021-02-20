@@ -290,6 +290,23 @@
 		return self
 	}
 	
+	Term.term = (key, object) => {
+		const self = (input, args) => {
+			const term = self.object[self.key]
+			const result = term(input, args)
+			if (result.success) {
+				result.error = `Found ${self.key}: ` + result.error
+			}
+			else {
+				result.error = `Expected ${self.key}: ` + result.error
+			}
+			return result
+		}
+		self.key = key
+		self.object = object
+		return self
+	}
+	
 	Habitat.Term = Term
 	Habitat.Term.install = (global) => {
 		global.Term = Habitat.Term	
