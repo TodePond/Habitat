@@ -26,11 +26,11 @@
 	// Term //
 	//======//
 	scope.Term = Term.or([
-		Term.term("LineLiteral", scope),
-		Term.term("ListLiteral", scope),
+		Term.term("HorizontalListLiteral", scope),
+		Term.term("VerticalListLiteral", scope),
 		Term.term("StringLiteral", scope),
 		Term.term("RegExpLiteral", scope),
-		Term.term("TermReference", scope),
+		//Term.term("TermReference", scope),
 	])
 	
 	//========//
@@ -43,7 +43,17 @@
 	//========//
 	// Indent //
 	//========//
-	// TODO: Indent, Unindent, NewLine
+	scope.Indent = Term.check(
+		Term.list([
+			Term.term("Gap", scope),
+			Term.string("\n"),
+			Term.term("Gap", scope),
+		]),
+		([gap, newline, indent]) => {
+			indent.args.indentSize++
+			return indent.output === ["	"].repeat(indent.args.indentSize).join("")
+		},
+	)
 	
 	//===========//
 	// Primitive //
@@ -66,45 +76,47 @@
 		([left, inner, right]) => `Term.regExp(/${inner}/)`
 	)
 	
-	scope.TermReference = Term.emit(
+	// Can't do this yet until I've made declarations
+	/*scope.TermReference = Term.emit(
 		Term.term("TermName", scope),
 		(name) => `Term.term(\`${name}\`, scope)`
-	)
+	)*/
 	
-	//======//
-	// Line //
-	//======//
-	scope.LineLiteral = Term.emit(
-		Term.term("LineInner", scope),
+	//================//
+	// HorizontalList //
+	//================//
+	scope.HorizontalListLiteral = Term.emit(
+		Term.term("HorizontalListLiteralInner", scope),
 		(line) => `Term.list([${line}])`,
 	)
 	
-	scope.LineInner = Term.emit(
+	scope.HorizontalListLiteralInner = Term.emit(
 		Term.list([
-			Term.except(Term.term("Term", scope), [Term.term("LineLiteral", scope)]),
+			Term.except(Term.term("Term", scope), [Term.term("HorizontalListLiteral", scope)]),
 			Term.term("Gap", scope),
 			Term.or([
-				Term.term("LineInner", scope),
-				Term.except(Term.term("Term", scope), [Term.term("LineLiteral", scope)]),
+				Term.term("HorizontalListLiteralInner", scope),
+				Term.except(Term.term("Term", scope), [Term.term("HorizontalListLiteral", scope)]),
 			]),
 		]),
 		([left, gap, right]) => `${left}, ${right}`,
 	)
 	
-	//======//
-	// List //
-	//======//
-	scope.ListLiteral = Term.emit(
+	//==============//
+	// VerticalList //
+	//==============//
+	scope.VerticalListLiteral = Term.emit(
 		Term.list([
 			Term.string("("),
 			Term.term("Indent", scope),
-			Term.term("List", scope),
-			Term.term("Unindent", scope),
-			Term.string(")"),
+			Term.term("VerticalListLiteralInner", scope),
+			//Term.term("Unindent", scope),
+			//Term.string(")"),
 		]),
 		(list) => `Term.list([\n${list}\n])`,
 	)
 	
+	scope.VerticalListLiteralInner = Term.string("TODO")
 	
 	
 }

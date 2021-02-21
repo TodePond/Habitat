@@ -424,14 +424,14 @@ Habitat.install = (global) => {
 	
 	Habitat.MotherTode = (...args) => {
 		const source = String.raw(...args)
-		const result = Habitat.MotherTode.scope.Source(source)
+		const result = Habitat.MotherTode.scope.Source(source, {indentSize: 0})
 		if (!result.success) {
 			throw new Error(`[MotherTode]\n\n` + result.error + `\n\n`)
 			return
 		}
 		const func = new Function("scope", "return " + result.output.d)
 		const scope = {}
-		const finalResult = func(scope)
+		const finalResult = func({scope})
 		finalResult.scope = scope
 		return finalResult
 	}
@@ -1033,6 +1033,7 @@ Habitat.install = (global) => {
 			return Term.fail({
 				term: self.term,
 				children: result.children,
+				error: `Failed check`
 			})(input, args)
 		}
 		self.term = term
@@ -1054,7 +1055,10 @@ Habitat.install = (global) => {
 	}
 	
 	Term.except = (term, exceptions) => {
-		const self = (input, args = {exceptions: []}) => self.term(input, {...args, exceptions: [...args.exceptions, ...self.exceptions]})
+		const self = (input, args = {}) => {
+			const exceptions = args.exceptions === undefined? [] : args.exceptions
+			return self.term(input, {...args, exceptions: [...exceptions, ...self.exceptions]})
+		}
 		self.term = term
 		self.exceptions = exceptions
 		return self
@@ -1330,11 +1334,11 @@ Habitat.install = (global) => {
 	// Term //
 	//======//
 	scope.Term = Term.or([
-		Term.term("LineLiteral", scope),
-		Term.term("ListLiteral", scope),
+		Term.term("HorizontalListLiteral", scope),
+		Term.term("VerticalListLiteral", scope),
 		Term.term("StringLiteral", scope),
 		Term.term("RegExpLiteral", scope),
-		Term.term("TermReference", scope),
+		//Term.term("TermReference", scope),
 	])
 	
 	//========//
@@ -1347,7 +1351,17 @@ Habitat.install = (global) => {
 	//========//
 	// Indent //
 	//========//
-	// TODO: Indent, Unindent, NewLine
+	scope.Indent = Term.check(
+		Term.list([
+			Term.term("Gap", scope),
+			Term.string("\n"),
+			Term.term("Gap", scope),
+		]),
+		([gap, newline, indent]) => {
+			indent.args.indentSize++
+			return indent.output === ["	"].repeat(indent.args.indentSize).join("")
+		},
+	)
 	
 	//===========//
 	// Primitive //
@@ -1370,45 +1384,47 @@ Habitat.install = (global) => {
 		([left, inner, right]) => `Term.regExp(/${inner}/)`
 	)
 	
-	scope.TermReference = Term.emit(
+	// Can't do this yet until I've made declarations
+	/*scope.TermReference = Term.emit(
 		Term.term("TermName", scope),
 		(name) => `Term.term(\`${name}\`, scope)`
-	)
+	)*/
 	
-	//======//
-	// Line //
-	//======//
-	scope.LineLiteral = Term.emit(
-		Term.term("LineInner", scope),
+	//================//
+	// HorizontalList //
+	//================//
+	scope.HorizontalListLiteral = Term.emit(
+		Term.term("HorizontalListLiteralInner", scope),
 		(line) => `Term.list([${line}])`,
 	)
 	
-	scope.LineInner = Term.emit(
+	scope.HorizontalListLiteralInner = Term.emit(
 		Term.list([
-			Term.except(Term.term("Term", scope), [Term.term("LineLiteral", scope)]),
+			Term.except(Term.term("Term", scope), [Term.term("HorizontalListLiteral", scope)]),
 			Term.term("Gap", scope),
 			Term.or([
-				Term.term("LineInner", scope),
-				Term.except(Term.term("Term", scope), [Term.term("LineLiteral", scope)]),
+				Term.term("HorizontalListLiteralInner", scope),
+				Term.except(Term.term("Term", scope), [Term.term("HorizontalListLiteral", scope)]),
 			]),
 		]),
 		([left, gap, right]) => `${left}, ${right}`,
 	)
 	
-	//======//
-	// List //
-	//======//
-	scope.ListLiteral = Term.emit(
+	//==============//
+	// VerticalList //
+	//==============//
+	scope.VerticalListLiteral = Term.emit(
 		Term.list([
 			Term.string("("),
 			Term.term("Indent", scope),
-			Term.term("List", scope),
-			Term.term("Unindent", scope),
-			Term.string(")"),
+			Term.term("VerticalListLiteralInner", scope),
+			//Term.term("Unindent", scope),
+			//Term.string(")"),
 		]),
 		(list) => `Term.list([\n${list}\n])`,
 	)
 	
+	scope.VerticalListLiteralInner = Term.string("TODO")
 	
 	
 }

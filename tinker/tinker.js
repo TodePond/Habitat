@@ -108,5 +108,7 @@ const stripLanguage = Term.translate(strip, language)
 
 const hello = MotherTode `"Hello"`
 const letter = MotherTode `/[a-zA-Z]/`
-const name = MotherTode `Name`
+//const name = MotherTode `Name`
 const greeting = MotherTode `"Hello" "world" "!"`
+const ribbit = MotherTode `(
+	TODO`

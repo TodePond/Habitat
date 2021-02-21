@@ -257,6 +257,7 @@
 			return Term.fail({
 				term: self.term,
 				children: result.children,
+				error: `Failed check`
 			})(input, args)
 		}
 		self.term = term
@@ -278,7 +279,10 @@
 	}
 	
 	Term.except = (term, exceptions) => {
-		const self = (input, args = {exceptions: []}) => self.term(input, {...args, exceptions: [...args.exceptions, ...self.exceptions]})
+		const self = (input, args = {}) => {
+			const exceptions = args.exceptions === undefined? [] : args.exceptions
+			return self.term(input, {...args, exceptions: [...exceptions, ...self.exceptions]})
+		}
 		self.term = term
 		self.exceptions = exceptions
 		return self
