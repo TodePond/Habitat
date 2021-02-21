@@ -910,12 +910,12 @@ Habitat.install = (global) => {
 				const term = terms[state.i]
 				const result = term(input, args)
 				if (result.success) {
-					const errorLines = []
+					/*const errorLines = []
 					errorLines.push(`Found choice ${state.i+1} of ${terms.length}:`)
 					errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
 					const error = errorLines.join("\n")
-					result.error = error + `\n${state.i+1}.	` + result.error
-					//result.error = `Choice ${state.i+1} of ${terms.length}: ` + result.error
+					result.error = error + `\n${state.i+1}.	` + result.error*/
+					result.error = `(Choice ${state.i+1} of ${terms.length}) ` + result.error
 					return result
 				}
 				failures.push(result)
@@ -1316,16 +1316,21 @@ Habitat.install = (global) => {
 	//========//
 	scope.Source = Term.emit(
 		Term.list([
-			Term.term("Term", scope),
+			Term.term("SourceInner", scope),
 			Term.eof,
 		]),
 		([{output}]) => output,
 	)
 	
+	scope.SourceInner = Term.or([
+		Term.term("Term", scope),
+	])
+	
 	//======//
 	// Term //
 	//======//
 	scope.Term = Term.or([
+		Term.term("LineLiteral", scope),
 		Term.term("ListLiteral", scope),
 		Term.term("StringLiteral", scope),
 		Term.term("RegExpLiteral", scope),
@@ -1337,7 +1342,12 @@ Habitat.install = (global) => {
 	//========//
 	scope.Letter = Term.regExp(/[a-zA-Z_$]/)
 	scope.TermName = Term.many(Term.term("Letter", scope))
-	scope.Gap = Term.many(Term.regExp(/[ |	]/))
+	scope.Gap = Term.maybe(Term.many(Term.regExp(/[ |	]/)))
+	
+	//========//
+	// Indent //
+	//========//
+	// TODO: Indent, Unindent, NewLine
 	
 	//===========//
 	// Primitive //
@@ -1366,24 +1376,40 @@ Habitat.install = (global) => {
 	)
 	
 	//======//
-	// List //
+	// Line //
 	//======//
-	scope.ListLiteral = Term.emit(
-		Term.term("List", scope),
-		(list) => `Term.list([${list}])`,
+	scope.LineLiteral = Term.emit(
+		Term.term("LineInner", scope),
+		(line) => `Term.list([${line}])`,
 	)
 	
-	scope.List = Term.emit(
+	scope.LineInner = Term.emit(
 		Term.list([
-			Term.except(Term.term("Term", scope), [Term.term("ListLiteral", scope)]),
+			Term.except(Term.term("Term", scope), [Term.term("LineLiteral", scope)]),
 			Term.term("Gap", scope),
 			Term.or([
-				Term.term("List", scope),
-				Term.except(Term.term("Term", scope), [Term.term("ListLiteral", scope)]),
+				Term.term("LineInner", scope),
+				Term.except(Term.term("Term", scope), [Term.term("LineLiteral", scope)]),
 			]),
 		]),
 		([left, gap, right]) => `${left}, ${right}`,
 	)
+	
+	//======//
+	// List //
+	//======//
+	scope.ListLiteral = Term.emit(
+		Term.list([
+			Term.string("("),
+			Term.term("Indent", scope),
+			Term.term("List", scope),
+			Term.term("Unindent", scope),
+			Term.string(")"),
+		]),
+		(list) => `Term.list([\n${list}\n])`,
+	)
+	
+	
 	
 }
 

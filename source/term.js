@@ -134,12 +134,12 @@
 				const term = terms[state.i]
 				const result = term(input, args)
 				if (result.success) {
-					const errorLines = []
+					/*const errorLines = []
 					errorLines.push(`Found choice ${state.i+1} of ${terms.length}:`)
 					errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
 					const error = errorLines.join("\n")
-					result.error = error + `\n${state.i+1}.	` + result.error
-					//result.error = `Choice ${state.i+1} of ${terms.length}: ` + result.error
+					result.error = error + `\n${state.i+1}.	` + result.error*/
+					result.error = `(Choice ${state.i+1} of ${terms.length}) ` + result.error
 					return result
 				}
 				failures.push(result)

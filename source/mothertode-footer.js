@@ -12,16 +12,21 @@
 	//========//
 	scope.Source = Term.emit(
 		Term.list([
-			Term.term("Term", scope),
+			Term.term("SourceInner", scope),
 			Term.eof,
 		]),
 		([{output}]) => output,
 	)
 	
+	scope.SourceInner = Term.or([
+		Term.term("Term", scope),
+	])
+	
 	//======//
 	// Term //
 	//======//
 	scope.Term = Term.or([
+		Term.term("LineLiteral", scope),
 		Term.term("ListLiteral", scope),
 		Term.term("StringLiteral", scope),
 		Term.term("RegExpLiteral", scope),
@@ -33,7 +38,12 @@
 	//========//
 	scope.Letter = Term.regExp(/[a-zA-Z_$]/)
 	scope.TermName = Term.many(Term.term("Letter", scope))
-	scope.Gap = Term.many(Term.regExp(/[ |	]/))
+	scope.Gap = Term.maybe(Term.many(Term.regExp(/[ |	]/)))
+	
+	//========//
+	// Indent //
+	//========//
+	// TODO: Indent, Unindent, NewLine
 	
 	//===========//
 	// Primitive //
@@ -62,23 +72,39 @@
 	)
 	
 	//======//
-	// List //
+	// Line //
 	//======//
-	scope.ListLiteral = Term.emit(
-		Term.term("List", scope),
-		(list) => `Term.list([${list}])`,
+	scope.LineLiteral = Term.emit(
+		Term.term("LineInner", scope),
+		(line) => `Term.list([${line}])`,
 	)
 	
-	scope.List = Term.emit(
+	scope.LineInner = Term.emit(
 		Term.list([
-			Term.except(Term.term("Term", scope), [Term.term("ListLiteral", scope)]),
+			Term.except(Term.term("Term", scope), [Term.term("LineLiteral", scope)]),
 			Term.term("Gap", scope),
 			Term.or([
-				Term.term("List", scope),
-				Term.except(Term.term("Term", scope), [Term.term("ListLiteral", scope)]),
+				Term.term("LineInner", scope),
+				Term.except(Term.term("Term", scope), [Term.term("LineLiteral", scope)]),
 			]),
 		]),
 		([left, gap, right]) => `${left}, ${right}`,
 	)
+	
+	//======//
+	// List //
+	//======//
+	scope.ListLiteral = Term.emit(
+		Term.list([
+			Term.string("("),
+			Term.term("Indent", scope),
+			Term.term("List", scope),
+			Term.term("Unindent", scope),
+			Term.string(")"),
+		]),
+		(list) => `Term.list([\n${list}\n])`,
+	)
+	
+	
 	
 }
