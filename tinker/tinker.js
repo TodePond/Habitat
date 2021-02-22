@@ -125,4 +125,6 @@ const ribbit2 = MotherTode `(
 	)
 )`
 
+const h_ello = MotherTode `("Hello" ("there" "yo") "hi")`
+
 

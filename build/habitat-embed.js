@@ -466,11 +466,13 @@ Habitat.install = (global) => {
 		// Term //
 		//======//
 		scope.Term = Term.or([
-			Term.term("HorizontalListLiteral", scope),
-			Term.term("VerticalListLiteral", scope),
-			Term.term("VerticalTerm", scope),
-			Term.term("StringLiteral", scope),
-			Term.term("RegExpLiteral", scope),
+			Term.term("HorizontalList", scope),
+			Term.term("VerticalGroup", scope),
+			Term.term("VerticalGroupSingle", scope),
+			Term.term("HorizontalGroup", scope),
+			Term.term("HorizontalGroupSingle", scope),
+			Term.term("String", scope),
+			Term.term("RegExp", scope),
 			//Term.term("TermReference", scope),
 		])
 		
@@ -531,7 +533,7 @@ Habitat.install = (global) => {
 		//===========//
 		// Primitive //
 		//===========//
-		scope.StringLiteral = Term.emit(
+		scope.String = Term.emit(
 			Term.list([
 				Term.string('"'),
 				Term.maybe(Term.many(Term.regExp(/[^"]/))),  //"
@@ -540,7 +542,7 @@ Habitat.install = (global) => {
 			([left, inner, right]) => `Term.string(\`${inner}\`)`
 		)
 		
-		scope.RegExpLiteral = Term.emit(
+		scope.RegExp = Term.emit(
 			Term.list([
 				Term.string('/'),
 				Term.maybe(Term.many(Term.regExp(/[^/]/))),
@@ -558,50 +560,75 @@ Habitat.install = (global) => {
 		//================//
 		// HorizontalList //
 		//================//
-		scope.HorizontalListLiteral = Term.emit(
-			Term.term("HorizontalListLiteralInner", scope),
+		scope.HorizontalList = Term.emit(
+			Term.term("HorizontalListInner", scope),
 			(line) => `Term.list([${line}])`,
 		)
 		
-		scope.HorizontalListLiteralInner = Term.emit(
+		scope.HorizontalListInner = Term.emit(
 			Term.list([
-				Term.except(Term.term("Term", scope), [Term.term("HorizontalListLiteral", scope)]),
+				Term.except(Term.term("Term", scope), [Term.term("HorizontalList", scope)]),
 				Term.term("Gap", scope),
 				Term.or([
-					Term.term("HorizontalListLiteralInner", scope),
-					Term.except(Term.term("Term", scope), [Term.term("HorizontalListLiteral", scope)]),
+					Term.term("HorizontalListInner", scope),
+					Term.except(Term.term("Term", scope), [Term.term("HorizontalList", scope)]),
 				]),
 			]),
 			([left, gap, right]) => `${left}, ${right}`,
 		)
 		
-		//==============//
-		// VerticalList //
-		//==============//
-		scope.VerticalListLiteral = Term.emit(
+		//=================//
+		// HorizontalGroup //
+		//=================//
+		scope.HorizontalGroup = Term.emit(
+			Term.list([
+				Term.string("("),
+				Term.term("Gap", scope),
+				Term.term("HorizontalListInner", scope),
+				Term.term("Gap", scope),
+				Term.string(")"),
+			]),
+			([open, gap, inner]) => `Term.list([` + inner + `])`,
+		)
+		
+		scope.HorizontalGroupSingle = Term.emit(
+			Term.list([
+				Term.string("("),
+				Term.term("Gap", scope),
+				Term.term("Term", scope),
+				Term.term("Gap", scope),
+				Term.string(")"),
+			]),
+			([open, gap, inner]) => inner.output,
+		)
+		
+		//===============//
+		// VerticalGroup //
+		//===============//
+		scope.VerticalGroup = Term.emit(
 			Term.list([
 				Term.string("("),
 				Term.term("Indent", scope),
-				Term.term("VerticalListLiteralInner", scope),
+				Term.term("VerticalGroupInner", scope),
 				Term.term("Unindent", scope),
 				Term.string(")"),
 			]),
 			([open, indent, inner]) => `Term.list([\n` + inner.output.split("\n").map(l => "	".repeat(indent.args.indentSize) + l).join("\n") + `\n])`,
 		)
 		
-		scope.VerticalListLiteralInner = Term.emit(
+		scope.VerticalGroupInner = Term.emit(
 			Term.list([
 				Term.term("Term", scope),
 				Term.term("NewLine", scope),
 				Term.or([
-					Term.term("VerticalListLiteralInner", scope),
+					Term.term("VerticalGroupInner", scope),
 					Term.term("Term", scope),
 				]),
 			]),
 			([left, gap, right]) => `${left},\n${right}`,
 		)
 		
-		scope.VerticalTerm = Term.emit(
+		scope.VerticalGroupSingle = Term.emit(
 			Term.list([
 				Term.string("("),
 				Term.term("Indent", scope),
