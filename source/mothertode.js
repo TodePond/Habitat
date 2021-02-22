@@ -42,6 +42,7 @@
 		
 		scope.SourceInner = Term.or([
 			Term.term("Term", scope),
+			//Term.term("TermLiteralInner", scope),
 		])
 		
 		//======//
@@ -50,6 +51,7 @@
 		scope.Term = Term.or([
 			Term.term("HorizontalListLiteral", scope),
 			Term.term("VerticalListLiteral", scope),
+			Term.term("VerticalTerm", scope),
 			Term.term("StringLiteral", scope),
 			Term.term("RegExpLiteral", scope),
 			//Term.term("TermReference", scope),
@@ -88,6 +90,21 @@
 				(indent) => {
 					const [gap, newline, margin] = indent
 					indent.args.indentSize--
+					return margin.output === ["	"].repeat(indent.args.indentSize).join("")
+				},
+			),
+			([gap, newline, indent]) => `UNINDENT ERROR`
+		)
+		
+		scope.NewLine = Term.error(
+			Term.check(
+				Term.list([
+					Term.term("Gap", scope),
+					Term.string("\n"),
+					Term.term("Gap", scope),
+				]),
+				(indent) => {
+					const [gap, newline, margin] = indent
 					return margin.output === ["	"].repeat(indent.args.indentSize).join("")
 				},
 			),
@@ -152,10 +169,31 @@
 				Term.term("Unindent", scope),
 				Term.string(")"),
 			]),
-			([open, indent, inner]) => `Term.list([\n` + inner + `\n])`,
+			([open, indent, inner]) => `Term.list([\n` + inner.output.split("\n").map(l => "	".repeat(indent.args.indentSize) + l).join("\n") + `\n])`,
 		)
 		
-		scope.VerticalListLiteralInner = Term.term("Term", scope)
+		scope.VerticalListLiteralInner = Term.emit(
+			Term.list([
+				Term.term("Term", scope),
+				Term.term("NewLine", scope),
+				Term.or([
+					Term.term("VerticalListLiteralInner", scope),
+					Term.term("Term", scope),
+				]),
+			]),
+			([left, gap, right]) => `${left},\n${right}`,
+		)
+		
+		scope.VerticalTerm = Term.emit(
+			Term.list([
+				Term.string("("),
+				Term.term("Indent", scope),
+				Term.term("Term", scope),
+				Term.term("Unindent", scope),
+				Term.string(")"),
+			]),
+			([open, indent, inner]) => inner.output,
+		)
 		
 		
 	}
