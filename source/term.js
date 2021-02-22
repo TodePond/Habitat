@@ -16,7 +16,7 @@
 			result.error = error
 			
 			result.input = input
-			result.args = args
+			result.args = {...args}
 			result.toString = function() { return this.output }
 			return result
 		}
@@ -27,7 +27,7 @@
 	Term.fail    = (properties = {}) => Term.result({...properties, success: false})
 	
 	Term.string = (string) => {
-		const term = (input, args) => {
+		const term = (input, args = {}) => {
 			const snippet = input.slice(0, term.string.length)
 			const success = snippet === term.string
 			if (!success) return Term.fail({
@@ -47,7 +47,7 @@
 	}
 	
 	Term.regExp = (regExp) => {
-		const term = (input, args) => {
+		const term = (input, args = {}) => {
 			const finiteRegExp = new RegExp("^" + term.regExp.source + "$")
 			let i = 0
 			while (i <= input.length) {
@@ -77,16 +77,20 @@
 			const state = {
 				input,
 				i: 0,
+				args,
 			}
 			
 			const results = []
 			
 			while (state.i < self.terms.length) {
 				const term = self.terms[state.i]
-				const result = term(state.input, args)
+				const result = term(state.input, state.args)
 				results.push(result)
 				if (!result.success) break
-				else state.input = result.tail
+				else {
+					state.input = result.tail
+					state.args = result.args
+				}
 				state.i++
 			}
 			
@@ -147,7 +151,7 @@
 			}
 			
 			const errorLines = []
-			errorLines.push(`Expected one of ${terms.length} choices:`)
+			errorLines.push(`Expected one of ${terms.length} choices`)
 			errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
 			const error = errorLines.join("\n")
 			

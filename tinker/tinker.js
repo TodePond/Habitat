@@ -111,4 +111,13 @@ const letter = MotherTode `/[a-zA-Z]/`
 //const name = MotherTode `Name`
 const greeting = MotherTode `"Hello" "world" "!"`
 const ribbit = MotherTode `(
-	TODO`
+	"Hello world!"
+)`
+
+const ribbit2 = MotherTode `(
+	(
+		"Hi"
+	)
+)`
+
+
