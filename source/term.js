@@ -5,14 +5,27 @@
 	
 	const Term = {}
 	
-	const makeLog = function() {
+	const makeLog = (result) => {
 		const errors = []
-		for (const child of this) {
-			const childDebug = child.log()
+		for (const child of result) {
+			const childDebug = makeLog(child)
 			errors.push(childDebug)
 		}
-		if (errors.length === 0) return this.error
-		return [this.error, errors] 
+		if (errors.length === 0) return result.error
+		return [result.error, errors] 
+	}
+	
+	const printTree = (value) => {
+		console.groupCollapsed(value[0])
+		printTreeValue(value[1])
+		console.groupEnd()
+	}
+	
+	const printTreeValue = (value) => {
+		for (const v of value) {
+			if (typeof v === "string") console.log(v)
+			else printTree(v)
+		}
 	}
 	
 	Term.result = ({success, source, output = source, tail, term, error = "", children = []} = {}) => {
@@ -28,7 +41,7 @@
 			result.input = input
 			result.args = {...args}
 			result.toString = function() { return this.output }
-			result.log = makeLog
+			result.log = () => printTree(makeLog(result))
 			return result
 		}
 		return self
@@ -151,7 +164,8 @@
 			
 			return Term.fail({
 				term: self,
-				error: `Expected one of ${terms.length} terms`
+				error: `Expected one of ${terms.length} terms`,
+				children: results,
 			})(input, args)
 		}
 		self.terms = terms
@@ -227,7 +241,7 @@
 	Term.error = (term, func) => {
 		const self = (input, args) => {
 			const result = self.term(input, args)
-			if (!result.success) result.error = self.func(result)
+			result.error = self.func(result)
 			return result
 		}
 		self.term = term

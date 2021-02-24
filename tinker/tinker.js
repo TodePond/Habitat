@@ -55,7 +55,7 @@ const succeeder = Term.succeed({
     children: [],
 })
 succeeder("Hi").d*/
-
+/*
 const hello = Term.string("hello")
 const world = Term.string("world")
 const digit = Term.regExp(/[0-9]/)
@@ -87,7 +87,7 @@ const name = Term.error(luke, (n) => `Unrecognised name: '${n.input}'`)
 const greeting = Term.list([greet, Term.maybe(gap), luke, Term.eof])
 
 const expression = Term.error(greeting, (e) => `Unrecognised expression: '${e.input}'`)
-
+*/
 /*
 const anything = Term.regExp(/[^]/)
 const digit = Term.regExp(/[0-9]/)
@@ -105,7 +105,7 @@ const language = Term.list([number, Term.eof])
 const strip = Term.emit(Term.many(anything), (a) => a.output.trim())
 const stripLanguage = Term.translate(strip, language)
 */
-/*
+
 const hello = MotherTode `"Hello"`
 const letter = MotherTode `/[a-zA-Z]/`
 //const name = MotherTode `Name`
@@ -125,7 +125,7 @@ const ribbit2 = MotherTode `(
 	)
 )`
 
-const h_ello = MotherTode `("Hello" ("there" "yo") "hi")`
+const h_ello = MotherTode `("Hello" ("there" "yo") "hi")`.log()
 
 MotherTode `"hi`
-*/
+

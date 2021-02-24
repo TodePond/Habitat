@@ -424,13 +424,19 @@ Habitat.install = (global) => {
 	
 	Habitat.MotherTode = (...args) => {
 		const source = String.raw(...args)
-		const result = Habitat.MotherTode.scope.Source(source, {indentSize: 0})
+		const result = Habitat.MotherTode.scope.File(source, {indentSize: 0})
 		if (!result.success) {
-			console.error(`[MotherTode]`, result.error)
-			return
+			console.error(`MotherTode Error`)
+			result.log()
+			return result
 		}
 		const func = new Function("scope", "return " + result.output.d)
 		const finalResult = func()
+		
+		for (const key in result) {
+			finalResult[key] = result[key]
+		}
+		
 		return finalResult
 	}
 	
@@ -447,15 +453,18 @@ Habitat.install = (global) => {
 		//========//
 		// Source //
 		//========//
-		scope.Source = Term.emit(
-			Term.list([
-				Term.term("SourceInner", scope),
-				Term.eof,
-			]),
-			([{output}]) => output,
+		scope.File = Term.error(
+			Term.emit(
+				Term.list([
+					Term.term("Source", scope),
+					Term.eof,
+				]),
+				([{output}]) => output,
+			),
+			(result) => result.error,
 		)
 		
-		scope.SourceInner = Term.or([
+		scope.Source = Term.or([
 			Term.term("Term", scope),
 			//Term.term("TermLiteralInner", scope),
 		])
@@ -978,14 +987,27 @@ Habitat.install = (global) => {
 	
 	const Term = {}
 	
-	const makeLog = function() {
+	const makeLog = (result) => {
 		const errors = []
-		for (const child of this) {
-			const childDebug = child.log()
+		for (const child of result) {
+			const childDebug = makeLog(child)
 			errors.push(childDebug)
 		}
-		if (errors.length === 0) return this.error
-		return [this.error, errors] 
+		if (errors.length === 0) return result.error
+		return [result.error, errors] 
+	}
+	
+	const printTree = (value) => {
+		console.groupCollapsed(value[0])
+		printTreeValue(value[1])
+		console.groupEnd()
+	}
+	
+	const printTreeValue = (value) => {
+		for (const v of value) {
+			if (typeof v === "string") console.log(v)
+			else printTree(v)
+		}
 	}
 	
 	Term.result = ({success, source, output = source, tail, term, error = "", children = []} = {}) => {
@@ -1001,7 +1023,7 @@ Habitat.install = (global) => {
 			result.input = input
 			result.args = {...args}
 			result.toString = function() { return this.output }
-			result.log = makeLog
+			result.log = () => printTree(makeLog(result))
 			return result
 		}
 		return self
@@ -1124,7 +1146,8 @@ Habitat.install = (global) => {
 			
 			return Term.fail({
 				term: self,
-				error: `Expected one of ${terms.length} terms`
+				error: `Expected one of ${terms.length} terms`,
+				children: results,
 			})(input, args)
 		}
 		self.terms = terms
@@ -1200,7 +1223,7 @@ Habitat.install = (global) => {
 	Term.error = (term, func) => {
 		const self = (input, args) => {
 			const result = self.term(input, args)
-			if (!result.success) result.error = self.func(result)
+			result.error = self.func(result)
 			return result
 		}
 		self.term = term

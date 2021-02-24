@@ -7,13 +7,19 @@
 	
 	Habitat.MotherTode = (...args) => {
 		const source = String.raw(...args)
-		const result = Habitat.MotherTode.scope.Source(source, {indentSize: 0})
+		const result = Habitat.MotherTode.scope.File(source, {indentSize: 0})
 		if (!result.success) {
-			console.error(`[MotherTode]`, result.error)
-			return
+			console.error(`MotherTode Error`)
+			result.log()
+			return result
 		}
 		const func = new Function("scope", "return " + result.output.d)
 		const finalResult = func()
+		
+		for (const key in result) {
+			finalResult[key] = result[key]
+		}
+		
 		return finalResult
 	}
 	
@@ -30,15 +36,18 @@
 		//========//
 		// Source //
 		//========//
-		scope.Source = Term.emit(
-			Term.list([
-				Term.term("SourceInner", scope),
-				Term.eof,
-			]),
-			([{output}]) => output,
+		scope.File = Term.error(
+			Term.emit(
+				Term.list([
+					Term.term("Source", scope),
+					Term.eof,
+				]),
+				([{output}]) => output,
+			),
+			(result) => result.error,
 		)
 		
-		scope.SourceInner = Term.or([
+		scope.Source = Term.or([
 			Term.term("Term", scope),
 			//Term.term("TermLiteralInner", scope),
 		])
