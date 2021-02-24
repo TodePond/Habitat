@@ -426,13 +426,11 @@ Habitat.install = (global) => {
 		const source = String.raw(...args)
 		const result = Habitat.MotherTode.scope.Source(source, {indentSize: 0})
 		if (!result.success) {
-			throw new Error(`[MotherTode]\n\n` + result.error + `\n\n`)
+			console.error(`[MotherTode]`, result.error)
 			return
 		}
 		const func = new Function("scope", "return " + result.output.d)
-		const scope = {}
-		const finalResult = func({scope})
-		finalResult.scope = scope
+		const finalResult = func()
 		return finalResult
 	}
 	
@@ -980,6 +978,16 @@ Habitat.install = (global) => {
 	
 	const Term = {}
 	
+	const makeLog = function() {
+		const errors = []
+		for (const child of this) {
+			const childDebug = child.log()
+			errors.push(childDebug)
+		}
+		if (errors.length === 0) return this.error
+		return [this.error, errors] 
+	}
+	
 	Term.result = ({success, source, output = source, tail, term, error = "", children = []} = {}) => {
 		const self = (input, args) => {			
 			const result = [...children]
@@ -993,6 +1001,7 @@ Habitat.install = (global) => {
 			result.input = input
 			result.args = {...args}
 			result.toString = function() { return this.output }
+			result.log = makeLog
 			return result
 		}
 		return self
@@ -1007,7 +1016,7 @@ Habitat.install = (global) => {
 			const success = snippet === term.string
 			if (!success) return Term.fail({
 				term,
-				error: `Expected '${term.string}' but found: '${snippet}'`,
+				error: `Expected '${term.string}' but found '${snippet}'`,
 			})(input, args)
 			return Term.succeed({
 				source: term.string,
@@ -1033,7 +1042,7 @@ Habitat.install = (global) => {
 					tail: input.slice(snippet.length),
 					term,
 					children: [],
-					error: `Found /${term.regExp.source}/ with '${snippet}'`
+					error: `Found /${term.regExp.source}/ with '${snippet}'`,
 				})(input, args)
 				i++
 			}
@@ -1071,10 +1080,7 @@ Habitat.install = (global) => {
 			
 			const success = state.i >= self.terms.length
 			if (!success) {
-				const errorLines = []
-				errorLines.push(`Expected ${self.terms.length} terms:`)
-				errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
-				const error = errorLines.join("\n")
+				const error = `Expected list of ${self.terms.length} terms`
 				return Term.fail({
 					self,
 					children: results,
@@ -1082,10 +1088,7 @@ Habitat.install = (global) => {
 				})(input, args)
 			}
 			
-			const errorLines = []
-			errorLines.push(`Found ${self.terms.length} terms:`)
-			errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
-			const error = errorLines.join("\n")
+			const error = `Found list of ${self.terms.length} terms`
 			return Term.succeed({
 				output: results.map(result => result.output).join(""),
 				source: results.map(result => result.source).join(""),
@@ -1105,34 +1108,23 @@ Habitat.install = (global) => {
 			
 			const state = {i: 0}
 			const exceptions = args.exceptions === undefined? [] : args.exceptions
-			const failures = []
+			const results = []
 			
 			const terms = self.terms.filter(t => !exceptions.includes(t))
 			
 			while (state.i < terms.length) {
 				const term = terms[state.i]
 				const result = term(input, args)
+				results.push(result)
 				if (result.success) {
-					/*const errorLines = []
-					errorLines.push(`Found choice ${state.i+1} of ${terms.length}:`)
-					errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
-					const error = errorLines.join("\n")
-					result.error = error + `\n${state.i+1}.	` + result.error*/
-					result.error = `(Choice ${state.i+1} of ${terms.length}) ` + result.error
 					return result
 				}
-				failures.push(result)
 				state.i++
 			}
 			
-			const errorLines = []
-			errorLines.push(`Expected one of ${terms.length} choices`)
-			errorLines.push(...failures.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
-			const error = errorLines.join("\n")
-			
 			return Term.fail({
 				term: self,
-				error,
+				error: `Expected one of ${terms.length} terms`
 			})(input, args)
 		}
 		self.terms = terms
@@ -1174,31 +1166,20 @@ Habitat.install = (global) => {
 			
 			const success = results.length > 1
 			if (!success) {
-			
-				const errorLines = []
-				errorLines.push(`Expected multiple terms:`)
-				errorLines.push(...results.map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
-				const error = errorLines.join("\n")
-			
 				return Term.fail({
 					term: self,
 					children: results,
-					error,
+					error: `Expected multiple terms`,
 				})(input, args)
 			}
-			
-			const errorLines = []
-			errorLines.push(`Found multiple terms:`)
-			errorLines.push(...results.slice(0, -1).map((r, i) => `${i+1}.` + r.error.split("\n").map(l => `	` + l).join("\n")))
-			const error = errorLines.join("\n")
 			
 			return Term.succeed({
 				output: results.map(result => result.output).join(""),
 				source: results.map(result => result.source).join(""),
 				tail: state.input,
 				term: self,
-				children: results.slice(0, -1),
-				error,
+				children: results,
+				error: `Found ${results.length-1} terms`,
 			})(input, args)
 		}
 		self.term = term
@@ -1236,7 +1217,7 @@ Habitat.install = (global) => {
 			return Term.fail({
 				term: self.term,
 				children: result.children,
-				error: `Failed check`
+				error: `Failed check`,
 			})(input, args)
 		}
 		self.term = term
@@ -1309,12 +1290,12 @@ Habitat.install = (global) => {
 		const self = (input, args) => {
 			const firstResult = self.first(input, args)
 			if (!firstResult.success) {
-				firstResult.error = `Expected translation: ` + firstResult.error
+				//firstResult.error = `Expected translation: ` + firstResult.error
 				return firstResult
 			}
 			
 			const secondResult = self.second(firstResult.output, args)
-			secondResult.error = `Found translation: ` + firstResult.error + "\n\n" + secondResult.error
+			//secondResult.error = `Found translation: ` + firstResult.error + "\n\n" + secondResult.error
 			return secondResult
 			
 		}

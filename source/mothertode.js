@@ -9,13 +9,11 @@
 		const source = String.raw(...args)
 		const result = Habitat.MotherTode.scope.Source(source, {indentSize: 0})
 		if (!result.success) {
-			throw new Error(`[MotherTode]\n\n` + result.error + `\n\n`)
+			console.error(`[MotherTode]`, result.error)
 			return
 		}
 		const func = new Function("scope", "return " + result.output.d)
-		const scope = {}
-		const finalResult = func({scope})
-		finalResult.scope = scope
+		const finalResult = func()
 		return finalResult
 	}
 	
