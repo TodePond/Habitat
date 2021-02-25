@@ -16,9 +16,15 @@
 	}
 	
 	const printTree = (value) => {
+		if (typeof value === "string") {
+			console.groupCollapsed(value)
+			console.groupEnd()
+			return
+		}
 		console.groupCollapsed(value[0])
 		printTreeValue(value[1])
 		console.groupEnd()
+		
 	}
 	
 	const printTreeValue = (value) => {
@@ -41,7 +47,10 @@
 			result.input = input
 			result.args = {...args}
 			result.toString = function() { return this.output }
-			result.log = () => printTree(makeLog(result))
+			result.log = () => {
+				printTree(makeLog(result))
+				return result
+			}
 			return result
 		}
 		return self

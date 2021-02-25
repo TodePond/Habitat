@@ -107,9 +107,14 @@ const stripLanguage = Term.translate(strip, language)
 */
 
 const hello = MotherTode `"Hello"`
+hello("Hello").log()
+
 const letter = MotherTode `/[a-zA-Z]/`
-//const name = MotherTode `Name`
-const greeting = MotherTode `"Hello" "world" "!"`
+letter("a").log()
+
+const greeting = MotherTode `"Hello" " " "world" "!"`
+greeting("Hello world!").log()
+
 const ribbit = MotherTode `(
 	"Hello world!"
 	"Ribbit"
@@ -118,14 +123,24 @@ const ribbit = MotherTode `(
 		"Yo"
 	)
 )`
+ribbit("Hello world!RibbitOkYo").log()
 
 const ribbit2 = MotherTode `(
 	(
 		"Hi"
 	)
 )`
+ribbit2("Hi").log()
 
-const h_ello = MotherTode `("Hello" ("there" "yo") "hi")`.log()
+const h_ello = MotherTode `("Hello" ("there" "yo") "hi")`
+h_ello("Hellothereyohi").log()
 
-MotherTode `"hi`
+const laugh = MotherTode `"ha"+`
+laugh("haha").log()
 
+const yoho = MotherTode `("yo" "ho")+`
+yoho("yohoyoho").log()
+
+const hiya = MotherTode `"hi" "ya"?`
+hiya("hi").log()
+hiya("hiya").log()

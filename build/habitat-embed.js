@@ -424,7 +424,7 @@ Habitat.install = (global) => {
 	
 	Habitat.MotherTode = (...args) => {
 		const source = String.raw(...args)
-		const result = Habitat.MotherTode.scope.File(source, {indentSize: 0})
+		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {indentSize: 0})
 		if (!result.success) {
 			console.error(`MotherTode Error`)
 			result.log()
@@ -433,8 +433,20 @@ Habitat.install = (global) => {
 		const func = new Function("scope", "return " + result.output.d)
 		const finalResult = func()
 		
-		for (const key in result) {
-			finalResult[key] = result[key]
+		finalResult.success = result.success
+		finalResult.output = result.output
+		finalResult.source = result.source
+		finalResult.tail = result.tail
+		finalResult.input = result.input
+		finalResult.args = result.args
+		finalResult.error = result.error
+		finalResult.log = () => {
+			result.log()
+			return finalResult
+		}
+		
+		for (let i = 0; i < result.length; i++) {
+			finalResult[i] = result[i]
 		}
 		
 		return finalResult
@@ -453,7 +465,7 @@ Habitat.install = (global) => {
 		//========//
 		// Source //
 		//========//
-		scope.File = Term.error(
+		scope.MotherTode = Term.error(
 			Term.emit(
 				Term.list([
 					Term.term("Source", scope),
@@ -473,11 +485,16 @@ Habitat.install = (global) => {
 		// Term //
 		//======//
 		scope.Term = Term.or([
+			
 			Term.term("HorizontalList", scope),
+			Term.term("Maybe", scope),
+			Term.term("Many", scope),
+			
 			Term.term("VerticalGroup", scope),
 			Term.term("VerticalGroupSingle", scope),
 			Term.term("HorizontalGroup", scope),
 			Term.term("HorizontalGroupSingle", scope),
+			
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
 			//Term.term("TermReference", scope),
@@ -564,6 +581,27 @@ Habitat.install = (global) => {
 			(name) => `Term.term(\`${name}\`, scope)`
 		)*/
 		
+		//===========//
+		// Operators //
+		//===========//
+		scope.Many = Term.emit(
+			Term.list([
+				Term.except(Term.term("Term", scope), [Term.term("Many", scope)]),
+				Term.term("Gap", scope),
+				Term.string("+"),
+			]),
+			([term]) => `Term.many(${term})`,
+		)
+		
+		scope.Maybe = Term.emit(
+			Term.list([
+				Term.except(Term.term("Term", scope), [Term.term("Maybe", scope)]),
+				Term.term("Gap", scope),
+				Term.string("?"),
+			]),
+			([term]) => `Term.maybe(${term})`,
+		)
+		
 		//================//
 		// HorizontalList //
 		//================//
@@ -602,7 +640,7 @@ Habitat.install = (global) => {
 			Term.list([
 				Term.string("("),
 				Term.term("Gap", scope),
-				Term.term("Term", scope),
+				Term.any(Term.term("Term", scope)),
 				Term.term("Gap", scope),
 				Term.string(")"),
 			]),
@@ -645,7 +683,6 @@ Habitat.install = (global) => {
 			]),
 			([open, indent, inner]) => inner.output,
 		)
-		
 		
 	}
 }
@@ -998,9 +1035,15 @@ Habitat.install = (global) => {
 	}
 	
 	const printTree = (value) => {
+		if (typeof value === "string") {
+			console.groupCollapsed(value)
+			console.groupEnd()
+			return
+		}
 		console.groupCollapsed(value[0])
 		printTreeValue(value[1])
 		console.groupEnd()
+		
 	}
 	
 	const printTreeValue = (value) => {
@@ -1023,7 +1066,10 @@ Habitat.install = (global) => {
 			result.input = input
 			result.args = {...args}
 			result.toString = function() { return this.output }
-			result.log = () => printTree(makeLog(result))
+			result.log = () => {
+				printTree(makeLog(result))
+				return result
+			}
 			return result
 		}
 		return self
