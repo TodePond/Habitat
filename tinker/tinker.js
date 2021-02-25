@@ -127,8 +127,9 @@ const ribbit = MotherTode `(
 	(
 		"Yo"
 	)
+	"Oh"
 )`.log()
-ribbit("Hello world!RibbitOkYo").log()
+ribbit("Hello world!RibbitOkYoOh").log()
 
 /*const ribbit2 = MotherTode `(
 	(
