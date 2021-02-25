@@ -114,7 +114,7 @@ letter("a").log()
 
 const greeting = MotherTode `"Hello" " " "world" "!"`
 greeting("Hello world!").log()
-
+/*
 const ribbit = MotherTode `(
 	"Hello world!"
 	"Ribbit"
@@ -123,14 +123,14 @@ const ribbit = MotherTode `(
 		"Yo"
 	)
 )`
-ribbit("Hello world!RibbitOkYo").log()
+ribbit("Hello world!RibbitOkYo").log()*/
 
-const ribbit2 = MotherTode `(
+/*const ribbit2 = MotherTode `(
 	(
 		"Hi"
 	)
 )`
-ribbit2("Hi").log()
+ribbit2("Hi").log()*/
 
 const h_ello = MotherTode `("Hello" ("there" "yo") "hi")`
 h_ello("Hellothereyohi").log()
@@ -144,3 +144,4 @@ yoho("yohoyoho").log()
 const hiya = MotherTode `"hi" "ya"?`
 hiya("hi").log()
 hiya("hiya").log()
+

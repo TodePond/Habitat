@@ -468,7 +468,7 @@ Habitat.install = (global) => {
 		scope.MotherTode = Term.error(
 			Term.emit(
 				Term.list([
-					Term.term("Source", scope),
+					Term.term("GroupInner", scope),
 					Term.eof,
 				]),
 				([{output}]) => output,
@@ -476,28 +476,16 @@ Habitat.install = (global) => {
 			(result) => result.error,
 		)
 		
-		scope.Source = Term.or([
-			Term.term("Term", scope),
-			//Term.term("TermLiteralInner", scope),
-		])
-		
 		//======//
 		// Term //
 		//======//
 		scope.Term = Term.or([
-			
-			Term.term("HorizontalList", scope),
+			Term.term("List", scope),
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
-			
-			Term.term("VerticalGroup", scope),
-			Term.term("VerticalGroupSingle", scope),
-			Term.term("HorizontalGroup", scope),
-			Term.term("HorizontalGroupSingle", scope),
-			
+			Term.term("Group", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
-			//Term.term("TermReference", scope),
 		])
 		
 		//========//
@@ -523,35 +511,29 @@ Habitat.install = (global) => {
 			},
 		)
 		
-		scope.Unindent = Term.error(
-			Term.check(
-				Term.list([
-					Term.term("Gap", scope),
-					Term.string("\n"),
-					Term.term("Gap", scope),
-				]),
-				(indent) => {
-					const [gap, newline, margin] = indent
-					indent.args.indentSize--
-					return margin.output === ["	"].repeat(indent.args.indentSize).join("")
-				},
-			),
-			([gap, newline, indent]) => `UNINDENT ERROR`
+		scope.Unindent = Term.check(
+			Term.list([
+				Term.term("Gap", scope),
+				Term.string("\n"),
+				Term.term("Gap", scope),
+			]),
+			(indent) => {
+				const [gap, newline, margin] = indent
+				indent.args.indentSize--
+				return margin.output === ["	"].repeat(indent.args.indentSize).join("")
+			},
 		)
 		
-		scope.NewLine = Term.error(
-			Term.check(
-				Term.list([
-					Term.term("Gap", scope),
-					Term.string("\n"),
-					Term.term("Gap", scope),
-				]),
-				(indent) => {
-					const [gap, newline, margin] = indent
-					return margin.output === ["	"].repeat(indent.args.indentSize).join("")
-				},
-			),
-			([gap, newline, indent]) => `UNINDENT ERROR`
+		scope.NewLine = Term.check(
+			Term.list([
+				Term.term("Gap", scope),
+				Term.string("\n"),
+				Term.term("Gap", scope),
+			]),
+			(indent) => {
+				const [gap, newline, margin] = indent
+				return margin.output === ["	"].repeat(indent.args.indentSize).join("")
+			},
 		)
 		
 		//===========//
@@ -575,12 +557,6 @@ Habitat.install = (global) => {
 			([left, inner, right]) => `Term.regExp(/${inner}/)`
 		)
 		
-		// Can't do this yet until I've made declarations
-		/*scope.TermReference = Term.emit(
-			Term.term("TermName", scope),
-			(name) => `Term.term(\`${name}\`, scope)`
-		)*/
-		
 		//===========//
 		// Operators //
 		//===========//
@@ -602,86 +578,43 @@ Habitat.install = (global) => {
 			([term]) => `Term.maybe(${term})`,
 		)
 		
-		//================//
-		// HorizontalList //
-		//================//
-		scope.HorizontalList = Term.emit(
-			Term.term("HorizontalListInner", scope),
+		//======//
+		// List //
+		//======//
+		scope.List = Term.emit(
+			Term.term("ListInner", scope),
 			(line) => `Term.list([${line}])`,
 		)
 		
-		scope.HorizontalListInner = Term.emit(
+		scope.ListInner = Term.emit(
 			Term.list([
-				Term.except(Term.term("Term", scope), [Term.term("HorizontalList", scope)]),
+				Term.except(Term.term("Term", scope), [Term.term("List", scope)]),
 				Term.term("Gap", scope),
 				Term.or([
-					Term.term("HorizontalListInner", scope),
-					Term.except(Term.term("Term", scope), [Term.term("HorizontalList", scope)]),
+					Term.term("ListInner", scope),
+					Term.except(Term.term("Term", scope), [Term.term("List", scope)]),
 				]),
 			]),
 			([left, gap, right]) => `${left}, ${right}`,
 		)
 		
-		//=================//
-		// HorizontalGroup //
-		//=================//
-		scope.HorizontalGroup = Term.emit(
+		//=======//
+		// Group //
+		//=======//
+		scope.Group = Term.emit(
 			Term.list([
 				Term.string("("),
 				Term.term("Gap", scope),
-				Term.term("HorizontalListInner", scope),
+				Term.any(Term.term("GroupInner", scope)),
 				Term.term("Gap", scope),
 				Term.string(")"),
 			]),
-			([open, gap, inner]) => `Term.list([` + inner + `])`,
+			([bracket, gap, inner]) => inner.output,
 		)
 		
-		scope.HorizontalGroupSingle = Term.emit(
-			Term.list([
-				Term.string("("),
-				Term.term("Gap", scope),
-				Term.any(Term.term("Term", scope)),
-				Term.term("Gap", scope),
-				Term.string(")"),
-			]),
-			([open, gap, inner]) => inner.output,
-		)
-		
-		//===============//
-		// VerticalGroup //
-		//===============//
-		scope.VerticalGroup = Term.emit(
-			Term.list([
-				Term.string("("),
-				Term.term("Indent", scope),
-				Term.term("VerticalGroupInner", scope),
-				Term.term("Unindent", scope),
-				Term.string(")"),
-			]),
-			([open, indent, inner]) => `Term.list([\n` + inner.output.split("\n").map(l => "	".repeat(indent.args.indentSize) + l).join("\n") + `\n])`,
-		)
-		
-		scope.VerticalGroupInner = Term.emit(
-			Term.list([
-				Term.term("Term", scope),
-				Term.term("NewLine", scope),
-				Term.or([
-					Term.term("VerticalGroupInner", scope),
-					Term.term("Term", scope),
-				]),
-			]),
-			([left, gap, right]) => `${left},\n${right}`,
-		)
-		
-		scope.VerticalGroupSingle = Term.emit(
-			Term.list([
-				Term.string("("),
-				Term.term("Indent", scope),
-				Term.term("Term", scope),
-				Term.term("Unindent", scope),
-				Term.string(")"),
-			]),
-			([open, indent, inner]) => inner.output,
+		scope.GroupInner = Term.emit(
+			Term.term("Term", scope),
+			(term) => term.output,
 		)
 		
 	}
