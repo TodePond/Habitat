@@ -114,7 +114,12 @@ letter("a").log()
 
 const greeting = MotherTode `"Hello" " " "world" "!"`
 greeting("Hello world!").log()
-/*
+
+const hey = MotherTode `
+	"Hey"
+`
+hey("Hey").log()
+
 const ribbit = MotherTode `(
 	"Hello world!"
 	"Ribbit"
@@ -122,8 +127,8 @@ const ribbit = MotherTode `(
 	(
 		"Yo"
 	)
-)`
-ribbit("Hello world!RibbitOkYo").log()*/
+)`.log()
+ribbit("Hello world!RibbitOkYo").log()
 
 /*const ribbit2 = MotherTode `(
 	(

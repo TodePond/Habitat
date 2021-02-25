@@ -61,11 +61,12 @@
 		
 		//======//
 		// Term //
-		//======//
+		//======//		
 		scope.Term = Term.or([
-			Term.term("List", scope),
+			Term.term("HorizontalList", scope),
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
+			
 			Term.term("Group", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
@@ -161,26 +162,6 @@
 			([term]) => `Term.maybe(${term})`,
 		)
 		
-		//======//
-		// List //
-		//======//
-		scope.List = Term.emit(
-			Term.term("ListInner", scope),
-			(line) => `Term.list([${line}])`,
-		)
-		
-		scope.ListInner = Term.emit(
-			Term.list([
-				Term.except(Term.term("Term", scope), [Term.term("List", scope)]),
-				Term.term("Gap", scope),
-				Term.or([
-					Term.term("ListInner", scope),
-					Term.except(Term.term("Term", scope), [Term.term("List", scope)]),
-				]),
-			]),
-			([left, gap, right]) => `${left}, ${right}`,
-		)
-		
 		//=======//
 		// Group //
 		//=======//
@@ -188,16 +169,72 @@
 			Term.list([
 				Term.string("("),
 				Term.term("Gap", scope),
-				Term.any(Term.term("GroupInner", scope)),
+				Term.term("GroupInner", scope),
 				Term.term("Gap", scope),
 				Term.string(")"),
 			]),
 			([bracket, gap, inner]) => inner.output,
 		)
 		
-		scope.GroupInner = Term.emit(
+		scope.GroupInner = Term.or([
+			Term.any(Term.term("Term", scope)),
+			Term.term("VerticalList", scope),
+		])
+		
+		//=================//
+		// Horizontal List //
+		//=================//
+		scope.HorizontalList = Term.emit(
+			Term.term("HorizontalListInner", scope),
+			(list) => `Term.list([${list}])`,
+		)
+		
+		scope.HorizontalListInner = Term.emit(
+			Term.list([
+				Term.except(Term.term("Term", scope), [Term.term("HorizontalList", scope)]),
+				Term.term("Gap", scope),
+				Term.or([
+					Term.term("HorizontalListInner", scope),
+					Term.except(Term.term("Term", scope), [Term.term("HorizontalList", scope)]),
+				]),
+			]),
+			([left, gap, right]) => `${left}, ${right}`,
+		)
+		
+		//===============//
+		// Vertical List //
+		//===============//
+		scope.VerticalList = Term.emit(
+			Term.list([
+				Term.term("Indent", scope),
+				Term.term("VerticalListInner", scope),
+				Term.term("Unindent", scope),
+			]),
+			([indent, inner]) => inner.output,
+		)
+		
+		scope.VerticalListInner = Term.or([
+			Term.term("VerticalListMultiple", scope),
 			Term.term("Term", scope),
-			(term) => term.output,
+		])
+		
+		scope.VerticalListMultiple = Term.emit(
+			Term.list([
+				Term.term("Term", scope),
+				Term.many(Term.term("VerticalListMultipleTail", scope)),
+			]),
+			([left, right]) => {
+				const code = `${left}${right}`.split("\n").map(line => ["	"].repeat(left.args.indentSize) + line).join("\n")
+				return `Term.list([\n${code}\n])`
+			},
+		)
+		
+		scope.VerticalListMultipleTail = Term.emit(
+			Term.list([
+				Term.term("NewLine", scope),
+				Term.term("Term", scope),
+			]),
+			([newLine, term]) => ",\n" + term.output,
 		)
 		
 	}
