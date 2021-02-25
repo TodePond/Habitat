@@ -485,6 +485,7 @@ Habitat.install = (global) => {
 			Term.term("Many", scope),
 			
 			Term.term("Group", scope),
+			Term.term("MaybeGroup", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
 		])
@@ -597,6 +598,17 @@ Habitat.install = (global) => {
 			Term.any(Term.term("Term", scope)),
 			Term.term("VerticalList", scope),
 		])
+		
+		scope.MaybeGroup = Term.emit(
+			Term.list([
+				Term.string("["),
+				Term.term("Gap", scope),
+				Term.term("GroupInner", scope),
+				Term.term("Gap", scope),
+				Term.string("]"),
+			]),
+			([bracket, gap, inner]) => `Term.maybe(${inner})`,
+		)
 		
 		//=================//
 		// Horizontal List //

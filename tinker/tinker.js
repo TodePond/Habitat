@@ -120,23 +120,23 @@ const hey = MotherTode `
 `
 hey("Hey").log()
 
-const ribbit = MotherTode `(
+const ribbit = MotherTode `
 	"Hello world!"
 	"Ribbit"
 	"Ok"
 	(
 		"Yo"
 	)
-	"Oh"
-)`.log()
-ribbit("Hello world!RibbitOkYoOh").log()
+	"Oh" "Lol"
+`.log()
+ribbit("Hello world!RibbitOkYoOhLol").log()
 
-/*const ribbit2 = MotherTode `(
+const ribbit2 = MotherTode `
 	(
 		"Hi"
 	)
-)`
-ribbit2("Hi").log()*/
+`
+ribbit2("Hi").log()
 
 const h_ello = MotherTode `("Hello" ("there" "yo") "hi")`
 h_ello("Hellothereyohi").log()
@@ -150,4 +150,8 @@ yoho("yohoyoho").log()
 const hiya = MotherTode `"hi" "ya"?`
 hiya("hi").log()
 hiya("hiya").log()
+
+const hiyaya = MotherTode `"hi" ["ya" "ya"]`
+hiyaya("hi").log()
+hiyaya("hiyaya").log()
 
