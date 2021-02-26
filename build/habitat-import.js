@@ -483,9 +483,11 @@ Habitat.install = (global) => {
 			Term.term("HorizontalList", scope),
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
+			Term.term("Any", scope),
 			
 			Term.term("Group", scope),
 			Term.term("MaybeGroup", scope),
+			Term.term("AnyGroup", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
 		])
@@ -580,6 +582,15 @@ Habitat.install = (global) => {
 			([term]) => `Term.maybe(${term})`,
 		)
 		
+		scope.Any = Term.emit(
+			Term.list([
+				Term.except(Term.term("Term", scope), [Term.term("Any", scope)]),
+				Term.term("Gap", scope),
+				Term.string("*"),
+			]),
+			([term]) => `Term.maybe(Term.many(${term}))`,
+		)
+		
 		//=======//
 		// Group //
 		//=======//
@@ -608,6 +619,17 @@ Habitat.install = (global) => {
 				Term.string("]"),
 			]),
 			([bracket, gap, inner]) => `Term.maybe(${inner})`,
+		)
+		
+		scope.AnyGroup = Term.emit(
+			Term.list([
+				Term.string("{"),
+				Term.term("Gap", scope),
+				Term.term("GroupInner", scope),
+				Term.term("Gap", scope),
+				Term.string("}"),
+			]),
+			([bracket, gap, inner]) => `Term.maybe(Term.many(${inner}))`,
 		)
 		
 		//=================//

@@ -138,14 +138,14 @@ const ribbit2 = MotherTode `
 `
 ribbit2("Hi").log()
 
-const h_ello = MotherTode `("Hello" ("there" "yo") "hi")`
+const h_ello = MotherTode `"Hello" ("there" "yo") "hi"`
 h_ello("Hellothereyohi").log()
 
 const laugh = MotherTode `"ha"+`
 laugh("haha").log()
 
 const yoho = MotherTode `("yo" "ho")+`
-yoho("yoshoyoho").log()
+yoho("yohoyoho").log()
 
 const hiya = MotherTode `"hi" "ya"?`
 hiya("hi").log()
@@ -155,3 +155,15 @@ const hiyaya = MotherTode `"hi" ["ya" "ya"]`
 hiyaya("hi").log()
 hiyaya("hiyaya").log()
 
+const hiyaa = MotherTode `"hi" "ya"*`
+hiyaa("hi").log()
+hiyaa("hiya").log()
+hiyaa("hiyaya").log()
+
+const hiyayo = MotherTode `"hi" {
+	"ya"
+	"yo"
+}`
+hiyayo("hi").log()
+hiyayo("hiyayo").log()
+hiyayo("hiyayoyayo").log()
