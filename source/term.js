@@ -5,32 +5,27 @@
 	
 	const Term = {}
 	
-	const makeLog = (result) => {
-		const errors = []
-		for (const child of result) {
-			const childDebug = makeLog(child)
-			errors.push(childDebug)
-		}
-		if (errors.length === 0) return result.error
-		return [result.error, errors] 
-	}
+	const STYLE_SUCCESS = `font-weight: bold; color: rgb(0, 128, 255)`
+	const STYLE_FAILURE = `font-weight: bold; color: rgb(255, 70, 70)`
+	const log = (result) => {
 	
-	const printTree = (value) => {
-		if (typeof value === "string") {
-			console.groupCollapsed(value)
-			console.groupEnd()
+		const style = result.success? STYLE_SUCCESS : STYLE_FAILURE
+	
+		if (result.length === 0) {
+			console.log("%c" + result.error, style)
 			return
 		}
-		console.groupCollapsed(value[0])
-		printTreeValue(value[1])
+		
+		console.groupCollapsed("%c" + result.error, style)
+		for (const child of result) log(child)
 		console.groupEnd()
 		
 	}
 	
-	const printTreeValue = (value) => {
+	const logValue = (value) => {
 		for (const v of value) {
 			if (typeof v === "string") console.log(v)
-			else printTree(v)
+			else log(v)
 		}
 	}
 	
@@ -48,7 +43,7 @@
 			result.args = {...args}
 			result.toString = function() { return this.output }
 			result.log = () => {
-				printTree(makeLog(result))
+				log(result)
 				return result
 			}
 			return result

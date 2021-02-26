@@ -145,7 +145,7 @@ const laugh = MotherTode `"ha"+`
 laugh("haha").log()
 
 const yoho = MotherTode `("yo" "ho")+`
-yoho("yohoyoho").log()
+yoho("yoshoyoho").log()
 
 const hiya = MotherTode `"hi" "ya"?`
 hiya("hi").log()
