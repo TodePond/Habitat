@@ -1,1 +1,0 @@
-export const {gcd, reduce} = Habitat.Math

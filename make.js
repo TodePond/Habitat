@@ -48,7 +48,7 @@ const readDir = async (path) => {
 		if (entry.isDirectory) await readDir(entryPath)
 		else {
 			const [name, extension] = entry.name.split(".")
-			const args = name.split("-").slice(1)
+			const args = name.split("-")
 			
 			let target = undefined
 			if (extension === "js") {
