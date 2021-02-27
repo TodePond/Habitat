@@ -224,5 +224,5 @@ scope.Divide = Term.list([
 	Term.term("Number", scope),
 ])*/
 
-const hello = MotherTode `"Hello world!"`
-MotherTode `"Hesllo world!"`
+const hello = MotherTode `"hello"`.log()
+hello("hello").log()

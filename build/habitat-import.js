@@ -424,10 +424,14 @@ Habitat.install = (global) => {
 	
 	Habitat.MotherTode = (...args) => {
 		const source = String.raw(...args)
-		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {indentSize: 0})
-		if (!result.success) return
+		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0})
+		if (!result.success) {
+			//result.log()
+			return result
+		}
 		
-		const term = result.output
+		const func = new Function("scope", "return " + result.output)
+		const term = func()		
 		term.success = result.success
 		term.output = result.output
 		term.source = result.source
@@ -436,6 +440,7 @@ Habitat.install = (global) => {
 		term.args = result.args
 		term.error = result.error
 		term.log = () => {
+			console.log(result.output)
 			result.log()
 			return term
 		}
@@ -463,25 +468,35 @@ Habitat.install = (global) => {
 		scope.MotherTode = Term.error(
 			Term.emit(
 				Term.list([
-					Term.string(`"Hello world!"`, scope),
+					Term.term("Term", scope),
 					Term.eof,
 				]),
-				(result) => {
-					if (!result.success) {
-						result.log()
-						return result[0].output
-					}
-					
-					print(result.output)
-					result.log()
-					const func = new Function("scope", "return " + result.output)
-					const term = func()
-					return term
-				},
+				([{output}]) => output,
 			),
-			(result) => {
-				return result.error
-			},
+			({error}) => error,
+		)
+		
+		//======//
+		// Term //
+		//======//
+		scope.Term = Term.or([
+			Term.term("String", scope),
+		])
+		
+		//=========//
+		// Literal //
+		//=========//
+		scope.String = Term.emit(
+			Term.list([
+				Term.string(`"`),
+				Term.maybe(
+					Term.many(
+						Term.regExp(/[^"]/) //"
+					)
+				),
+				Term.string(`"`),
+			]),
+			([left, inner]) => `Term.string(\`${inner}\`)`
 		)
 		
 	}
