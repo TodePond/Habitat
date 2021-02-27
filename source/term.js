@@ -30,7 +30,7 @@
 	}
 	
 	Term.result = ({success, source, output = source, tail, term, error = "", children = []} = {}) => {
-		const self = (input, args) => {			
+		const self = (input, args = {exceptions: []}) => {			
 			const result = [...children]
 			result.success = success
 			result.output = output
@@ -40,7 +40,7 @@
 			result.error = error
 			
 			result.input = input
-			result.args = {...args}
+			result.args = cloneArgs(args)
 			result.toString = function() { return this.output }
 			result.log = () => {
 				log(result)
@@ -55,7 +55,7 @@
 	Term.fail    = (properties = {}) => Term.result({...properties, success: false})
 	
 	Term.string = (string) => {
-		const term = (input, args = {}) => {
+		const term = (input, args = {exceptions: []}) => {
 			const snippet = input.slice(0, term.string.length)
 			const success = snippet === term.string
 			if (!success) return Term.fail({
@@ -75,7 +75,7 @@
 	}
 	
 	Term.regExp = (regExp) => {
-		const term = (input, args = {}) => {
+		const term = (input, args = {exceptions: []}) => {
 			const finiteRegExp = new RegExp("^" + term.regExp.source + "$")
 			let i = 0
 			while (i <= input.length) {
@@ -99,25 +99,30 @@
 		return term
 	}
 	
+	const cloneArgs = (args = {exceptions: []}) => {
+		const clone = {...args}
+		if (args.exceptions !== undefined) clone.exceptions = [...args.exceptions]
+		return clone
+	}
+	
 	Term.list = (terms) => {
-		const self = (input, args) => {
+		const self = (input, args = {exceptions: []}) => {
 			
 			const state = {
 				input,
 				i: 0,
-				args,
 			}
 			
 			const results = []
 			
 			while (state.i < self.terms.length) {
+				const clonedArgs = cloneArgs(args)
 				const term = self.terms[state.i]
-				const result = term(state.input, state.args)
+				const result = term(state.input, clonedArgs)
 				results.push(result)
 				if (!result.success) break
 				else {
 					state.input = result.tail
-					state.args = result.args
 				}
 				state.i++
 			}
@@ -161,7 +166,20 @@
 				const result = term(input, args)
 				results.push(result)
 				if (result.success) {
-					return result
+					const rejects = results.slice(0, -1)
+					for (const i in rejects) {
+						const reject = rejects[i]
+						reject.error = `Reject ${Number(i) + 1} of ${rejects.length}: ` + reject.error
+					}
+					rejects.error = `Rejected ${rejects.length}`
+					return Term.succeed({
+						output: result.output,
+						source: result.source,
+						tail: result.tail,
+						term: result.term,
+						error: `Found choice ${state.i + 1} of ${terms.length}: ` + result.error,
+						children: [...result, rejects]
+					})(input, args)
 				}
 				state.i++
 			}
@@ -177,7 +195,7 @@
 	}
 	
 	Term.maybe = (term) => {
-		const self = (input, args) => {
+		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			if (!result.success) {
 				result.success = true
@@ -192,7 +210,7 @@
 	}
 	
 	Term.many = (term) => {
-		const self = (input, args) => {
+		const self = (input, args = {exceptions: []}) => {
 			
 			const state = {
 				input,
@@ -232,7 +250,7 @@
 	}
 	
 	Term.emit = (term, func) => {
-		const self = (input, args) => {
+		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			if (result.success) result.output = self.func(result)
 			return result
@@ -243,7 +261,7 @@
 	}
 	
 	Term.error = (term, func) => {
-		const self = (input, args) => {
+		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.error = self.func(result)
 			return result
@@ -254,11 +272,14 @@
 	}
 	
 	Term.check = (term, func) => {
-		const self = (input, args) => {
+		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			if (!result.success) return result
 			const checkResult = self.func(result)
-			if (checkResult) return result
+			if (checkResult) {
+				result.error = `Passed check: ` + result.error
+				return result
+			}
 			return Term.fail({
 				term: self.term,
 				children: result.children,
@@ -270,7 +291,7 @@
 		return self
 	}
 	
-	Term.eof = (input, args) => {
+	Term.eof = (input, args = {exceptions: []}) => {
 		if (input.length === 0) return Term.succeed({
 			source: "",
 			tail: "",
@@ -284,7 +305,7 @@
 	}
 	
 	Term.except = (term, exceptions) => {
-		const self = (input, args = {}) => {
+		const self = (input, args = {exceptions: []}) => {
 			const exceptions = args.exceptions === undefined? [] : args.exceptions
 			return self.term(input, {...args, exceptions: [...exceptions, ...self.exceptions]})
 		}
@@ -299,11 +320,43 @@
 		return self
 	}
 	
+	const getResultKey = (name, input, args = {exceptions: []}) => {
+		const lines = []
+		lines.push(name)
+		lines.push(input)
+		for (const key in args) {
+			if (key === "exceptions") {
+				lines.push("exceptions:" + args.exceptions.map(exception => exception.id.toString()))
+				continue
+			}
+			const value = args[key]
+			if (typeof value === "number") {
+				lines.push(key + ":" + value)
+				continue
+			}
+			
+			if (typeof value === "string") {
+				lines.push(key + `:"` + value + `"`)
+				continue
+			}
+			
+			throw new Error("[Habitat.Term] Unimplemented: I don't know how to cache these arguments correctly...")
+		}
+		return lines.join("|")
+	}
+	
 	const termCaches = new Map()
+	let termCount = 0
+	Term.terms = []
+	
+	const resultCachess = []
+	Term.resetCache = () => {
+		for (const caches of resultCachess) {
+			caches.clear()
+		}
+	}
+	
 	Term.term = (key, object) => {
-		
-		// Get result from cache
-		// TODO
 		
 		// Get term from cache
 		let termCache = termCaches.get(object)
@@ -316,7 +369,18 @@
 		}
 		
 		// Create term
-		const self = (input, args) => {
+		const resultCaches = new Map()
+		resultCachess.push(resultCaches)
+		const id = termCount++
+		
+		const self = (input, args = {exceptions: []}) => {
+			
+			const resultKey = getResultKey(key, input, args)
+			const resultCache = resultCaches.get(resultKey)
+			if (resultCache !== undefined) {
+				print("Use cache for:", resultKey)
+				return resultCache
+			}
 			
 			const term = object[key]
 			
@@ -328,16 +392,30 @@
 			else {
 				result.error = `Expected ${key}: ` + result.error
 			}
+			
+			const cachedResult = Term.result({
+				success: result.success,
+				source: result.source,
+				output: result.output,
+				tail: result.tail,
+				term: result.term,
+				error: `Found cached: ` + result.error,
+				children: [...result],
+			})(input, args)
+			resultCaches.set(resultKey, cachedResult)
+			
 			return result
 		}
 		
+		self.id = id
+		Term.terms[id] = key
 		termCache[key] = self
 		
 		return self
 	}
 	
 	Term.chain = (first, second) => {
-		const self = (input, args) => {
+		const self = (input, args = {exceptions: []}) => {
 			const firstResult = self.first(input, args)
 			if (!firstResult.success) {
 				//firstResult.error = `Expected translation: ` + firstResult.error

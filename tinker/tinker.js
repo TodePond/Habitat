@@ -1,11 +1,13 @@
 // Use this file to tinker with the project
 Habitat.install(window)
-/*const luke = {name: "Luke", age: 27}
+/*const luke = {name: "Luke", age: 27, scores: [2, 3, 5]}
 const scores = [2, 3, 5]
 
 const name = "Luke"
-const age = 27*/
+const age = 27
 
+const fluke = {name: "Luke", age: 27, scores: [2, 3, 5]}
+*/
 /*const greeting = HTML `<p>Hello world!</p><p>Ribbit world!</p>`
 document.body.appendChild(greeting)
 
@@ -57,34 +59,51 @@ const succeeder = Term.succeed({
 succeeder("Hi").d*/
 /*
 const hello = Term.string("hello")
+hello("hello").log()
 const world = Term.string("world")
+world("world").log()
 const digit = Term.regExp(/[0-9]/)
+digit("27").log()
 
 const ruGreeting = Term.list([hello, hello, hello])
+ruGreeting("hellohellohello").log()
 const myGreeting = Term.list([ruGreeting, world])
+myGreeting("hellohellohelloworld").log()
 
 const ribbit = Term.emit(myGreeting, ([[h1, h2], w]) => h2.output)
+ribbit("hellohellohelloworld").log()
 
 const hi = Term.string("hi")
 const greet = Term.or([hello, hi])
+greet("hi").log()
+
 const greetFormal = Term.except(greet, [hi])
+greetFormal("hello").log()
+greetFormal("hi").log()
 
 const space = Term.string(" ")
 const gap = Term.many(space)
-
+gap("   ").log()
 
 const ha = Term.string("ha")
 const laughter = Term.many(ha)
+laughter("hahaha").log()
 
 const haGreeting = Term.list([laughter, gap, world])
+haGreeting("hahaha world").log()
 
 const three = Term.check(digit, (d) => d.output === "3")
+three("4").log()
+three("3").log()
 
 const luke = Term.string("Luke")
 const name = Term.error(luke, (n) => `Unrecognised name: '${n.input}'`)
-
+name("Luke").log()
+name("Bob").log()
 
 const greeting = Term.list([greet, Term.maybe(gap), luke, Term.eof])
+greeting("hello Luke").log()
+greeting("hi Luke").log()
 
 const expression = Term.error(greeting, (e) => `Unrecognised expression: '${e.input}'`)
 */
@@ -169,3 +188,38 @@ hiyayo("hiyayo").log()
 hiyayo("hiyayoyayo").log()
 
 const hellohi = MotherTode `<"hello" "hi">`
+
+/*
+const scope = {}
+scope.Literal = Term.many(Term.regExp(/[0-9]/))
+scope.Number = Term.or([
+	Term.term("Add", scope),
+	Term.term("Subtract", scope),
+	Term.term("Multiply", scope),
+	Term.term("Divide", scope),
+	Term.term("Literal", scope),
+])
+
+scope.Add = Term.list([
+	Term.except(Term.term("Number", scope), [Term.term("Add", scope)]),
+	Term.string("+"),
+	Term.term("Number", scope),
+])
+
+scope.Subtract = Term.list([
+	Term.except(Term.term("Number", scope), [Term.term("Subtract", scope)]),
+	Term.string("-"),
+	Term.term("Number", scope),
+])
+
+scope.Multiply = Term.list([
+	Term.except(Term.term("Number", scope), [Term.term("Multiply", scope)]),
+	Term.string("*"),
+	Term.term("Number", scope),
+])
+
+scope.Divide = Term.list([
+	Term.except(Term.term("Number", scope), [Term.term("Divide", scope)]),
+	Term.string("/"),
+	Term.term("Number", scope),
+])*/
