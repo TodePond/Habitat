@@ -51,7 +51,7 @@
 		scope.MotherTode = Term.error(
 			Term.emit(
 				Term.list([
-					Term.term("GroupInner", scope),
+					Term.term("Term", scope),
 					Term.eof,
 				]),
 				([{output}]) => output,
@@ -63,16 +63,47 @@
 		// Term //
 		//======//		
 		scope.Term = Term.or([
-			Term.term("HorizontalList", scope),
-			Term.term("Maybe", scope),
+			//Term.term("List", scope),
+			/*Term.term("Maybe", scope),
 			Term.term("Many", scope),
-			Term.term("Any", scope),
+			Term.term("Any", scope),*/
 			
-			Term.term("Group", scope),
-			Term.term("MaybeGroup", scope),
-			Term.term("AnyGroup", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
+			
+			/*Term.term("Group", scope),
+			Term.term("MaybeGroup", scope),
+			Term.term("AnyGroup", scope),
+			Term.term("OrGroup", scope),*/
+		])
+		
+		//======//
+		// List //
+		//======//
+		scope.List = Term.emit(
+			Term.term("Array", scope),
+			(array) => {
+				if (array.args.single) return `${array}`
+				else return `Term.list(${array})`
+			},
+		)
+		
+		//=======//
+		// Array //
+		//=======//
+		scope.Array = Term.or([
+			Term.term("HorizontalArray", scope),
+			Term.term("VerticalArray", scope),
+		])
+		
+		scope.HorizontalArray = Term.list([
+			Term.except(Term.term("Term", scope), [Term.term("List", scope)]),
+			Term.many(
+				Term.list([
+					Term.term("Gap", scope),
+					Term.term("Term", scope),
+				])
+			)
 		])
 		
 		//========//
@@ -147,7 +178,7 @@
 		//===========//
 		// Operators //
 		//===========//
-		scope.Many = Term.emit(
+		/*scope.Many = Term.emit(
 			Term.list([
 				Term.except(Term.term("Term", scope), [Term.term("Many", scope)]),
 				Term.term("Gap", scope),
@@ -172,12 +203,12 @@
 				Term.string("*"),
 			]),
 			([term]) => `Term.maybe(Term.many(${term}))`,
-		)
+		)*/
 		
 		//=======//
 		// Group //
 		//=======//
-		scope.Group = Term.emit(
+		/*scope.Group = Term.emit(
 			Term.list([
 				Term.string("("),
 				Term.term("Gap", scope),
@@ -189,8 +220,8 @@
 		)
 		
 		scope.GroupInner = Term.or([
-			Term.any(Term.term("Term", scope)),
-			Term.term("VerticalList", scope),
+			Term.term("Term", scope),
+			//Term.term("VerticalList", scope),
 		])
 		
 		scope.MaybeGroup = Term.emit(
@@ -215,7 +246,18 @@
 			([bracket, gap, inner]) => `Term.maybe(Term.many(${inner}))`,
 		)
 		
-		//=================//
+		scope.OrGroup = Term.emit(
+			Term.list([
+				Term.string("<"),
+				Term.term("Gap", scope),
+				Term.term("GroupInner", scope),
+				Term.term("Gap", scope),
+				Term.string(">"),
+			]),
+			([bracket, gap, inner]) => `Term.or(${inner})`,
+		)*/
+		
+		/*//=================//
 		// Horizontal List //
 		//=================//
 		scope.HorizontalList = Term.emit(
@@ -270,7 +312,7 @@
 				Term.term("Term", scope),
 			]),
 			([newLine, term]) => ",\n" + term.output,
-		)
+		)*/
 		
 	}
 }

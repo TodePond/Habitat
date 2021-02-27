@@ -468,7 +468,7 @@ Habitat.install = (global) => {
 		scope.MotherTode = Term.error(
 			Term.emit(
 				Term.list([
-					Term.term("GroupInner", scope),
+					Term.term("Term", scope),
 					Term.eof,
 				]),
 				([{output}]) => output,
@@ -480,16 +480,47 @@ Habitat.install = (global) => {
 		// Term //
 		//======//		
 		scope.Term = Term.or([
-			Term.term("HorizontalList", scope),
-			Term.term("Maybe", scope),
+			//Term.term("List", scope),
+			/*Term.term("Maybe", scope),
 			Term.term("Many", scope),
-			Term.term("Any", scope),
+			Term.term("Any", scope),*/
 			
-			Term.term("Group", scope),
-			Term.term("MaybeGroup", scope),
-			Term.term("AnyGroup", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
+			
+			/*Term.term("Group", scope),
+			Term.term("MaybeGroup", scope),
+			Term.term("AnyGroup", scope),
+			Term.term("OrGroup", scope),*/
+		])
+		
+		//======//
+		// List //
+		//======//
+		scope.List = Term.emit(
+			Term.term("Array", scope),
+			(array) => {
+				if (array.args.single) return `${array}`
+				else return `Term.list(${array})`
+			},
+		)
+		
+		//=======//
+		// Array //
+		//=======//
+		scope.Array = Term.or([
+			Term.term("HorizontalArray", scope),
+			Term.term("VerticalArray", scope),
+		])
+		
+		scope.HorizontalArray = Term.list([
+			Term.except(Term.term("Term", scope), [Term.term("List", scope)]),
+			Term.many(
+				Term.list([
+					Term.term("Gap", scope),
+					Term.term("Term", scope),
+				])
+			)
 		])
 		
 		//========//
@@ -564,7 +595,7 @@ Habitat.install = (global) => {
 		//===========//
 		// Operators //
 		//===========//
-		scope.Many = Term.emit(
+		/*scope.Many = Term.emit(
 			Term.list([
 				Term.except(Term.term("Term", scope), [Term.term("Many", scope)]),
 				Term.term("Gap", scope),
@@ -589,12 +620,12 @@ Habitat.install = (global) => {
 				Term.string("*"),
 			]),
 			([term]) => `Term.maybe(Term.many(${term}))`,
-		)
+		)*/
 		
 		//=======//
 		// Group //
 		//=======//
-		scope.Group = Term.emit(
+		/*scope.Group = Term.emit(
 			Term.list([
 				Term.string("("),
 				Term.term("Gap", scope),
@@ -606,8 +637,8 @@ Habitat.install = (global) => {
 		)
 		
 		scope.GroupInner = Term.or([
-			Term.any(Term.term("Term", scope)),
-			Term.term("VerticalList", scope),
+			Term.term("Term", scope),
+			//Term.term("VerticalList", scope),
 		])
 		
 		scope.MaybeGroup = Term.emit(
@@ -632,7 +663,18 @@ Habitat.install = (global) => {
 			([bracket, gap, inner]) => `Term.maybe(Term.many(${inner}))`,
 		)
 		
-		//=================//
+		scope.OrGroup = Term.emit(
+			Term.list([
+				Term.string("<"),
+				Term.term("Gap", scope),
+				Term.term("GroupInner", scope),
+				Term.term("Gap", scope),
+				Term.string(">"),
+			]),
+			([bracket, gap, inner]) => `Term.or(${inner})`,
+		)*/
+		
+		/*//=================//
 		// Horizontal List //
 		//=================//
 		scope.HorizontalList = Term.emit(
@@ -687,7 +729,7 @@ Habitat.install = (global) => {
 				Term.term("Term", scope),
 			]),
 			([newLine, term]) => ",\n" + term.output,
-		)
+		)*/
 		
 	}
 }
@@ -1323,18 +1365,23 @@ Habitat.install = (global) => {
 		return self
 	}
 	
-	const caches = new Map()
+	const termCaches = new Map()
 	Term.term = (key, object) => {
 		
-		let cache = caches.get(object)
-		if (cache === undefined) {
-			cache = {}
-			caches.set(object, cache)
+		// Get result from cache
+		// TODO
+		
+		// Get term from cache
+		let termCache = termCaches.get(object)
+		if (termCache === undefined) {
+			termCache = {}
+			termCaches.set(object, termCache)
 		}
-		if (cache[key] !== undefined) {
-			return cache[key]
+		if (termCache[key] !== undefined) {
+			return termCache[key]
 		}
 		
+		// Create term
 		const self = (input, args) => {
 			
 			const term = object[key]
@@ -1350,7 +1397,7 @@ Habitat.install = (global) => {
 			return result
 		}
 		
-		cache[key] = self
+		termCache[key] = self
 		
 		return self
 	}

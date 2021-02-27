@@ -299,18 +299,23 @@
 		return self
 	}
 	
-	const caches = new Map()
+	const termCaches = new Map()
 	Term.term = (key, object) => {
 		
-		let cache = caches.get(object)
-		if (cache === undefined) {
-			cache = {}
-			caches.set(object, cache)
+		// Get result from cache
+		// TODO
+		
+		// Get term from cache
+		let termCache = termCaches.get(object)
+		if (termCache === undefined) {
+			termCache = {}
+			termCaches.set(object, termCache)
 		}
-		if (cache[key] !== undefined) {
-			return cache[key]
+		if (termCache[key] !== undefined) {
+			return termCache[key]
 		}
 		
+		// Create term
 		const self = (input, args) => {
 			
 			const term = object[key]
@@ -326,7 +331,7 @@
 			return result
 		}
 		
-		cache[key] = self
+		termCache[key] = self
 		
 		return self
 	}

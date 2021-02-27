@@ -131,11 +131,11 @@ const ribbit = MotherTode `
 `.log()
 ribbit("Hello world!RibbitOkYoOhLol").log()
 
-const ribbit2 = MotherTode `
+const ribbit2 = MotherTode `(
 	(
 		"Hi"
 	)
-`
+)`
 ribbit2("Hi").log()
 
 const h_ello = MotherTode `"Hello" ("there" "yo") "hi"`
@@ -167,3 +167,5 @@ const hiyayo = MotherTode `"hi" {
 hiyayo("hi").log()
 hiyayo("hiyayo").log()
 hiyayo("hiyayoyayo").log()
+
+const hellohi = MotherTode `<"hello" "hi">`
