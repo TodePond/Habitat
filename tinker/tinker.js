@@ -124,7 +124,7 @@ const language = Term.list([number, Term.eof])
 const strip = Term.emit(Term.many(anything), (a) => a.output.trim())
 const stripLanguage = Term.translate(strip, language)
 */
-
+/*
 const hello = MotherTode `"Hello"`
 hello("Hello").log()
 
@@ -188,7 +188,7 @@ hiyayo("hiyayo").log()
 hiyayo("hiyayoyayo").log()
 
 const hellohi = MotherTode `<"hello" "hi">`
-
+*/
 /*
 const scope = {}
 scope.Literal = Term.many(Term.regExp(/[0-9]/))
@@ -223,3 +223,6 @@ scope.Divide = Term.list([
 	Term.string("/"),
 	Term.term("Number", scope),
 ])*/
+
+const hello = MotherTode `"Hello world!"`
+MotherTode `"Hesllo world!"`

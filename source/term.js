@@ -252,7 +252,7 @@
 	Term.emit = (term, func) => {
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
-			if (result.success) result.output = self.func(result)
+			result.output = self.func(result)
 			return result
 		}
 		self.term = term
