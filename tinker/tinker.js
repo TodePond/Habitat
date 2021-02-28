@@ -232,3 +232,19 @@ digit("3").log()
 
 const yohoho = MotherTode `"yo" "ho" "ho"`.log()
 yohoho("yohoho").log()
+
+const group = MotherTode `("hi" "ya")`.log()
+group("hiya").log()
+
+const groupyo = MotherTode `"hi" ("yo")`.log()
+groupyo("hiyo").log()
+
+const groupgroup = MotherTode `("hi" ("yo" "yi") "ya") ("lol")`.log()
+groupgroup("hiyoyiyalol").log()
+
+const indent = MotherTode `(
+	"hello" (
+		"there" "lol"
+	)
+)`.log()
+indent("hellotherelol").log()

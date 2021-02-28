@@ -425,6 +425,7 @@ Habitat.install = (global) => {
 	Habitat.MotherTode = (...args) => {
 		Term.resetCache()
 		const source = String.raw(...args)
+		print(source)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0})
 		if (!result.success) {
 			//result.log()
@@ -475,8 +476,70 @@ Habitat.install = (global) => {
 		
 		scope.Term = Term.or([
 			Term.term("HorizontalList", scope),
+			Term.term("Group", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
+		])
+		
+		scope.Group = Term.emit(
+			Term.list([
+				Term.string("("),
+				Term.term("GroupInner", scope),
+				Term.string(")"),
+			]),
+			([left, inner]) => `${inner}`,
+		)
+		
+		scope.GroupInner = Term.or([
+			Term.term("HorizontalGroupInner", scope),
+			Term.args(
+				Term.term("VerticalGroupInner", scope),
+				(args) => {
+					args.indentSize++
+					return args
+				}
+			)
+		])
+		
+		scope.HorizontalGroupInner = Term.emit(
+			Term.list([
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("Term", scope),
+				Term.maybe(Term.term("Gap", scope)),
+			]),
+			([left, inner]) => `${inner}`,
+		)
+		
+		scope.VerticalGroupInner = Term.emit(
+			Term.list([
+				Term.term("Indent", scope),
+				Term.term("Term", scope),
+				Term.term("Unindent", scope),
+			]),
+			([left, inner]) => `${inner}`,
+		)
+		
+		scope.Margin = Term.check(
+			Term.maybe(Term.term("Gap", scope)),
+			(gap) => `${gap}`.length === gap.args.indentSize,
+		)
+		
+		scope.Indent = Term.list([
+			Term.maybe(Term.term("Gap", scope)),
+			Term.string("\n"),
+			Term.term("Margin", scope),
+		])
+		
+		scope.Unindent = Term.list([
+			Term.maybe(Term.term("Gap", scope)),
+			Term.string("\n"),
+			Term.args(
+				Term.term("Margin", scope),
+				(args) => {
+					args.indentSize--
+					return args
+				}
+			)
 		])
 		
 		scope.String = Term.emit(
@@ -523,13 +586,13 @@ Habitat.install = (global) => {
 					])
 				),
 			]),
-			([head, tail]) => {
+			([head, tail = []]) => {
 				const tails = tail.filter(t => t.success).map(t => t[1])
 				return `${head}, ${tails.join(", ")}`
 			},
 		)
 		
-		scope.Gap = Term.many(Term.string(" "))
+		scope.Gap = Term.many(Term.regExp(/[ |	]/))
 		
 	}
 }
@@ -1125,6 +1188,16 @@ Habitat.install = (global) => {
 		return self
 	}
 	
+	Term.args = (term, func) => {
+		const self = (input, args = {exceptions: []}) => {
+			const newArgs = self.func(cloneArgs(args))
+			return self.term(input, newArgs)
+		}
+		self.term = term
+		self.func = func
+		return self
+	}
+	
 	Term.emit = (term, func) => {
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
@@ -1158,8 +1231,8 @@ Habitat.install = (global) => {
 			}
 			return Term.fail({
 				term: self.term,
-				children: result.children,
-				error: `Failed check`,
+				children: [...result],
+				error: `Failed check: ` + result.error,
 			})(input, args)
 		}
 		self.term = term
@@ -1254,7 +1327,7 @@ Habitat.install = (global) => {
 			const resultKey = getResultKey(key, input, args)
 			const resultCache = resultCaches.get(resultKey)
 			if (resultCache !== undefined) {
-				print("Use cache for:", resultKey)
+				//print("Use cache for:", resultKey)
 				return resultCache
 			}
 			

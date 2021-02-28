@@ -259,6 +259,16 @@
 		return self
 	}
 	
+	Term.args = (term, func) => {
+		const self = (input, args = {exceptions: []}) => {
+			const newArgs = self.func(cloneArgs(args))
+			return self.term(input, newArgs)
+		}
+		self.term = term
+		self.func = func
+		return self
+	}
+	
 	Term.emit = (term, func) => {
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
@@ -292,8 +302,8 @@
 			}
 			return Term.fail({
 				term: self.term,
-				children: result.children,
-				error: `Failed check`,
+				children: [...result],
+				error: `Failed check: ` + result.error,
 			})(input, args)
 		}
 		self.term = term
@@ -388,7 +398,7 @@
 			const resultKey = getResultKey(key, input, args)
 			const resultCache = resultCaches.get(resultKey)
 			if (resultCache !== undefined) {
-				print("Use cache for:", resultKey)
+				//print("Use cache for:", resultKey)
 				return resultCache
 			}
 			
