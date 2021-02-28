@@ -475,11 +475,61 @@ Habitat.install = (global) => {
 		)
 		
 		scope.Term = Term.or([
+			Term.term("Maybe", scope),
+			Term.term("Many", scope),
+			Term.term("Any", scope),
 			Term.term("HorizontalList", scope),
 			Term.term("Group", scope),
+			Term.term("MaybeGroup", scope),
+			Term.term("AnyGroup", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
 		])
+		
+		scope.Many = Term.emit(
+			Term.list([
+				Term.except(Term.term("Term", scope), [Term.term("Many", scope)]),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.string("+"),
+			]),
+			([term]) => `Term.many(${term})`,
+		)
+		
+		scope.Maybe = Term.emit(
+			Term.list([
+				Term.except(Term.term("Term", scope), [Term.term("Maybe", scope)]),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.string("?"),
+			]),
+			([term]) => `Term.maybe(${term})`,
+		)
+		
+		scope.Any = Term.emit(
+			Term.list([
+				Term.except(Term.term("Term", scope), [Term.term("Any", scope)]),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.string("*"),
+			]),
+			([term]) => `Term.maybe(Term.many(${term}))`,
+		)
+		
+		scope.MaybeGroup = Term.emit(
+			Term.list([
+				Term.string("["),
+				Term.term("GroupInner", scope),
+				Term.string("]"),
+			]),
+			([left, inner]) => `Term.maybe(${inner})`,
+		)
+		
+		scope.AnyGroup = Term.emit(
+			Term.list([
+				Term.string("{"),
+				Term.term("GroupInner", scope),
+				Term.string("}"),
+			]),
+			([left, inner]) => `Term.maybe(Term.many(${inner}))`,
+		)
 		
 		scope.Group = Term.emit(
 			Term.list([
@@ -522,6 +572,7 @@ Habitat.install = (global) => {
 			([left, inner]) => `${inner}`,
 		)
 		
+		const getMargin = (size) => [`	`].repeat(size).join("")
 		scope.Margin = Term.check(
 			Term.maybe(Term.term("Gap", scope)),
 			(gap) => `${gap}`.length === gap.args.indentSize,
@@ -591,8 +642,6 @@ Habitat.install = (global) => {
 				return `${head},\n${getMargin(head.args.indentSize)}${tails.join(",\n")}`
 			},
 		)
-		
-		const getMargin = (size) => [`	`].repeat(size).join("")
 		
 		scope.HorizontalList = Term.emit(
 			Term.except(

@@ -257,3 +257,26 @@ const inner = MotherTode `
 `
 inner("hiyoya").log()
 
+const hahaha = MotherTode `"ha"+`
+hahaha("ha").log()
+hahaha("haha").log()
+hahaha("hahaha").log()
+
+const hiya = MotherTode `"hi" "ya"?`
+hiya("hi").log()
+hiya("hiya").log()
+
+const hiyaya = MotherTode `"hi" ["ya" "ya"]`
+hiyaya("hi").log()
+hiyaya("hiyaya").log()
+
+const hiyayaya = MotherTode `"hi" "ya"*`
+hiyaya("hi").log()
+hiyaya("hiya").log()
+hiyaya("hiyaya").log()
+
+const hiyoyo = MotherTode `"hi" {"yo"}`
+hiyoyo("hi").log()
+hiyoyo("hiyo").log()
+hiyoyo("hiyoyo").log()
+
