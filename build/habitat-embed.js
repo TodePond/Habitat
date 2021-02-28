@@ -428,11 +428,11 @@ Habitat.install = (global) => {
 		print(source)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0})
 		if (!result.success) {
-			//result.log()
+			result.log()
 			return result
 		}
 		
-		const func = new Function("scope", "return " + result.output)
+		const func = new Function("scope", "return " + result.output.d)
 		const term = func()		
 		term.success = result.success
 		term.output = result.output
@@ -442,7 +442,7 @@ Habitat.install = (global) => {
 		term.args = result.args
 		term.error = result.error
 		term.log = () => {
-			console.log(result.output)
+			//console.log(result.output)
 			result.log()
 			return term
 		}
@@ -466,7 +466,7 @@ Habitat.install = (global) => {
 		scope.MotherTode = Term.error(
 			Term.emit(
 				Term.list([
-					Term.term("Term", scope),
+					Term.term("GroupInner", scope),
 					Term.eof,
 				]),
 				([{output}]) => output,
@@ -512,8 +512,11 @@ Habitat.install = (global) => {
 		
 		scope.VerticalGroupInner = Term.emit(
 			Term.list([
-				Term.term("Indent", scope),
-				Term.term("Term", scope),
+				Term.term("NewLine", scope),
+				Term.or([
+					Term.term("VerticalList", scope),
+					Term.term("Term", scope),
+				]),
 				Term.term("Unindent", scope),
 			]),
 			([left, inner]) => `${inner}`,
@@ -524,7 +527,7 @@ Habitat.install = (global) => {
 			(gap) => `${gap}`.length === gap.args.indentSize,
 		)
 		
-		scope.Indent = Term.list([
+		scope.NewLine = Term.list([
 			Term.maybe(Term.term("Gap", scope)),
 			Term.string("\n"),
 			Term.term("Margin", scope),
@@ -567,6 +570,29 @@ Habitat.install = (global) => {
 			]),
 			([left, inner]) => `Term.regExp(/${inner}/)`
 		)
+		
+		scope.VerticalList = Term.emit(
+			Term.term("VerticalArray", scope),
+			(array) => `Term.list([\n${getMargin(array.args.indentSize)}${array}\n${getMargin(array.args.indentSize-1)}])`,
+		)
+		
+		scope.VerticalArray = Term.emit(
+			Term.list([
+				Term.term("Term", scope),
+				Term.many(
+					Term.list([
+						Term.maybe(Term.term("NewLine", scope)),
+						Term.term("Term", scope),
+					])
+				),
+			]),
+			([head, tail = []]) => {
+				const tails = tail.filter(t => t.success).map(t => t[1])
+				return `${head},\n${getMargin(head.args.indentSize)}${tails.join(",\n")}`
+			},
+		)
+		
+		const getMargin = (size) => [`	`].repeat(size).join("")
 		
 		scope.HorizontalList = Term.emit(
 			Term.except(

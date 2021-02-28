@@ -224,27 +224,36 @@ scope.Divide = Term.list([
 	Term.term("Number", scope),
 ])*/
 
-const hello = MotherTode `"hello"`.log()
+const hello = MotherTode `"hello"`
 hello("hello").log()
 
-const digit = MotherTode `/[0-9]/`.log()
+const digit = MotherTode `/[0-9]/`
 digit("3").log()
 
-const yohoho = MotherTode `"yo" "ho" "ho"`.log()
+const yohoho = MotherTode `"yo" "ho" "ho"`
 yohoho("yohoho").log()
 
-const group = MotherTode `("hi" "ya")`.log()
+const group = MotherTode `("hi" "ya")`
 group("hiya").log()
 
-const groupyo = MotherTode `"hi" ("yo")`.log()
+const groupyo = MotherTode `"hi" ("yo")`
 groupyo("hiyo").log()
 
-const groupgroup = MotherTode `("hi" ("yo" "yi") "ya") ("lol")`.log()
+const groupgroup = MotherTode `("hi" ("yo" "yi") "ya") ("lol")`
 groupgroup("hiyoyiyalol").log()
 
 const indent = MotherTode `(
 	"hello" (
-		"there" "lol"
+		"there"
+		"lol"
 	)
-)`.log()
-indent("hellotherelol").log()
+	"ha"
+)`
+indent("hellotherelolha").log()
+
+const inner = MotherTode `
+	"hi"
+	"yo" "ya"
+`
+inner("hiyoya").log()
+
