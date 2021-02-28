@@ -6,6 +6,7 @@
 	
 	
 	Habitat.MotherTode = (...args) => {
+		Term.resetCache()
 		const source = String.raw(...args)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0})
 		if (!result.success) {
@@ -41,13 +42,9 @@
 		global.MotherTode = Habitat.MotherTode	
 		Habitat.MotherTode.installed = true
 		
-		// Shorthand
 		const scope = Habitat.MotherTode.scope
 		const Term = Habitat.Term
 		
-		//========//
-		// Source //
-		//========//
 		scope.MotherTode = Term.error(
 			Term.emit(
 				Term.list([
@@ -59,16 +56,12 @@
 			({error}) => error,
 		)
 		
-		//======//
-		// Term //
-		//======//
 		scope.Term = Term.or([
+			Term.term("HorizontalList", scope),
 			Term.term("String", scope),
+			Term.term("RegExp", scope),
 		])
 		
-		//=========//
-		// Literal //
-		//=========//
 		scope.String = Term.emit(
 			Term.list([
 				Term.string(`"`),
@@ -81,6 +74,45 @@
 			]),
 			([left, inner]) => `Term.string(\`${inner}\`)`
 		)
+		
+		scope.RegExp = Term.emit(
+			Term.list([
+				Term.string(`/`),
+				Term.maybe(
+					Term.many(
+						Term.regExp(/[^/]/)
+					)
+				),
+				Term.string(`/`),
+			]),
+			([left, inner]) => `Term.regExp(/${inner}/)`
+		)
+		
+		scope.HorizontalList = Term.emit(
+			Term.except(
+				Term.term("HorizontalArray", scope),
+				[Term.term("HorizontalList", scope)]
+			),
+			(array) => `Term.list([${array}])`,
+		)
+		
+		scope.HorizontalArray = Term.emit(
+			Term.list([
+				Term.term("Term", scope),
+				Term.many(
+					Term.list([
+						Term.maybe(Term.term("Gap", scope)),
+						Term.term("Term", scope),
+					])
+				),
+			]),
+			([head, tail]) => {
+				const tails = tail.filter(t => t.success).map(t => t[1])
+				return `${head}, ${tails.join(", ")}`
+			},
+		)
+		
+		scope.Gap = Term.many(Term.string(" "))
 		
 	}
 }

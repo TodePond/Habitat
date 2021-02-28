@@ -157,21 +157,22 @@
 			
 			const state = {
 				i: 0,
-				args: cloneArgs(args),
+				exceptions: args.exceptions === undefined? [] : [...args.exceptions]
 			}
-			const exceptions = args.exceptions === undefined? [] : args.exceptions
 			const results = []
 			
 			const terms = self.terms
 			
 			while (state.i < terms.length) {
 				const term = terms[state.i]
-				if (exceptions.includes(term)) {
+				const newArgs = {...args}
+				newArgs.exceptions = [...state.exceptions]
+				if (state.exceptions.includes(term)) {
 					state.i++
-					state.args.exceptions = state.args.exceptions.filter(e => e !== term)
+					state.exceptions = state.exceptions.filter(e => e !== term)
 					continue
 				}
-				const result = term(input, state.args)
+				const result = term(input, newArgs)
 				results.push(result)
 				if (result.success) {
 					const rejects = results.slice(0, -1)
@@ -228,7 +229,8 @@
 			const results = []
 			
 			while (true) {
-				const result = self.term(state.input, args)
+				const clonedArgs = cloneArgs(args)
+				const result = self.term(state.input, clonedArgs)
 				results.push(result)
 				if (!result.success) break
 				state.input = result.tail

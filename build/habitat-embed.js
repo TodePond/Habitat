@@ -423,6 +423,7 @@ Habitat.install = (global) => {
 	
 	
 	Habitat.MotherTode = (...args) => {
+		Term.resetCache()
 		const source = String.raw(...args)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0})
 		if (!result.success) {
@@ -458,13 +459,9 @@ Habitat.install = (global) => {
 		global.MotherTode = Habitat.MotherTode	
 		Habitat.MotherTode.installed = true
 		
-		// Shorthand
 		const scope = Habitat.MotherTode.scope
 		const Term = Habitat.Term
 		
-		//========//
-		// Source //
-		//========//
 		scope.MotherTode = Term.error(
 			Term.emit(
 				Term.list([
@@ -476,16 +473,12 @@ Habitat.install = (global) => {
 			({error}) => error,
 		)
 		
-		//======//
-		// Term //
-		//======//
 		scope.Term = Term.or([
+			Term.term("HorizontalList", scope),
 			Term.term("String", scope),
+			Term.term("RegExp", scope),
 		])
 		
-		//=========//
-		// Literal //
-		//=========//
 		scope.String = Term.emit(
 			Term.list([
 				Term.string(`"`),
@@ -498,6 +491,45 @@ Habitat.install = (global) => {
 			]),
 			([left, inner]) => `Term.string(\`${inner}\`)`
 		)
+		
+		scope.RegExp = Term.emit(
+			Term.list([
+				Term.string(`/`),
+				Term.maybe(
+					Term.many(
+						Term.regExp(/[^/]/)
+					)
+				),
+				Term.string(`/`),
+			]),
+			([left, inner]) => `Term.regExp(/${inner}/)`
+		)
+		
+		scope.HorizontalList = Term.emit(
+			Term.except(
+				Term.term("HorizontalArray", scope),
+				[Term.term("HorizontalList", scope)]
+			),
+			(array) => `Term.list([${array}])`,
+		)
+		
+		scope.HorizontalArray = Term.emit(
+			Term.list([
+				Term.term("Term", scope),
+				Term.many(
+					Term.list([
+						Term.maybe(Term.term("Gap", scope)),
+						Term.term("Term", scope),
+					])
+				),
+			]),
+			([head, tail]) => {
+				const tails = tail.filter(t => t.success).map(t => t[1])
+				return `${head}, ${tails.join(", ")}`
+			},
+		)
+		
+		scope.Gap = Term.many(Term.string(" "))
 		
 	}
 }
@@ -991,21 +1023,22 @@ Habitat.install = (global) => {
 			
 			const state = {
 				i: 0,
-				args: cloneArgs(args),
+				exceptions: args.exceptions === undefined? [] : [...args.exceptions]
 			}
-			const exceptions = args.exceptions === undefined? [] : args.exceptions
 			const results = []
 			
 			const terms = self.terms
 			
 			while (state.i < terms.length) {
 				const term = terms[state.i]
-				if (exceptions.includes(term)) {
+				const newArgs = {...args}
+				newArgs.exceptions = [...state.exceptions]
+				if (state.exceptions.includes(term)) {
 					state.i++
-					state.args.exceptions = state.args.exceptions.filter(e => e !== term)
+					state.exceptions = state.exceptions.filter(e => e !== term)
 					continue
 				}
-				const result = term(input, state.args)
+				const result = term(input, newArgs)
 				results.push(result)
 				if (result.success) {
 					const rejects = results.slice(0, -1)
@@ -1062,7 +1095,8 @@ Habitat.install = (global) => {
 			const results = []
 			
 			while (true) {
-				const result = self.term(state.input, args)
+				const clonedArgs = cloneArgs(args)
+				const result = self.term(state.input, clonedArgs)
 				results.push(result)
 				if (!result.success) break
 				state.input = result.tail

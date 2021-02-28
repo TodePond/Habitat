@@ -189,7 +189,7 @@ hiyayo("hiyayoyayo").log()
 
 const hellohi = MotherTode `<"hello" "hi">`
 */
-
+/*
 const scope = {}
 scope.Literal = Term.many(Term.regExp(/[0-9]/))
 scope.Number = Term.or([
@@ -222,8 +222,13 @@ scope.Divide = Term.list([
 	Term.except(Term.term("Number", scope), [Term.term("Divide", scope)]),
 	Term.string("/"),
 	Term.term("Number", scope),
-])
-/*
+])*/
+
 const hello = MotherTode `"hello"`.log()
 hello("hello").log()
-*/
+
+const digit = MotherTode `/[0-9]/`.log()
+digit("3").log()
+
+const yohoho = MotherTode `"yo" "ho" "ho"`.log()
+yohoho("yohoho").log()
