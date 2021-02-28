@@ -189,14 +189,14 @@ hiyayo("hiyayoyayo").log()
 
 const hellohi = MotherTode `<"hello" "hi">`
 */
-/*
+
 const scope = {}
 scope.Literal = Term.many(Term.regExp(/[0-9]/))
 scope.Number = Term.or([
 	Term.term("Add", scope),
 	Term.term("Subtract", scope),
-	Term.term("Multiply", scope),
-	Term.term("Divide", scope),
+	//Term.term("Multiply", scope),
+	//Term.term("Divide", scope),
 	Term.term("Literal", scope),
 ])
 
@@ -222,7 +222,8 @@ scope.Divide = Term.list([
 	Term.except(Term.term("Number", scope), [Term.term("Divide", scope)]),
 	Term.string("/"),
 	Term.term("Number", scope),
-])*/
-
+])
+/*
 const hello = MotherTode `"hello"`.log()
 hello("hello").log()
+*/

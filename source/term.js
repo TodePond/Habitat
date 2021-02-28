@@ -155,15 +155,23 @@
 	Term.or = (terms) => {
 		const self = (input, args = {exceptions: []}) => {
 			
-			const state = {i: 0}
+			const state = {
+				i: 0,
+				args: cloneArgs(args),
+			}
 			const exceptions = args.exceptions === undefined? [] : args.exceptions
 			const results = []
 			
-			const terms = self.terms.filter(t => !exceptions.includes(t))
+			const terms = self.terms
 			
 			while (state.i < terms.length) {
 				const term = terms[state.i]
-				const result = term(input, args)
+				if (exceptions.includes(term)) {
+					state.i++
+					state.args.exceptions = state.args.exceptions.filter(e => e !== term)
+					continue
+				}
+				const result = term(input, state.args)
 				results.push(result)
 				if (result.success) {
 					const rejects = results.slice(0, -1)
