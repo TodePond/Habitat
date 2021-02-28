@@ -292,3 +292,8 @@ hei("hi").log()
 hei("hello").log()
 hei("hey").log()
 
+const nohi = MotherTode `"hello" except "hi"`
+nohi("hello").log()
+
+const anyhi = MotherTode `any "hi"`
+anyhi("hi").log()

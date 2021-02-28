@@ -58,6 +58,7 @@
 		)
 		
 		scope.Term = Term.or([
+			Term.term("Except", scope),
 			Term.term("Or", scope),
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
@@ -69,6 +70,7 @@
 			Term.term("OrGroup", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
+			Term.term("NoExceptions", scope),
 		])
 		
 		scope.Many = Term.emit(
@@ -78,6 +80,26 @@
 				Term.string("+"),
 			]),
 			([term]) => `Term.many(${term})`,
+		)
+		
+		scope.Except = Term.emit(
+			Term.list([
+				Term.except(Term.term("Term", scope), [Term.term("Except", scope)]),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.string("except"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("Term", scope),
+			]),
+			([left, gap1, operator, gap2, right]) => `Term.except(${left}, [${right}])`,
+		)
+		
+		scope.NoExceptions = Term.emit(
+			Term.list([
+				Term.string("any"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("Term", scope),
+			]),
+			([keyword, gap, term]) => `Term.any(${term})`,
 		)
 		
 		scope.Or = Term.emit(
