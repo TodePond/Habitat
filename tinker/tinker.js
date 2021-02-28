@@ -280,3 +280,15 @@ hiyoyo("hi").log()
 hiyoyo("hiyo").log()
 hiyoyo("hiyoyo").log()
 
+const hillo = MotherTode `<
+	"hi"
+	"hello"
+>`
+hillo("hi").log()
+hillo("hello").log()
+
+const hei = MotherTode `"hi" | "hello" | "hey"`
+hei("hi").log()
+hei("hello").log()
+hei("hey").log()
+

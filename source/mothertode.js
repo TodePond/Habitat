@@ -11,7 +11,7 @@
 		print(source)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0})
 		if (!result.success) {
-			result.log()
+			//result.log()
 			return result
 		}
 		
@@ -58,6 +58,7 @@
 		)
 		
 		scope.Term = Term.or([
+			Term.term("Or", scope),
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
 			Term.term("Any", scope),
@@ -65,6 +66,7 @@
 			Term.term("Group", scope),
 			Term.term("MaybeGroup", scope),
 			Term.term("AnyGroup", scope),
+			Term.term("OrGroup", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
 		])
@@ -76,6 +78,29 @@
 				Term.string("+"),
 			]),
 			([term]) => `Term.many(${term})`,
+		)
+		
+		scope.Or = Term.emit(
+			Term.list([
+				Term.except(Term.term("Term", scope), [Term.term("Or", scope)]),
+				Term.term("OrTails", scope),
+			]),
+			([head, tail = []]) => `Term.or([${head}, ${tail}])`,
+		)
+		
+		scope.OrTail = Term.emit(
+			Term.list([
+				Term.maybe(Term.term("Gap", scope)),
+				Term.string("|"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.except(Term.term("Term", scope), [Term.term("Or", scope)]),
+			]),
+			([gap1, operator, gap2, term]) => `${term}`,
+		)
+		
+		scope.OrTails = Term.emit(
+			Term.many(Term.term("OrTail", scope)),
+			(tails) => tails.filter(t => t.success).map(t => t.output).join(", "),
 		)
 		
 		scope.Maybe = Term.emit(
@@ -114,6 +139,15 @@
 			([left, inner]) => `Term.maybe(Term.many(${inner}))`,
 		)
 		
+		scope.OrGroup = Term.emit(
+			Term.list([
+				Term.string("<"),
+				Term.term("ArrayInner", scope),
+				Term.string(">"),
+			]),
+			([left, inner]) => `Term.or([${inner}])`,
+		)
+		
 		scope.Group = Term.emit(
 			Term.list([
 				Term.string("("),
@@ -122,6 +156,20 @@
 			]),
 			([left, inner]) => `${inner}`,
 		)
+		
+		scope.ArrayInner = Term.or([
+			Term.term("HorizontalArrayInner", scope),
+			Term.emit(
+				Term.args(
+					Term.term("VerticalArrayInner", scope),
+					(args) => {
+						args.indentSize++
+						return args
+					}
+				),
+				(array) => `\n${getMargin(array.args.indentSize)}${array}\n${getMargin(array.args.indentSize-1)}`
+			)
+		])
 		
 		scope.GroupInner = Term.or([
 			Term.term("HorizontalGroupInner", scope),
@@ -133,6 +181,30 @@
 				}
 			)
 		])
+		
+		scope.HorizontalArrayInner = Term.emit(
+			Term.list([
+				Term.maybe(Term.term("Gap", scope)),
+				Term.or([
+					Term.except(Term.term("HorizontalArray", scope), [Term.term("HorizontalList", scope)]),
+					Term.term("Term", scope),
+				]),
+				Term.maybe(Term.term("Gap", scope)),
+			]),
+			([left, inner]) => `${inner}`,
+		)
+		
+		scope.VerticalArrayInner = Term.emit(
+			Term.list([
+				Term.term("NewLine", scope),
+				Term.or([
+					Term.term("VerticalArray", scope),
+					Term.term("Term", scope),
+				]),
+				Term.term("Unindent", scope),
+			]),
+			([left, inner]) => `${inner}`,
+		)
 		
 		scope.HorizontalGroupInner = Term.emit(
 			Term.list([
@@ -250,7 +322,7 @@
 			},
 		)
 		
-		scope.Gap = Term.many(Term.regExp(/[ |	]/))
+		scope.Gap = Term.many(Term.regExp(/[ 	]/))
 		
 	}
 }
