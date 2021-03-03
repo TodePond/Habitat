@@ -480,7 +480,10 @@ Habitat.install = (global) => {
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
 			Term.term("Any", scope),
+			
+			Term.term("HorizontalDefinition", scope),
 			Term.term("HorizontalList", scope),
+			
 			Term.term("Group", scope),
 			Term.term("MaybeGroup", scope),
 			Term.term("AnyGroup", scope),
@@ -489,6 +492,71 @@ Habitat.install = (global) => {
 			Term.term("RegExp", scope),
 			Term.term("NoExceptions", scope),
 		])
+		
+		const makeDefinition = (options) => {
+			
+		}
+		
+		scope.NewHorizontalDefinition = Term.check(
+			Term.string(""),
+			(result) => !result.args.insideDefinition,
+		)
+		
+		scope.HorizontalDefinition = Term.emit(
+			Term.list([
+				Term.term("NewHorizontalDefinition", scope),
+				Term.args(
+					Term.term("DefinitionProperty", scope),
+					(args) => {
+						args.insideDefinition = true
+						return args
+					}
+				),
+				Term.maybe(
+					Term.many(
+						Term.list([
+							Term.term("Gap", scope),
+							Term.args(
+								Term.term("DefinitionProperty", scope),
+								(args) => {
+									args.insideDefinition = true
+									return args
+								}
+							),
+						])
+					)
+				),
+			]),
+			(result) => {
+				if (!result.success) return
+				const [head, tail] = result
+				
+				return result.output
+			}
+		)
+		
+		scope.DefinitionProperty = Term.or([
+			Term.term("MatchProperty", scope),
+			Term.term("EmitProperty", scope),
+		])
+		
+		scope.MatchProperty = Term.emit(
+			Term.list([
+				Term.string("::"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.except(Term.term("Term", scope), []),
+			]),
+			([operator, gap, term = {}]) => `match: ${term.output},`,
+		)
+		
+		scope.EmitProperty = Term.emit(
+			Term.list([
+				Term.string(">>"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.except(Term.term("Term", scope), []),
+			]),
+			([operator, gap, term = {}]) => `emit: ${term.output},`,
+		)
 		
 		scope.Many = Term.emit(
 			Term.list([
@@ -625,8 +693,8 @@ Habitat.install = (global) => {
 			Term.list([
 				Term.maybe(Term.term("Gap", scope)),
 				Term.or([
-					Term.except(Term.term("HorizontalArray", scope), [Term.term("HorizontalList", scope)]),
-					Term.term("Term", scope),
+					Term.except(Term.term("HorizontalArray", scope), [Term.term("HorizontalList", scope), Term.term("HorizontalDefinition", scope)]),
+					Term.except(Term.term("Term", scope), [Term.term("HorizontalDefinition", scope)]),
 				]),
 				Term.maybe(Term.term("Gap", scope)),
 			]),
@@ -1232,6 +1300,7 @@ Habitat.install = (global) => {
 					self,
 					children: results,
 					error,
+					term: self,
 				})(input, args)
 			}
 			
@@ -1283,7 +1352,7 @@ Habitat.install = (global) => {
 						output: result.output,
 						source: result.source,
 						tail: result.tail,
-						term: result.term,
+						term: self,
 						error: `Found choice ${state.i + 1} of ${terms.length}: ` + result.error,
 						children: [...result, rejects]
 					})(input, args)
@@ -1310,6 +1379,7 @@ Habitat.install = (global) => {
 				result.output = result.output === undefined? "": result.output
 			}
 			result.error = `(Optional) ` + result.error
+			result.term = self
 			return result
 		}
 		self.term = term
@@ -1360,7 +1430,9 @@ Habitat.install = (global) => {
 	Term.args = (term, func) => {
 		const self = (input, args = {exceptions: []}) => {
 			const newArgs = self.func(cloneArgs(args))
-			return self.term(input, newArgs)
+			const result = self.term(input, newArgs)
+			result.term = self
+			return result
 		}
 		self.term = term
 		self.func = func
@@ -1370,6 +1442,7 @@ Habitat.install = (global) => {
 	Term.emit = (term, func) => {
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
+			result.term = self
 			result.output = self.func(result)
 			return result
 		}
@@ -1382,6 +1455,7 @@ Habitat.install = (global) => {
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.error = self.func(result)
+			result.term = self
 			return result
 		}
 		self.term = term
@@ -1392,14 +1466,17 @@ Habitat.install = (global) => {
 	Term.check = (term, func) => {
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
-			if (!result.success) return result
+			if (!result.success) {
+				result.term = self
+				return result
+			}
 			const checkResult = self.func(result)
 			if (checkResult) {
 				result.error = `Passed check: ` + result.error
 				return result
 			}
 			return Term.fail({
-				term: self.term,
+				term: self,
 				children: [...result],
 				error: `Failed check: ` + result.error,
 			})(input, args)
@@ -1425,7 +1502,9 @@ Habitat.install = (global) => {
 	Term.except = (term, exceptions) => {
 		const self = (input, args = {exceptions: []}) => {
 			const exceptions = args.exceptions === undefined? [] : args.exceptions
-			return self.term(input, {...args, exceptions: [...exceptions, ...self.exceptions]})
+			const result = self.term(input, {...args, exceptions: [...exceptions, ...self.exceptions]})
+			result.term = self
+			return result
 		}
 		self.term = term
 		self.exceptions = exceptions
@@ -1433,7 +1512,11 @@ Habitat.install = (global) => {
 	}
 	
 	Term.any = (term) => {
-		const self = (input, args = {exceptions: []}) => self.term(input, {...args, exceptions: []})
+		const self = (input, args = {exceptions: []}) => {
+			const result = self.term(input, {...args, exceptions: []})
+			result.term = self
+			return result
+		}
 		self.term = term
 		return self
 	}
@@ -1455,6 +1538,11 @@ Habitat.install = (global) => {
 			
 			if (typeof value === "string") {
 				lines.push(key + `:"` + value + `"`)
+				continue
+			}
+			
+			if (typeof value === "boolean") {
+				lines.push(key + `:` + value)
 				continue
 			}
 			
@@ -1520,6 +1608,7 @@ Habitat.install = (global) => {
 				error: `Found cached: ` + result.error,
 				children: [...result],
 			})(input, args)
+			
 			resultCaches.set(resultKey, cachedResult)
 			
 			return result

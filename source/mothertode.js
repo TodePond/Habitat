@@ -63,7 +63,10 @@
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
 			Term.term("Any", scope),
+			
+			Term.term("HorizontalDefinition", scope),
 			Term.term("HorizontalList", scope),
+			
 			Term.term("Group", scope),
 			Term.term("MaybeGroup", scope),
 			Term.term("AnyGroup", scope),
@@ -72,6 +75,71 @@
 			Term.term("RegExp", scope),
 			Term.term("NoExceptions", scope),
 		])
+		
+		const makeDefinition = (options) => {
+			
+		}
+		
+		scope.NewHorizontalDefinition = Term.check(
+			Term.string(""),
+			(result) => !result.args.insideDefinition,
+		)
+		
+		scope.HorizontalDefinition = Term.emit(
+			Term.list([
+				Term.term("NewHorizontalDefinition", scope),
+				Term.args(
+					Term.term("DefinitionProperty", scope),
+					(args) => {
+						args.insideDefinition = true
+						return args
+					}
+				),
+				Term.maybe(
+					Term.many(
+						Term.list([
+							Term.term("Gap", scope),
+							Term.args(
+								Term.term("DefinitionProperty", scope),
+								(args) => {
+									args.insideDefinition = true
+									return args
+								}
+							),
+						])
+					)
+				),
+			]),
+			(result) => {
+				if (!result.success) return
+				const [head, tail] = result
+				
+				return result.output
+			}
+		)
+		
+		scope.DefinitionProperty = Term.or([
+			Term.term("MatchProperty", scope),
+			Term.term("EmitProperty", scope),
+		])
+		
+		scope.MatchProperty = Term.emit(
+			Term.list([
+				Term.string("::"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.except(Term.term("Term", scope), []),
+			]),
+			([operator, gap, term = {}]) => `match: ${term.output},`,
+		)
+		
+		scope.EmitProperty = Term.emit(
+			Term.list([
+				Term.string(">>"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.except(Term.term("Term", scope), []),
+			]),
+			([operator, gap, term = {}]) => `emit: ${term.output},`,
+		)
 		
 		scope.Many = Term.emit(
 			Term.list([
@@ -208,8 +276,8 @@
 			Term.list([
 				Term.maybe(Term.term("Gap", scope)),
 				Term.or([
-					Term.except(Term.term("HorizontalArray", scope), [Term.term("HorizontalList", scope)]),
-					Term.term("Term", scope),
+					Term.except(Term.term("HorizontalArray", scope), [Term.term("HorizontalList", scope), Term.term("HorizontalDefinition", scope)]),
+					Term.except(Term.term("Term", scope), [Term.term("HorizontalDefinition", scope)]),
 				]),
 				Term.maybe(Term.term("Gap", scope)),
 			]),

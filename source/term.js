@@ -134,6 +134,7 @@
 					self,
 					children: results,
 					error,
+					term: self,
 				})(input, args)
 			}
 			
@@ -185,7 +186,7 @@
 						output: result.output,
 						source: result.source,
 						tail: result.tail,
-						term: result.term,
+						term: self,
 						error: `Found choice ${state.i + 1} of ${terms.length}: ` + result.error,
 						children: [...result, rejects]
 					})(input, args)
@@ -212,6 +213,7 @@
 				result.output = result.output === undefined? "": result.output
 			}
 			result.error = `(Optional) ` + result.error
+			result.term = self
 			return result
 		}
 		self.term = term
@@ -262,7 +264,9 @@
 	Term.args = (term, func) => {
 		const self = (input, args = {exceptions: []}) => {
 			const newArgs = self.func(cloneArgs(args))
-			return self.term(input, newArgs)
+			const result = self.term(input, newArgs)
+			result.term = self
+			return result
 		}
 		self.term = term
 		self.func = func
@@ -272,6 +276,7 @@
 	Term.emit = (term, func) => {
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
+			result.term = self
 			result.output = self.func(result)
 			return result
 		}
@@ -284,6 +289,7 @@
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.error = self.func(result)
+			result.term = self
 			return result
 		}
 		self.term = term
@@ -294,14 +300,17 @@
 	Term.check = (term, func) => {
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
-			if (!result.success) return result
+			if (!result.success) {
+				result.term = self
+				return result
+			}
 			const checkResult = self.func(result)
 			if (checkResult) {
 				result.error = `Passed check: ` + result.error
 				return result
 			}
 			return Term.fail({
-				term: self.term,
+				term: self,
 				children: [...result],
 				error: `Failed check: ` + result.error,
 			})(input, args)
@@ -327,7 +336,9 @@
 	Term.except = (term, exceptions) => {
 		const self = (input, args = {exceptions: []}) => {
 			const exceptions = args.exceptions === undefined? [] : args.exceptions
-			return self.term(input, {...args, exceptions: [...exceptions, ...self.exceptions]})
+			const result = self.term(input, {...args, exceptions: [...exceptions, ...self.exceptions]})
+			result.term = self
+			return result
 		}
 		self.term = term
 		self.exceptions = exceptions
@@ -335,7 +346,11 @@
 	}
 	
 	Term.any = (term) => {
-		const self = (input, args = {exceptions: []}) => self.term(input, {...args, exceptions: []})
+		const self = (input, args = {exceptions: []}) => {
+			const result = self.term(input, {...args, exceptions: []})
+			result.term = self
+			return result
+		}
 		self.term = term
 		return self
 	}
@@ -357,6 +372,11 @@
 			
 			if (typeof value === "string") {
 				lines.push(key + `:"` + value + `"`)
+				continue
+			}
+			
+			if (typeof value === "boolean") {
+				lines.push(key + `:` + value)
 				continue
 			}
 			
@@ -422,6 +442,7 @@
 				error: `Found cached: ` + result.error,
 				children: [...result],
 			})(input, args)
+			
 			resultCaches.set(resultKey, cachedResult)
 			
 			return result
