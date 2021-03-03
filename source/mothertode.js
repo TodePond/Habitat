@@ -86,7 +86,7 @@
 			Term.list([
 				Term.except(Term.term("Term", scope), [Term.term("Except", scope)]),
 				Term.maybe(Term.term("Gap", scope)),
-				Term.string("except"),
+				Term.string("~"),
 				Term.maybe(Term.term("Gap", scope)),
 				Term.term("Term", scope),
 			]),
