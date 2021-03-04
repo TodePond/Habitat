@@ -493,8 +493,14 @@ Habitat.install = (global) => {
 			Term.term("NoExceptions", scope),
 		])
 		
-		const makeDefinition = (options) => {
-			
+		const makeDefinition = (options = {}) => {
+			const {match = `Term.string("")`, emit} = options
+			let definition = match
+			if (emit !== undefined) {
+				throw new Error(`[MotherTode] Emit is currently unimplemented (coming soon)`)
+				definition = `Term.emit(${definition}, ${emit})`
+			}
+			return definition
 		}
 		
 		scope.HorizontalDefinition = Term.emit(
@@ -517,9 +523,11 @@ Habitat.install = (global) => {
 			]),
 			(result) => {
 				if (!result.success) return
-				const [head, tail] = result
-				
-				return result.output
+				const optionsCode = `{${result}}`
+				// TODO: check for multiple matches, emits, etc
+				const options = new Function(`return ${optionsCode}`)()
+				const definition = makeDefinition(options)
+				return definition
 			}
 		)
 		
@@ -534,7 +542,7 @@ Habitat.install = (global) => {
 				Term.maybe(Term.term("Gap", scope)),
 				Term.except(Term.term("Term", scope), []),
 			]),
-			([operator, gap, term = {}]) => `match: ${term.output},`,
+			([operator, gap, term = {}]) => `match: '${term.output}',`,
 		)
 		
 		scope.EmitProperty = Term.emit(
@@ -543,7 +551,7 @@ Habitat.install = (global) => {
 				Term.maybe(Term.term("Gap", scope)),
 				Term.except(Term.term("Term", scope), []),
 			]),
-			([operator, gap, term = {}]) => `emit: ${term.output},`,
+			([operator, gap, term = {}]) => `emit: '${term.output}',`,
 		)
 		
 		scope.Many = Term.emit(
