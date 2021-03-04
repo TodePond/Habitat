@@ -299,5 +299,5 @@ nohi("hiyo").log() //TODO: should fail
 const anyhi = MotherTode `any "hi"`
 anyhi("hi").log()
 
-const match = MotherTode `:: "hi" "ya" >> "ho"`
+const match = MotherTode `:: "hi" (:: "ya") >> "ho"`
 

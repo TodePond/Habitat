@@ -80,14 +80,8 @@
 			
 		}
 		
-		scope.NewHorizontalDefinition = Term.check(
-			Term.string(""),
-			(result) => !result.args.insideDefinition,
-		)
-		
 		scope.HorizontalDefinition = Term.emit(
 			Term.list([
-				Term.term("NewHorizontalDefinition", scope),
 				Term.args(
 					Term.term("DefinitionProperty", scope),
 					(args) => {
@@ -99,13 +93,7 @@
 					Term.many(
 						Term.list([
 							Term.term("Gap", scope),
-							Term.args(
-								Term.term("DefinitionProperty", scope),
-								(args) => {
-									args.insideDefinition = true
-									return args
-								}
-							),
+							Term.term("DefinitionProperty", scope),
 						])
 					)
 				),
@@ -276,8 +264,8 @@
 			Term.list([
 				Term.maybe(Term.term("Gap", scope)),
 				Term.or([
-					Term.except(Term.term("HorizontalArray", scope), [Term.term("HorizontalList", scope), Term.term("HorizontalDefinition", scope)]),
-					Term.except(Term.term("Term", scope), [Term.term("HorizontalDefinition", scope)]),
+					Term.except(Term.term("HorizontalArray", scope), [Term.term("HorizontalList", scope)]),
+					Term.except(Term.term("Term", scope), []),
 				]),
 				Term.maybe(Term.term("Gap", scope)),
 			]),
@@ -391,7 +379,7 @@
 		scope.HorizontalList = Term.emit(
 			Term.except(
 				Term.term("HorizontalArray", scope),
-				[Term.term("HorizontalList", scope)]
+				[Term.term("HorizontalList", scope), Term.term("HorizontalDefinition", scope)]
 			),
 			(array) => `Term.list([${array}])`,
 		)
