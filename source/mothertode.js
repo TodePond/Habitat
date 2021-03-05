@@ -64,7 +64,7 @@
 			Term.term("Many", scope),
 			Term.term("Any", scope),
 			
-			Term.term("HorizontalDefinition", scope),
+			Term.term("HorizontalDefinitionUnique", scope),
 			Term.term("HorizontalList", scope),
 			
 			Term.term("Group", scope),
@@ -86,6 +86,16 @@
 			return definition
 		}
 		
+		const PROPERTY_NAMES = [
+			"match",
+			"emit",
+		]
+		
+		scope.HorizontalDefinitionUnique = Term.check(
+			Term.term("HorizontalDefinition", scope),
+			(result) => result.success,
+		)
+		
 		scope.HorizontalDefinition = Term.emit(
 			Term.list([
 				Term.args(
@@ -106,11 +116,26 @@
 			]),
 			(result) => {
 				if (!result.success) return
-				const optionsCode = `{${result}}`
 				// TODO: check for multiple matches, emits, etc
-				const options = new Function(`return ${optionsCode}`)()
+				const properties = new Function(`return [${result}]`)()
+				
+				const options = {}
+				for (const propertyName of PROPERTY_NAMES) {
+					for (const property of properties) {
+						const propertyValue = property[propertyName]
+						if (propertyValue !== undefined) {
+							if (options[propertyName] !== undefined) {
+								result.success = false
+								return
+							}
+							options[propertyName] = propertyValue
+						}
+					}
+				}
+				
 				const definition = makeDefinition(options)
 				return definition
+				
 			}
 		)
 		
@@ -125,7 +150,7 @@
 				Term.maybe(Term.term("Gap", scope)),
 				Term.except(Term.term("Term", scope), []),
 			]),
-			([operator, gap, term = {}]) => `match: '${term.output}',`,
+			([operator, gap, term = {}]) => `{match: \`${term.output}\`}, `,
 		)
 		
 		scope.EmitProperty = Term.emit(
@@ -134,7 +159,7 @@
 				Term.maybe(Term.term("Gap", scope)),
 				Term.except(Term.term("Term", scope), []),
 			]),
-			([operator, gap, term = {}]) => `emit: '${term.output}',`,
+			([operator, gap, term = {}]) => `{emit: \`${term.output}\`},`,
 		)
 		
 		scope.Many = Term.emit(
@@ -347,7 +372,7 @@
 				),
 				Term.string(`"`),
 			]),
-			([left, inner]) => `Term.string(\`${inner}\`)`
+			([left, inner]) => `Term.string('${inner}')`
 		)
 		
 		scope.RegExp = Term.emit(
