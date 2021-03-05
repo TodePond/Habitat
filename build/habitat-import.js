@@ -1169,17 +1169,25 @@ Habitat.install = (global) => {
 	
 	const STYLE_SUCCESS = `font-weight: bold; color: rgb(0, 128, 255)`
 	const STYLE_FAILURE = `font-weight: bold; color: rgb(255, 70, 70)`
-	const log = (result) => {
+	const STYLE_DEPTH = `font-weight: bold;`
+	const log = (result, depth = 10) => {
+		
+		if (depth < 0) {
+			console.log("%cMaximum depth reached", STYLE_DEPTH)
+			return
+		}
 	
 		const style = result.success? STYLE_SUCCESS : STYLE_FAILURE
-	
+		
 		if (result.length === 0) {
 			console.log("%c" + result.error, style)
 			return
 		}
 		
 		console.groupCollapsed("%c" + result.error, style)
-		for (const child of result) log(child)
+		for (const child of result) {
+			log(child, depth - 1)
+		}
 		console.groupEnd()
 		
 	}
@@ -1204,8 +1212,8 @@ Habitat.install = (global) => {
 			result.input = input
 			result.args = cloneArgs(args)
 			result.toString = function() { return this.output }
-			result.log = () => {
-				log(result)
+			result.log = (depth) => {
+				log(result, depth)
 				return result
 			}
 			return result
@@ -1601,7 +1609,7 @@ Habitat.install = (global) => {
 				output: result.output,
 				tail: result.tail,
 				term: result.term,
-				error: `Found cached: ` + result.error,
+				error: `(Cached) ` + result.error,
 				children: [...result],
 			})(input, args)
 			
