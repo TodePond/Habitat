@@ -8,7 +8,7 @@
 	const STYLE_SUCCESS = `font-weight: bold; color: rgb(0, 128, 255)`
 	const STYLE_FAILURE = `font-weight: bold; color: rgb(255, 70, 70)`
 	const STYLE_DEPTH = `font-weight: bold;`
-	const log = (result, depth = 10) => {
+	const log = (result, depth = 5) => {
 		
 		if (depth < 0) {
 			console.log("%cMaximum depth reached", STYLE_DEPTH)
@@ -282,6 +282,10 @@
 	}
 	
 	Term.emit = (term, func) => {
+		if (typeof func !== "function") {
+			const value = func
+			func = () => value
+		}
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.term = self

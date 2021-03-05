@@ -64,7 +64,7 @@
 			Term.term("Many", scope),
 			Term.term("Any", scope),
 			
-			Term.term("HorizontalDefinitionUnique", scope),
+			Term.term("HorizontalDefinition", scope),
 			Term.term("HorizontalList", scope),
 			
 			Term.term("Group", scope),
@@ -80,7 +80,6 @@
 			const {match = `Term.string("")`, emit} = options
 			let definition = match
 			if (emit !== undefined) {
-				throw new Error(`[MotherTode] Emit is currently unimplemented (coming soon)`)
 				definition = `Term.emit(${definition}, ${emit})`
 			}
 			return definition
@@ -90,11 +89,6 @@
 			"match",
 			"emit",
 		]
-		
-		scope.HorizontalDefinitionUnique = Term.check(
-			Term.term("HorizontalDefinition", scope),
-			(result) => result.success,
-		)
 		
 		scope.HorizontalDefinition = Term.emit(
 			Term.list([
@@ -116,9 +110,7 @@
 			]),
 			(result) => {
 				if (!result.success) return
-				// TODO: check for multiple matches, emits, etc
 				const properties = new Function(`return [${result}]`)()
-				
 				const options = {}
 				for (const propertyName of PROPERTY_NAMES) {
 					for (const property of properties) {
@@ -157,10 +149,20 @@
 			Term.list([
 				Term.string(">>"),
 				Term.maybe(Term.term("Gap", scope)),
-				Term.except(Term.term("Term", scope), []),
+				Term.term("JavaScript", scope),
 			]),
 			([operator, gap, term = {}]) => `{emit: \`${term.output}\`},`,
 		)
+		
+		scope.JavaScript = Term.or([
+			Term.term("JavaScriptSingle", scope),
+		])
+		
+		scope.JavaScriptSingle = Term.term("Line", scope)
+		
+		scope.Line = Term.list([
+			Term.many(Term.regExp(/[^\n]/)),
+		])
 		
 		scope.Many = Term.emit(
 			Term.list([

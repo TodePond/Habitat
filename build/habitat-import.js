@@ -481,7 +481,7 @@ Habitat.install = (global) => {
 			Term.term("Many", scope),
 			Term.term("Any", scope),
 			
-			Term.term("HorizontalDefinitionUnique", scope),
+			Term.term("HorizontalDefinition", scope),
 			Term.term("HorizontalList", scope),
 			
 			Term.term("Group", scope),
@@ -497,7 +497,6 @@ Habitat.install = (global) => {
 			const {match = `Term.string("")`, emit} = options
 			let definition = match
 			if (emit !== undefined) {
-				throw new Error(`[MotherTode] Emit is currently unimplemented (coming soon)`)
 				definition = `Term.emit(${definition}, ${emit})`
 			}
 			return definition
@@ -507,11 +506,6 @@ Habitat.install = (global) => {
 			"match",
 			"emit",
 		]
-		
-		scope.HorizontalDefinitionUnique = Term.check(
-			Term.term("HorizontalDefinition", scope),
-			(result) => result.success,
-		)
 		
 		scope.HorizontalDefinition = Term.emit(
 			Term.list([
@@ -533,9 +527,7 @@ Habitat.install = (global) => {
 			]),
 			(result) => {
 				if (!result.success) return
-				// TODO: check for multiple matches, emits, etc
 				const properties = new Function(`return [${result}]`)()
-				
 				const options = {}
 				for (const propertyName of PROPERTY_NAMES) {
 					for (const property of properties) {
@@ -574,10 +566,20 @@ Habitat.install = (global) => {
 			Term.list([
 				Term.string(">>"),
 				Term.maybe(Term.term("Gap", scope)),
-				Term.except(Term.term("Term", scope), []),
+				Term.term("JavaScript", scope),
 			]),
 			([operator, gap, term = {}]) => `{emit: \`${term.output}\`},`,
 		)
+		
+		scope.JavaScript = Term.or([
+			Term.term("JavaScriptSingle", scope),
+		])
+		
+		scope.JavaScriptSingle = Term.term("Line", scope)
+		
+		scope.Line = Term.list([
+			Term.many(Term.regExp(/[^\n]/)),
+		])
 		
 		scope.Many = Term.emit(
 			Term.list([
@@ -1195,7 +1197,7 @@ Habitat.install = (global) => {
 	const STYLE_SUCCESS = `font-weight: bold; color: rgb(0, 128, 255)`
 	const STYLE_FAILURE = `font-weight: bold; color: rgb(255, 70, 70)`
 	const STYLE_DEPTH = `font-weight: bold;`
-	const log = (result, depth = 10) => {
+	const log = (result, depth = 5) => {
 		
 		if (depth < 0) {
 			console.log("%cMaximum depth reached", STYLE_DEPTH)
@@ -1469,6 +1471,10 @@ Habitat.install = (global) => {
 	}
 	
 	Term.emit = (term, func) => {
+		if (typeof func !== "function") {
+			const value = func
+			func = () => value
+		}
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.term = self
