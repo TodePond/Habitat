@@ -425,7 +425,7 @@ Habitat.install = (global) => {
 	Habitat.MotherTode = (...args) => {
 		Term.resetCache()
 		const source = String.raw(...args)
-		print(source)
+		//print(source)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0, scopePath: ""})
 		if (!result.success) {
 			//result.log()
@@ -434,7 +434,7 @@ Habitat.install = (global) => {
 		
 		const func = new Function(`
 			const scope = {}
-			const term = ${result.output.d}
+			const term = ${result.output}
 			for (const key in term) {
 				scope[key] = term[key]
 			}

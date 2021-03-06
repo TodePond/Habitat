@@ -296,10 +296,6 @@ const nohi = MotherTode `<"hello" "hi"> ~ "hi" "yo"`
 nohi("helloyo").log()
 nohi("hiyo").log() //TODO: should fail
 
-// Removed from language
-/*const anyhi = MotherTode `any "hi"`
-anyhi("hi").log()*/
-
 const match = MotherTode `:: "hi" "ya" >> "Hello world!"`
 match("hiyalol").log().output.d
 
@@ -309,11 +305,11 @@ const matchs = MotherTode `:: "hi" "ya" >> () => {
 }`
 matchs("hiyalol").log().output.d
 
-/*const long = MotherTode `
+const long = MotherTode `
 	:: "Hey"
 	:: "yo" "lol" (:: "bop")
 `
-long("Heyyololbop").log()*/
+long("Heyyololbop").log()
 
 const checker = MotherTode `:: /[a-zA-Z]/+ ?? (name) => name.output == "Luke"`
 //checker("Bob").log() //should fail
@@ -380,3 +376,9 @@ fullWorldScope.Greeting.Hello("hello").log()
 fullWorldScope("helloworld.").log()
 fullWorldScope.Greeting("hellopond!").log()
 fullWorldScope.Greeting.World("pond").log()
+
+const whitespace = MotherTode `
+	Hello :: "hello"
+	
+	Name :: /[a-z]/+
+`.log()
