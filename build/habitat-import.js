@@ -680,13 +680,15 @@ Habitat.install = (global) => {
 			Term.term("ChainProperty", scope),
 		])
 		
+		const sanitise = (string) => string.split("`").join("\\`")
+		
 		scope.MatchProperty = Term.emit(
 			Term.list([
 				Term.string("::"),
 				Term.maybe(Term.term("Gap", scope)),
 				Term.except(Term.term("Term", scope), []),
 			]),
-			([operator, gap, term = {}]) => `{match: \`${term.output}\`}, `,
+			([operator, gap, term = {}]) => `{match: \`${sanitise(term.output)}\`}, `,
 		)
 		
 		scope.ChainProperty = Term.emit(
@@ -695,7 +697,7 @@ Habitat.install = (global) => {
 				Term.maybe(Term.term("Gap", scope)),
 				Term.except(Term.term("Term", scope), []),
 			]),
-			([operator, gap, term = {}]) => `{chain: \`${term.output}\`}, `,
+			([operator, gap, term = {}]) => `{chain: \`${sanitise(term.output)}\`}, `,
 		)
 		
 		scope.EmitProperty = Term.emit(
@@ -704,7 +706,7 @@ Habitat.install = (global) => {
 				Term.maybe(Term.term("Gap", scope)),
 				Term.term("JavaScript", scope),
 			]),
-			([operator, gap, term = {}]) => `{emit: \`${term.output}\`},`,
+			([operator, gap, term = {}]) => `{emit: \`${sanitise(term.output)}\`},`,
 		)
 		
 		scope.CheckProperty = Term.emit(
@@ -713,7 +715,7 @@ Habitat.install = (global) => {
 				Term.maybe(Term.term("Gap", scope)),
 				Term.term("JavaScript", scope),
 			]),
-			([operator, gap, term = {}]) => `{check: \`${term.output}\`},`,
+			([operator, gap, term = {}]) => `{check: \`${sanitise(term.output)}\`},`,
 		)
 		
 		scope.ErrorProperty = Term.emit(
@@ -722,7 +724,7 @@ Habitat.install = (global) => {
 				Term.maybe(Term.term("Gap", scope)),
 				Term.term("JavaScript", scope),
 			]),
-			([operator, gap, term = {}]) => `{error: \`${term.output}\`},`,
+			([operator, gap, term = {}]) => `{error: \`${sanitise(term.output)}\`},`,
 		)
 		
 		scope.ArgsProperty = Term.emit(
@@ -731,7 +733,7 @@ Habitat.install = (global) => {
 				Term.maybe(Term.term("Gap", scope)),
 				Term.term("JavaScript", scope),
 			]),
-			([operator, gap, term = {}]) => `{args: \`${term.output}\`},`,
+			([operator, gap, term = {}]) => `{args: \`${sanitise(term.output)}\`},`,
 		)
 		
 		scope.JavaScript = Term.or([
@@ -994,7 +996,7 @@ Habitat.install = (global) => {
 				),
 				Term.string(`"`),
 			]),
-			([left, inner]) => `Term.string('${inner}')`
+			([left, inner]) => `Term.string(\`${inner}\`)`
 		)
 		
 		scope.RegExp = Term.emit(

@@ -382,3 +382,11 @@ const whitespace = MotherTode `
 	
 	Name :: /[a-z]/+
 `.log()
+
+const EWAL = MotherTode `
+	:: Instruction {"\n" Instruction}
+	Instruction :: "Hello"
+	Instruction :: "Yo"
+`
+
+print(EWAL(`Hello`).output)
