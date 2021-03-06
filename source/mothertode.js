@@ -77,8 +77,11 @@
 		])
 		
 		const makeDefinition = (options = {}) => {
-			const {match = `Term.string("")`, emit} = options
+			const {match = `Term.string("")`, emit, check} = options
 			let definition = match
+			if (check !== undefined) {
+				definition = `Term.check(${definition}, ${check})`
+			}
 			if (emit !== undefined) {
 				definition = `Term.emit(${definition}, ${emit})`
 			}
@@ -88,6 +91,7 @@
 		const PROPERTY_NAMES = [
 			"match",
 			"emit",
+			"check",
 		]
 		
 		scope.HorizontalDefinition = Term.emit(
@@ -134,6 +138,7 @@
 		scope.DefinitionProperty = Term.or([
 			Term.term("MatchProperty", scope),
 			Term.term("EmitProperty", scope),
+			Term.term("CheckProperty", scope),
 		])
 		
 		scope.MatchProperty = Term.emit(
@@ -152,6 +157,15 @@
 				Term.term("JavaScript", scope),
 			]),
 			([operator, gap, term = {}]) => `{emit: \`${term.output}\`},`,
+		)
+		
+		scope.CheckProperty = Term.emit(
+			Term.list([
+				Term.string("??"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("JavaScript", scope),
+			]),
+			([operator, gap, term = {}]) => `{check: \`${term.output}\`},`,
 		)
 		
 		scope.JavaScript = Term.or([
@@ -250,7 +264,10 @@
 			Term.list([
 				Term.except(Term.term("Term", scope), [Term.term("Maybe", scope)]),
 				Term.maybe(Term.term("Gap", scope)),
-				Term.string("?"),
+				Term.check(
+					Term.string("?"),
+					(result) => result.tail[0] !== "?" //
+				),
 			]),
 			([term]) => `Term.maybe(${term})`,
 		)
