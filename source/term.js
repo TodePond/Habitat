@@ -264,7 +264,7 @@
 	
 	Term.args = (term, func) => {
 		const self = (input = "", args = {exceptions: []}) => {
-			const newArgs = self.func(cloneArgs(args))
+			const newArgs = self.func(cloneArgs(args), input)
 			const result = self.term(input, newArgs)
 			result.term = self
 			return result
@@ -412,6 +412,24 @@
 		}
 	}
 	
+	const getValue = (object, key) => {
+		if (object === undefined) return
+		const [head, ...tail] = key.split(".")
+		if (tail.length === 0) return object[head]
+		const result = getValue(object[head], tail.join("."))
+		if (result !== undefined) return result
+		return getValue(object, tail.join("."))
+	}
+	
+	const setValue = (object, key, value) => {
+		const [head, tail] = key.split(".")
+		if (tail === undefined) {
+			object[head] = value
+			return
+		}
+		return setValue(object[head], tail, value)
+	}
+	
 	Term.term = (key, object) => {
 		
 		// Get term from cache
@@ -420,6 +438,7 @@
 			termCache = {}
 			termCaches.set(object, termCache)
 		}
+		
 		if (termCache[key] !== undefined) {
 			return termCache[key]
 		}
@@ -438,9 +457,11 @@
 				return resultCache
 			}
 			
-			const term = object[key]
+			const term = getValue(object, key)
 			
-			if (term === undefined) throw new Error(`[Habitat.Term] Unrecognised term: '${key}'`)
+			if (term === undefined) {
+				throw new Error(`[Habitat.Term] Unrecognised term: '${key}'`)
+			}
 			const result = term(input, args)
 			if (result.success) {
 				result.error = `Found ${key}: ` + result.error

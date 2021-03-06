@@ -9,16 +9,22 @@
 		Term.resetCache()
 		const source = String.raw(...args)
 		print(source)
-		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0})
+		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0, scopePath: ""})
 		if (!result.success) {
 			//result.log()
 			return result
 		}
 		
-		const func = new Function("scope", "return " + result.output.d)
+		const func = new Function(`
+			const scope = {}
+			const term = ${result.output.d}
+			for (const key in term) {
+				scope[key] = term[key]
+			}
+			return term
+		`)
 		
-		const globalScope = {}
-		const term = func(globalScope)
+		const term = func()
 		term.success = result.success
 		term.output = result.output
 		term.source = result.source
@@ -64,10 +70,12 @@
 			Term.term("Or", scope),
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
-			Term.term("Any", scope),
+			//Term.term("Any", scope),
 			
 			Term.term("HorizontalDefinition", scope),
 			Term.term("HorizontalList", scope),
+			
+			Term.term("Reference", scope),
 			
 			Term.term("Group", scope),
 			Term.term("MaybeGroup", scope),
@@ -78,9 +86,24 @@
 			Term.term("NoExceptions", scope),
 		])
 		
+		scope.Reference = Term.emit(
+			Term.list([
+				Term.term("Name", scope),
+				Term.maybe(
+					Term.many(
+						Term.list([
+							Term.string("."),
+							Term.term("Name", scope),
+						])
+					)
+				),
+			]),
+			(name) => `Term.term('${name.args.scopePath}${name}', scope)`,
+		)
+		
 		const makeDefinition = (options = {}) => {
 			const {
-				match = `Term.string("")`,
+				match = `Term.string('')`,
 				emit,
 				check,
 				error,
@@ -106,7 +129,7 @@
 				definition = `Term.emit(${definition}, ${emit})`
 			}
 			if (subTerm !== undefined) {
-				const subTermsCode = subTerm.map(([name, value]) => `["${name}", ${value}]`).join(", ")
+				const subTermsCode = subTerm.map(([name, value]) => `['${name}', ${value}]`).join(", ")
 				definition = `Term.subTerms(${definition}, [${subTermsCode}])`
 				/*for (const s of subTerm) {
 					const [name, value] = s
@@ -128,12 +151,12 @@
 		
 		scope.HorizontalDefinition = Term.emit(
 			Term.list([
-				Term.term("DefinitionEntry", scope),
+				Term.term("DefinitionProperty", scope),
 				Term.maybe(
 					Term.many(
 						Term.list([
 							Term.term("Gap", scope),
-							Term.term("DefinitionEntry", scope),
+							Term.term("DefinitionProperty", scope),
 						])
 					)
 				),
@@ -166,18 +189,28 @@
 		)
 		
 		scope.DefinitionEntry = Term.or([
-			Term.term("Declaration", scope),
 			Term.term("DefinitionProperty", scope),
+			Term.term("Declaration", scope),
 		])
 		
 		scope.Name = Term.many(Term.regExp(/[a-zA-Z_$]/))
 		
 		scope.Declaration = Term.emit(
-			Term.list([
-				Term.term("Name", scope),
-				Term.maybe(Term.term("Gap", scope)),
-				Term.term("Term", scope),
-			]),
+			Term.args(
+				Term.list([
+					Term.term("Name", scope),
+					Term.maybe(Term.term("Gap", scope)),
+					Term.term("Term", scope),
+				]),
+				(args, input) => {
+					const nameResult = scope.Name(input)
+					if (!nameResult.success) return args
+					const name = nameResult.output
+					args.scopePath += name + "."
+					//args.d
+					return args
+				}
+			),
 			([name, gap, term]) => {
 				return `{subTerm: ["${name}", "${term}"]},`
 			}
@@ -485,7 +518,10 @@
 		scope.HorizontalGroupInner = Term.emit(
 			Term.list([
 				Term.maybe(Term.term("Gap", scope)),
-				Term.term("Term", scope),
+				Term.or([
+					Term.term("HorizontalDefinition", scope),
+					Term.term("Term", scope),
+				]),
 				Term.maybe(Term.term("Gap", scope)),
 			]),
 			([left, inner]) => `${inner}`,

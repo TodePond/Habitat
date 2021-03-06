@@ -296,8 +296,9 @@ const nohi = MotherTode `<"hello" "hi"> ~ "hi" "yo"`
 nohi("helloyo").log()
 nohi("hiyo").log() //TODO: should fail
 
-const anyhi = MotherTode `any "hi"`
-anyhi("hi").log()
+// Removed from language
+/*const anyhi = MotherTode `any "hi"`
+anyhi("hi").log()*/
 
 const match = MotherTode `:: "hi" "ya" >> "Hello world!"`
 match("hiyalol").log().output.d
@@ -343,12 +344,39 @@ const vertdef = MotherTode `
 vertdef().log().output.d
 
 const decl = MotherTode `Hello :: "hello"`
-decl.Hello("hello").log()
+//decl.Hello("hello").log()
 
 const decls = MotherTode `
 	:: "hi"
-	Hello "hello"
-	World "world"
-	Exclamation "!"
+	Terms (
+		Hello :: "hello"
+		World :: "world"
+		Exclamation :: "!"
+	)
 `
-decls.Hello("hello").log()
+decls.Terms.Hello("hello").log()
+decls("hi").log()
+
+const fullWorld = MotherTode `
+	:: Hello " " World Ending
+	Hello :: "hello"
+	World :: "world"
+	Ending :: "!" | "."
+`
+fullWorld.Hello("hello").log()
+fullWorld("hello world.").log()
+
+const fullWorldScope = MotherTode `
+	:: Greeting.Hello World
+	Greeting (
+		:: Hello World Ending
+		World :: "pond"
+		Hello :: "hello"
+	)
+	World :: "world"
+	Ending :: "." | "!"
+`
+fullWorldScope.Greeting.Hello("hello").log()
+fullWorldScope("helloworld.").log()
+fullWorldScope.Greeting("hellopond!").log()
+fullWorldScope.Greeting.World("pond").log()
