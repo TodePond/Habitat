@@ -308,25 +308,37 @@ const matchs = MotherTode `:: "hi" "ya" >> () => {
 }`
 matchs("hiyalol").log().output.d
 
-const long = MotherTode `
+/*const long = MotherTode `
 	:: "Hey"
 	:: "yo" "lol" (:: "bop")
 `
-long("Heyyololbop").log()
+long("Heyyololbop").log()*/
 
 const checker = MotherTode `:: /[a-zA-Z]/+ ?? (name) => name.output == "Luke"`
-checker("Bob").log() //should fail
+//checker("Bob").log() //should fail
 checker("Luke").log()
 
 const errorer = MotherTode `:: "foo" !! "BAR"`
 errorer("foo").log()
-errorer("fod").log()
+//errorer("fod").log() //should fail
 
 const argser = MotherTode `:: "hi" @@ (args) => ({...args, foo: "bar"})`
 argser("hi").log()
 
 const chainer = MotherTode `++ /[abc]/ :: /[bcd]/`
 chainer("b").log()
-chainer("a").log()
-chainer("d").log()
+//chainer("a").log() //should fail
+//chainer("d").log() //should fail
+
+const filterer = MotherTode `++ (:: "Bob" | "Luke") :: /[a-zA-Z]/+ >> (name) => "Hello " + name`
+filterer("Bob").log().output.d
+filterer("Luke").log().output.d
+//filterer("Kevin").log() //should fail
+
+const vertdef = MotherTode `
+	++ >> "World"
+	:: /[a-zA-Z]/+
+	>> (name) => "Hello " + name
+`
+vertdef().log().output.d
 

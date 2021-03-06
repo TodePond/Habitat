@@ -116,13 +116,7 @@
 		
 		scope.HorizontalDefinition = Term.emit(
 			Term.list([
-				Term.args(
-					Term.term("DefinitionProperty", scope),
-					(args) => {
-						args.insideDefinition = true
-						return args
-					}
-				),
+				Term.term("DefinitionProperty", scope),
 				Term.maybe(
 					Term.many(
 						Term.list([
@@ -133,7 +127,6 @@
 				),
 			]),
 			(result) => {
-				if (!result.success) return
 				const properties = new Function(`return [${result}]`)()
 				const options = {}
 				for (const propertyName of PROPERTY_NAMES) {
@@ -153,6 +146,43 @@
 				return definition
 				
 			}
+		)
+		
+		scope.DefinitionEntry = Term.or([
+			Term.term("DefinitionProperty", scope),
+		])
+		
+		scope.VerticalDefinition = Term.emit(
+			Term.list([
+				Term.term("DefinitionEntry", scope),
+				Term.maybe(
+					Term.many(
+						Term.list([
+							Term.term("NewLine", scope),
+							Term.term("DefinitionEntry", scope),
+						])
+					)
+				),
+			]),
+			(result) => {
+				const entries = new Function(`return [${result}]`)()
+				const options = {}
+				for (const propertyName of PROPERTY_NAMES) {
+					for (const property of entries) {
+						const propertyValue = property[propertyName]
+						if (propertyValue !== undefined) {
+							if (options[propertyName] !== undefined) {
+								result.success = false
+								return
+							}
+							options[propertyName] = propertyValue
+						}
+					}
+				}
+				
+				const definition = makeDefinition(options)
+				return definition
+			},
 		)
 		
 		scope.DefinitionProperty = Term.or([
@@ -429,6 +459,7 @@
 			Term.list([
 				Term.term("NewLine", scope),
 				Term.or([
+					Term.term("VerticalDefinition", scope),
 					Term.term("VerticalList", scope),
 					Term.term("Term", scope),
 				]),

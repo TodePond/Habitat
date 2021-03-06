@@ -533,13 +533,7 @@ Habitat.install = (global) => {
 		
 		scope.HorizontalDefinition = Term.emit(
 			Term.list([
-				Term.args(
-					Term.term("DefinitionProperty", scope),
-					(args) => {
-						args.insideDefinition = true
-						return args
-					}
-				),
+				Term.term("DefinitionProperty", scope),
 				Term.maybe(
 					Term.many(
 						Term.list([
@@ -550,7 +544,6 @@ Habitat.install = (global) => {
 				),
 			]),
 			(result) => {
-				if (!result.success) return
 				const properties = new Function(`return [${result}]`)()
 				const options = {}
 				for (const propertyName of PROPERTY_NAMES) {
@@ -570,6 +563,43 @@ Habitat.install = (global) => {
 				return definition
 				
 			}
+		)
+		
+		scope.DefinitionEntry = Term.or([
+			Term.term("DefinitionProperty", scope),
+		])
+		
+		scope.VerticalDefinition = Term.emit(
+			Term.list([
+				Term.term("DefinitionEntry", scope),
+				Term.maybe(
+					Term.many(
+						Term.list([
+							Term.term("NewLine", scope),
+							Term.term("DefinitionEntry", scope),
+						])
+					)
+				),
+			]),
+			(result) => {
+				const entries = new Function(`return [${result}]`)()
+				const options = {}
+				for (const propertyName of PROPERTY_NAMES) {
+					for (const property of entries) {
+						const propertyValue = property[propertyName]
+						if (propertyValue !== undefined) {
+							if (options[propertyName] !== undefined) {
+								result.success = false
+								return
+							}
+							options[propertyName] = propertyValue
+						}
+					}
+				}
+				
+				const definition = makeDefinition(options)
+				return definition
+			},
 		)
 		
 		scope.DefinitionProperty = Term.or([
@@ -846,6 +876,7 @@ Habitat.install = (global) => {
 			Term.list([
 				Term.term("NewLine", scope),
 				Term.or([
+					Term.term("VerticalDefinition", scope),
 					Term.term("VerticalList", scope),
 					Term.term("Term", scope),
 				]),
@@ -1324,7 +1355,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.result = ({success, source, output = source, tail, term, error = "", children = []} = {}) => {
-		const self = (input, args = {exceptions: []}) => {			
+		const self = (input = "", args = {exceptions: []}) => {			
 			const result = [...children]
 			result.success = success
 			result.output = output
@@ -1349,7 +1380,7 @@ Habitat.install = (global) => {
 	Term.fail    = (properties = {}) => Term.result({...properties, success: false})
 	
 	Term.string = (string) => {
-		const term = (input, args = {exceptions: []}) => {
+		const term = (input = "", args = {exceptions: []}) => {
 			const snippet = input.slice(0, term.string.length)
 			const success = snippet === term.string
 			if (!success) return Term.fail({
@@ -1369,7 +1400,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.regExp = (regExp) => {
-		const term = (input, args = {exceptions: []}) => {
+		const term = (input = "", args = {exceptions: []}) => {
 			const finiteRegExp = new RegExp("^" + term.regExp.source + "$")
 			let i = 0
 			while (i <= input.length) {
@@ -1400,7 +1431,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.list = (terms) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			
 			const state = {
 				input,
@@ -1448,7 +1479,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.or = (terms) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			
 			const state = {
 				i: 0,
@@ -1499,7 +1530,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.maybe = (term) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			if (!result.success) {
 				result.success = true
@@ -1515,7 +1546,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.many = (term) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			
 			const state = {
 				input,
@@ -1556,7 +1587,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.args = (term, func) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const newArgs = self.func(cloneArgs(args))
 			const result = self.term(input, newArgs)
 			result.term = self
@@ -1572,10 +1603,10 @@ Habitat.install = (global) => {
 			const value = func
 			func = () => value
 		}
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.term = self
-			result.output = self.func(result)
+			if (result.success) result.output = self.func(result)
 			return result
 		}
 		self.term = term
@@ -1591,7 +1622,7 @@ Habitat.install = (global) => {
 				else return result.error
 			}
 		}
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.error = self.func(result)
 			result.term = self
@@ -1607,7 +1638,7 @@ Habitat.install = (global) => {
 			const value = func
 			func = () => value
 		}
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			if (!result.success) {
 				result.term = self
@@ -1629,7 +1660,7 @@ Habitat.install = (global) => {
 		return self
 	}
 	
-	Term.eof = (input, args = {exceptions: []}) => {
+	Term.eof = (input = "", args = {exceptions: []}) => {
 		if (input.length === 0) return Term.succeed({
 			source: "",
 			tail: "",
@@ -1643,7 +1674,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.except = (term, exceptions) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const exceptions = args.exceptions === undefined? [] : args.exceptions
 			const result = self.term(input, {...args, exceptions: [...exceptions, ...self.exceptions]})
 			result.term = self
@@ -1655,7 +1686,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.any = (term) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, {...args, exceptions: []})
 			result.term = self
 			return result
@@ -1664,7 +1695,7 @@ Habitat.install = (global) => {
 		return self
 	}
 	
-	const getResultKey = (name, input, args = {exceptions: []}) => {
+	const getResultKey = (name, input = "", args = {exceptions: []}) => {
 		const lines = []
 		lines.push(name)
 		lines.push(input)
@@ -1722,7 +1753,7 @@ Habitat.install = (global) => {
 		resultCachess.push(resultCaches)
 		const id = termCount++
 		
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			
 			const resultKey = getResultKey(key, input, args)
 			const resultCache = resultCaches.get(resultKey)
@@ -1765,7 +1796,7 @@ Habitat.install = (global) => {
 	}
 	
 	Term.chain = (first, second) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const firstResult = self.first(input, args)
 			if (!firstResult.success) {
 				firstResult.error = `(Chained) ` + firstResult.error

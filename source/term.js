@@ -38,7 +38,7 @@
 	}
 	
 	Term.result = ({success, source, output = source, tail, term, error = "", children = []} = {}) => {
-		const self = (input, args = {exceptions: []}) => {			
+		const self = (input = "", args = {exceptions: []}) => {			
 			const result = [...children]
 			result.success = success
 			result.output = output
@@ -63,7 +63,7 @@
 	Term.fail    = (properties = {}) => Term.result({...properties, success: false})
 	
 	Term.string = (string) => {
-		const term = (input, args = {exceptions: []}) => {
+		const term = (input = "", args = {exceptions: []}) => {
 			const snippet = input.slice(0, term.string.length)
 			const success = snippet === term.string
 			if (!success) return Term.fail({
@@ -83,7 +83,7 @@
 	}
 	
 	Term.regExp = (regExp) => {
-		const term = (input, args = {exceptions: []}) => {
+		const term = (input = "", args = {exceptions: []}) => {
 			const finiteRegExp = new RegExp("^" + term.regExp.source + "$")
 			let i = 0
 			while (i <= input.length) {
@@ -114,7 +114,7 @@
 	}
 	
 	Term.list = (terms) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			
 			const state = {
 				input,
@@ -162,7 +162,7 @@
 	}
 	
 	Term.or = (terms) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			
 			const state = {
 				i: 0,
@@ -213,7 +213,7 @@
 	}
 	
 	Term.maybe = (term) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			if (!result.success) {
 				result.success = true
@@ -229,7 +229,7 @@
 	}
 	
 	Term.many = (term) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			
 			const state = {
 				input,
@@ -270,7 +270,7 @@
 	}
 	
 	Term.args = (term, func) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const newArgs = self.func(cloneArgs(args))
 			const result = self.term(input, newArgs)
 			result.term = self
@@ -286,10 +286,10 @@
 			const value = func
 			func = () => value
 		}
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.term = self
-			result.output = self.func(result)
+			if (result.success) result.output = self.func(result)
 			return result
 		}
 		self.term = term
@@ -305,7 +305,7 @@
 				else return result.error
 			}
 		}
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.error = self.func(result)
 			result.term = self
@@ -321,7 +321,7 @@
 			const value = func
 			func = () => value
 		}
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			if (!result.success) {
 				result.term = self
@@ -343,7 +343,7 @@
 		return self
 	}
 	
-	Term.eof = (input, args = {exceptions: []}) => {
+	Term.eof = (input = "", args = {exceptions: []}) => {
 		if (input.length === 0) return Term.succeed({
 			source: "",
 			tail: "",
@@ -357,7 +357,7 @@
 	}
 	
 	Term.except = (term, exceptions) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const exceptions = args.exceptions === undefined? [] : args.exceptions
 			const result = self.term(input, {...args, exceptions: [...exceptions, ...self.exceptions]})
 			result.term = self
@@ -369,7 +369,7 @@
 	}
 	
 	Term.any = (term) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const result = self.term(input, {...args, exceptions: []})
 			result.term = self
 			return result
@@ -378,7 +378,7 @@
 		return self
 	}
 	
-	const getResultKey = (name, input, args = {exceptions: []}) => {
+	const getResultKey = (name, input = "", args = {exceptions: []}) => {
 		const lines = []
 		lines.push(name)
 		lines.push(input)
@@ -436,7 +436,7 @@
 		resultCachess.push(resultCaches)
 		const id = termCount++
 		
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			
 			const resultKey = getResultKey(key, input, args)
 			const resultCache = resultCaches.get(resultKey)
@@ -479,7 +479,7 @@
 	}
 	
 	Term.chain = (first, second) => {
-		const self = (input, args = {exceptions: []}) => {
+		const self = (input = "", args = {exceptions: []}) => {
 			const firstResult = self.first(input, args)
 			if (!firstResult.success) {
 				firstResult.error = `(Chained) ` + firstResult.error
