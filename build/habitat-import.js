@@ -498,7 +498,9 @@ Habitat.install = (global) => {
 				match = `Term.string("")`,
 				emit,
 				check,
-				error
+				error,
+				chain,
+				args,
 			} = options
 			
 			let definition = match
@@ -507,6 +509,9 @@ Habitat.install = (global) => {
 			}
 			if (error !== undefined) {
 				definition = `Term.error(${definition}, ${error})`
+			}
+			if (args !== undefined) {
+				definition = `Term.args(${definition}, ${args})`
 			}
 			if (emit !== undefined) {
 				definition = `Term.emit(${definition}, ${emit})`
@@ -569,6 +574,7 @@ Habitat.install = (global) => {
 			Term.term("EmitProperty", scope),
 			Term.term("CheckProperty", scope),
 			Term.term("ErrorProperty", scope),
+			Term.term("ArgsProperty", scope),
 		])
 		
 		scope.MatchProperty = Term.emit(
@@ -605,6 +611,15 @@ Habitat.install = (global) => {
 				Term.term("JavaScript", scope),
 			]),
 			([operator, gap, term = {}]) => `{error: \`${term.output}\`},`,
+		)
+		
+		scope.ArgsProperty = Term.emit(
+			Term.list([
+				Term.string("@@"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("JavaScript", scope),
+			]),
+			([operator, gap, term = {}]) => `{args: \`${term.output}\`},`,
 		)
 		
 		scope.JavaScript = Term.or([

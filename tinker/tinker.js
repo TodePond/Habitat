@@ -321,3 +321,6 @@ checker("Luke").log()
 const errorer = MotherTode `:: "foo" !! "BAR"`
 errorer("foo").log()
 errorer("fod").log()
+
+const argser = MotherTode `:: "hi" @@ (args) => ({...args, foo: "bar"})`
+argser("hi").log()
