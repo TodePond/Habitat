@@ -494,10 +494,19 @@ Habitat.install = (global) => {
 		])
 		
 		const makeDefinition = (options = {}) => {
-			const {match = `Term.string("")`, emit, check} = options
+			const {
+				match = `Term.string("")`,
+				emit,
+				check,
+				error
+			} = options
+			
 			let definition = match
 			if (check !== undefined) {
 				definition = `Term.check(${definition}, ${check})`
+			}
+			if (error !== undefined) {
+				definition = `Term.error(${definition}, ${error})`
 			}
 			if (emit !== undefined) {
 				definition = `Term.emit(${definition}, ${emit})`
@@ -509,6 +518,9 @@ Habitat.install = (global) => {
 			"match",
 			"emit",
 			"check",
+			"error",
+			"chain",
+			"args",
 		]
 		
 		scope.HorizontalDefinition = Term.emit(
@@ -556,6 +568,7 @@ Habitat.install = (global) => {
 			Term.term("MatchProperty", scope),
 			Term.term("EmitProperty", scope),
 			Term.term("CheckProperty", scope),
+			Term.term("ErrorProperty", scope),
 		])
 		
 		scope.MatchProperty = Term.emit(
@@ -583,6 +596,15 @@ Habitat.install = (global) => {
 				Term.term("JavaScript", scope),
 			]),
 			([operator, gap, term = {}]) => `{check: \`${term.output}\`},`,
+		)
+		
+		scope.ErrorProperty = Term.emit(
+			Term.list([
+				Term.string("!!"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("JavaScript", scope),
+			]),
+			([operator, gap, term = {}]) => `{error: \`${term.output}\`},`,
 		)
 		
 		scope.JavaScript = Term.or([
@@ -1534,6 +1556,13 @@ Habitat.install = (global) => {
 	}
 	
 	Term.error = (term, func) => {
+		if (typeof func !== "function") {
+			const value = func
+			func = (result) => {
+				if (!result.success) return value
+				else return result.error
+			}
+		}
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.error = self.func(result)
@@ -1546,6 +1575,10 @@ Habitat.install = (global) => {
 	}
 	
 	Term.check = (term, func) => {
+		if (typeof func !== "function") {
+			const value = func
+			func = () => value
+		}
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			if (!result.success) {

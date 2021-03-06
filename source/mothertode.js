@@ -77,10 +77,19 @@
 		])
 		
 		const makeDefinition = (options = {}) => {
-			const {match = `Term.string("")`, emit, check} = options
+			const {
+				match = `Term.string("")`,
+				emit,
+				check,
+				error
+			} = options
+			
 			let definition = match
 			if (check !== undefined) {
 				definition = `Term.check(${definition}, ${check})`
+			}
+			if (error !== undefined) {
+				definition = `Term.error(${definition}, ${error})`
 			}
 			if (emit !== undefined) {
 				definition = `Term.emit(${definition}, ${emit})`
@@ -92,6 +101,9 @@
 			"match",
 			"emit",
 			"check",
+			"error",
+			"chain",
+			"args",
 		]
 		
 		scope.HorizontalDefinition = Term.emit(
@@ -139,6 +151,7 @@
 			Term.term("MatchProperty", scope),
 			Term.term("EmitProperty", scope),
 			Term.term("CheckProperty", scope),
+			Term.term("ErrorProperty", scope),
 		])
 		
 		scope.MatchProperty = Term.emit(
@@ -166,6 +179,15 @@
 				Term.term("JavaScript", scope),
 			]),
 			([operator, gap, term = {}]) => `{check: \`${term.output}\`},`,
+		)
+		
+		scope.ErrorProperty = Term.emit(
+			Term.list([
+				Term.string("!!"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("JavaScript", scope),
+			]),
+			([operator, gap, term = {}]) => `{error: \`${term.output}\`},`,
 		)
 		
 		scope.JavaScript = Term.or([

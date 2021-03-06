@@ -317,3 +317,7 @@ long("Heyyololbop").log()
 const checker = MotherTode `:: /[a-zA-Z]/+ ?? (name) => name.output == "Luke"`
 checker("Bob").log() //should fail
 checker("Luke").log()
+
+const errorer = MotherTode `:: "foo" !! "BAR"`
+errorer("foo").log()
+errorer("fod").log()

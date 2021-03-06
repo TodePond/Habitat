@@ -298,6 +298,13 @@
 	}
 	
 	Term.error = (term, func) => {
+		if (typeof func !== "function") {
+			const value = func
+			func = (result) => {
+				if (!result.success) return value
+				else return result.error
+			}
+		}
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			result.error = self.func(result)
@@ -310,6 +317,10 @@
 	}
 	
 	Term.check = (term, func) => {
+		if (typeof func !== "function") {
+			const value = func
+			func = () => value
+		}
 		const self = (input, args = {exceptions: []}) => {
 			const result = self.term(input, args)
 			if (!result.success) {
