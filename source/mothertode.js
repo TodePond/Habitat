@@ -155,10 +155,40 @@
 		)
 		
 		scope.JavaScript = Term.or([
+			Term.term("JavaScriptMultiple", scope),
 			Term.term("JavaScriptSingle", scope),
 		])
 		
 		scope.JavaScriptSingle = Term.term("Line", scope)
+		scope.JavaScriptMultiple = Term.list([
+			Term.term("Line", scope),
+			Term.args(
+				Term.term("JavaScriptMultipleInner", scope),
+				(args) => {
+					args.indentSize++
+					return args
+				}
+			),
+			Term.term("Line", scope),
+		])
+		
+		scope.JavaScriptMultipleInner = Term.list([
+			Term.term("NewLine", scope),
+			Term.term("JavaScriptLines", scope),
+			Term.term("Unindent", scope),
+		])
+		
+		scope.JavaScriptLines = Term.list([
+			Term.term("Line", scope),
+			Term.maybe(
+				Term.many(
+					Term.list([
+						Term.term("NewLine", scope),
+						Term.term("Line", scope),
+					])
+				)
+			)
+		])
 		
 		scope.Line = Term.list([
 			Term.many(Term.regExp(/[^\n]/)),

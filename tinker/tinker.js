@@ -302,3 +302,9 @@ anyhi("hi").log()
 const match = MotherTode `:: "hi" "ya" >> "Hello world!"`
 match("hiyalol").log().output.d
 
+const matchs = MotherTode `:: "hi" "ya" >> () => {
+	const result = "Heya world!"
+	return result
+}`
+matchs("hiyalol").log().output.d
+

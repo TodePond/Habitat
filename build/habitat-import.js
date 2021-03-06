@@ -572,10 +572,40 @@ Habitat.install = (global) => {
 		)
 		
 		scope.JavaScript = Term.or([
+			Term.term("JavaScriptMultiple", scope),
 			Term.term("JavaScriptSingle", scope),
 		])
 		
 		scope.JavaScriptSingle = Term.term("Line", scope)
+		scope.JavaScriptMultiple = Term.list([
+			Term.term("Line", scope),
+			Term.args(
+				Term.term("JavaScriptMultipleInner", scope),
+				(args) => {
+					args.indentSize++
+					return args
+				}
+			),
+			Term.term("Line", scope),
+		])
+		
+		scope.JavaScriptMultipleInner = Term.list([
+			Term.term("NewLine", scope),
+			Term.term("JavaScriptLines", scope),
+			Term.term("Unindent", scope),
+		])
+		
+		scope.JavaScriptLines = Term.list([
+			Term.term("Line", scope),
+			Term.maybe(
+				Term.many(
+					Term.list([
+						Term.term("NewLine", scope),
+						Term.term("Line", scope),
+					])
+				)
+			)
+		])
 		
 		scope.Line = Term.list([
 			Term.many(Term.regExp(/[^\n]/)),
@@ -1197,7 +1227,7 @@ Habitat.install = (global) => {
 	const STYLE_SUCCESS = `font-weight: bold; color: rgb(0, 128, 255)`
 	const STYLE_FAILURE = `font-weight: bold; color: rgb(255, 70, 70)`
 	const STYLE_DEPTH = `font-weight: bold;`
-	const log = (result, depth = 5) => {
+	const log = (result, depth = 7) => {
 		
 		if (depth < 0) {
 			console.log("%cMaximum depth reached", STYLE_DEPTH)
