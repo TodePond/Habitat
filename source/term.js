@@ -482,7 +482,7 @@
 		const self = (input, args = {exceptions: []}) => {
 			const firstResult = self.first(input, args)
 			if (!firstResult.success) {
-				//firstResult.error = `Expected translation: ` + firstResult.error
+				firstResult.error = `(Chained) ` + firstResult.error
 				return firstResult
 			}
 			

@@ -93,6 +93,9 @@
 			if (error !== undefined) {
 				definition = `Term.error(${definition}, ${error})`
 			}
+			if (chain !== undefined) {
+				definition = `Term.chain(${chain}, ${definition})`
+			}
 			if (args !== undefined) {
 				definition = `Term.args(${definition}, ${args})`
 			}
@@ -158,6 +161,7 @@
 			Term.term("CheckProperty", scope),
 			Term.term("ErrorProperty", scope),
 			Term.term("ArgsProperty", scope),
+			Term.term("ChainProperty", scope),
 		])
 		
 		scope.MatchProperty = Term.emit(
@@ -167,6 +171,15 @@
 				Term.except(Term.term("Term", scope), []),
 			]),
 			([operator, gap, term = {}]) => `{match: \`${term.output}\`}, `,
+		)
+		
+		scope.ChainProperty = Term.emit(
+			Term.list([
+				Term.string("++"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.except(Term.term("Term", scope), []),
+			]),
+			([operator, gap, term = {}]) => `{chain: \`${term.output}\`}, `,
 		)
 		
 		scope.EmitProperty = Term.emit(
