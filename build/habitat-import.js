@@ -433,7 +433,9 @@ Habitat.install = (global) => {
 		}
 		
 		const func = new Function("scope", "return " + result.output.d)
-		const term = func()		
+		
+		const globalScope = {}
+		const term = func(globalScope)
 		term.success = result.success
 		term.output = result.output
 		term.source = result.source
@@ -441,9 +443,9 @@ Habitat.install = (global) => {
 		term.input = result.input
 		term.args = result.args
 		term.error = result.error
-		term.log = () => {
+		term.log = (...args) => {
 			//console.log(result.output)
-			result.log()
+			result.log(...args)
 			return term
 		}
 		
@@ -501,6 +503,7 @@ Habitat.install = (global) => {
 				error,
 				chain,
 				args,
+				subTerm,
 			} = options
 			
 			let definition = match
@@ -519,6 +522,14 @@ Habitat.install = (global) => {
 			if (emit !== undefined) {
 				definition = `Term.emit(${definition}, ${emit})`
 			}
+			if (subTerm !== undefined) {
+				const subTermsCode = subTerm.map(([name, value]) => `["${name}", ${value}]`).join(", ")
+				definition = `Term.subTerms(${definition}, [${subTermsCode}])`
+				/*for (const s of subTerm) {
+					const [name, value] = s
+					definition = `Term.subTerm(${definition}, "${name}", ${value})`
+				}*/
+			}
 			return definition
 		}
 		
@@ -529,27 +540,33 @@ Habitat.install = (global) => {
 			"error",
 			"chain",
 			"args",
+			"subTerm",
 		]
 		
 		scope.HorizontalDefinition = Term.emit(
 			Term.list([
-				Term.term("DefinitionProperty", scope),
+				Term.term("DefinitionEntry", scope),
 				Term.maybe(
 					Term.many(
 						Term.list([
 							Term.term("Gap", scope),
-							Term.term("DefinitionProperty", scope),
+							Term.term("DefinitionEntry", scope),
 						])
 					)
 				),
 			]),
 			(result) => {
-				const properties = new Function(`return [${result}]`)()
+				const entries = new Function(`return [${result}]`)()
 				const options = {}
-				for (const propertyName of PROPERTY_NAMES) {
-					for (const property of properties) {
+				for (const property of entries) {
+					for (const propertyName of PROPERTY_NAMES) {
 						const propertyValue = property[propertyName]
 						if (propertyValue !== undefined) {
+							if (propertyName == "subTerm") {
+								if (options.subTerm === undefined) options.subTerm = []
+								options.subTerm.push(propertyValue)
+								continue
+							}
 							if (options[propertyName] !== undefined) {
 								result.success = false
 								return
@@ -566,8 +583,22 @@ Habitat.install = (global) => {
 		)
 		
 		scope.DefinitionEntry = Term.or([
+			Term.term("Declaration", scope),
 			Term.term("DefinitionProperty", scope),
 		])
+		
+		scope.Name = Term.many(Term.regExp(/[a-zA-Z_$]/))
+		
+		scope.Declaration = Term.emit(
+			Term.list([
+				Term.term("Name", scope),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("Term", scope),
+			]),
+			([name, gap, term]) => {
+				return `{subTerm: ["${name}", "${term}"]},`
+			}
+		)
 		
 		scope.VerticalDefinition = Term.emit(
 			Term.list([
@@ -584,10 +615,15 @@ Habitat.install = (global) => {
 			(result) => {
 				const entries = new Function(`return [${result}]`)()
 				const options = {}
-				for (const propertyName of PROPERTY_NAMES) {
-					for (const property of entries) {
+				for (const property of entries) {
+					for (const propertyName of PROPERTY_NAMES) {
 						const propertyValue = property[propertyName]
 						if (propertyValue !== undefined) {
+							if (propertyName == "subTerm") {
+								if (options.subTerm === undefined) options.subTerm = []
+								options.subTerm.push(propertyValue)
+								continue
+							}
 							if (options[propertyName] !== undefined) {
 								result.success = false
 								return
@@ -888,7 +924,10 @@ Habitat.install = (global) => {
 		const getMargin = (size) => [`	`].repeat(size).join("")
 		scope.Margin = Term.check(
 			Term.maybe(Term.term("Gap", scope)),
-			(gap) => `${gap}`.length === gap.args.indentSize,
+			(gap) => {
+				const indentSize = gap.args.indentSize === undefined? 0 : gap.args.indentSize
+				return `${gap}`.length === indentSize
+			},
 		)
 		
 		scope.NewLine = Term.list([
@@ -1345,13 +1384,6 @@ Habitat.install = (global) => {
 		}
 		console.groupEnd()
 		
-	}
-	
-	const logValue = (value) => {
-		for (const v of value) {
-			if (typeof v === "string") console.log(v)
-			else log(v)
-		}
 	}
 	
 	Term.result = ({success, source, output = source, tail, term, error = "", children = []} = {}) => {
@@ -1811,6 +1843,20 @@ Habitat.install = (global) => {
 		self.first = first
 		self.second = second
 		return self
+	}
+	
+	Term.subTerm = (term, name, value) => {
+		if (term[name] !== undefined) throw new Error(`[Habitat.Term] Sub-term '${name}' is already declared`)
+		term[name] = value
+		return term
+	}
+	
+	Term.subTerms = (term, subTerms) => {
+		for (const [name, value] of subTerms) {
+			if (term[name] !== undefined) throw new Error(`[Habitat.Term] Sub-term '${name}' is already declared`)
+			term[name] = value
+		}
+		return term
 	}
 	
 	Habitat.Term = Term

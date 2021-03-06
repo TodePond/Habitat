@@ -16,7 +16,9 @@
 		}
 		
 		const func = new Function("scope", "return " + result.output.d)
-		const term = func()		
+		
+		const globalScope = {}
+		const term = func(globalScope)
 		term.success = result.success
 		term.output = result.output
 		term.source = result.source
@@ -24,9 +26,9 @@
 		term.input = result.input
 		term.args = result.args
 		term.error = result.error
-		term.log = () => {
+		term.log = (...args) => {
 			//console.log(result.output)
-			result.log()
+			result.log(...args)
 			return term
 		}
 		
@@ -84,6 +86,7 @@
 				error,
 				chain,
 				args,
+				subTerm,
 			} = options
 			
 			let definition = match
@@ -102,6 +105,14 @@
 			if (emit !== undefined) {
 				definition = `Term.emit(${definition}, ${emit})`
 			}
+			if (subTerm !== undefined) {
+				const subTermsCode = subTerm.map(([name, value]) => `["${name}", ${value}]`).join(", ")
+				definition = `Term.subTerms(${definition}, [${subTermsCode}])`
+				/*for (const s of subTerm) {
+					const [name, value] = s
+					definition = `Term.subTerm(${definition}, "${name}", ${value})`
+				}*/
+			}
 			return definition
 		}
 		
@@ -112,27 +123,33 @@
 			"error",
 			"chain",
 			"args",
+			"subTerm",
 		]
 		
 		scope.HorizontalDefinition = Term.emit(
 			Term.list([
-				Term.term("DefinitionProperty", scope),
+				Term.term("DefinitionEntry", scope),
 				Term.maybe(
 					Term.many(
 						Term.list([
 							Term.term("Gap", scope),
-							Term.term("DefinitionProperty", scope),
+							Term.term("DefinitionEntry", scope),
 						])
 					)
 				),
 			]),
 			(result) => {
-				const properties = new Function(`return [${result}]`)()
+				const entries = new Function(`return [${result}]`)()
 				const options = {}
-				for (const propertyName of PROPERTY_NAMES) {
-					for (const property of properties) {
+				for (const property of entries) {
+					for (const propertyName of PROPERTY_NAMES) {
 						const propertyValue = property[propertyName]
 						if (propertyValue !== undefined) {
+							if (propertyName == "subTerm") {
+								if (options.subTerm === undefined) options.subTerm = []
+								options.subTerm.push(propertyValue)
+								continue
+							}
 							if (options[propertyName] !== undefined) {
 								result.success = false
 								return
@@ -149,8 +166,22 @@
 		)
 		
 		scope.DefinitionEntry = Term.or([
+			Term.term("Declaration", scope),
 			Term.term("DefinitionProperty", scope),
 		])
+		
+		scope.Name = Term.many(Term.regExp(/[a-zA-Z_$]/))
+		
+		scope.Declaration = Term.emit(
+			Term.list([
+				Term.term("Name", scope),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("Term", scope),
+			]),
+			([name, gap, term]) => {
+				return `{subTerm: ["${name}", "${term}"]},`
+			}
+		)
 		
 		scope.VerticalDefinition = Term.emit(
 			Term.list([
@@ -167,10 +198,15 @@
 			(result) => {
 				const entries = new Function(`return [${result}]`)()
 				const options = {}
-				for (const propertyName of PROPERTY_NAMES) {
-					for (const property of entries) {
+				for (const property of entries) {
+					for (const propertyName of PROPERTY_NAMES) {
 						const propertyValue = property[propertyName]
 						if (propertyValue !== undefined) {
+							if (propertyName == "subTerm") {
+								if (options.subTerm === undefined) options.subTerm = []
+								options.subTerm.push(propertyValue)
+								continue
+							}
 							if (options[propertyName] !== undefined) {
 								result.success = false
 								return
@@ -471,7 +507,10 @@
 		const getMargin = (size) => [`	`].repeat(size).join("")
 		scope.Margin = Term.check(
 			Term.maybe(Term.term("Gap", scope)),
-			(gap) => `${gap}`.length === gap.args.indentSize,
+			(gap) => {
+				const indentSize = gap.args.indentSize === undefined? 0 : gap.args.indentSize
+				return `${gap}`.length === indentSize
+			},
 		)
 		
 		scope.NewLine = Term.list([

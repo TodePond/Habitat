@@ -30,13 +30,6 @@
 		
 	}
 	
-	const logValue = (value) => {
-		for (const v of value) {
-			if (typeof v === "string") console.log(v)
-			else log(v)
-		}
-	}
-	
 	Term.result = ({success, source, output = source, tail, term, error = "", children = []} = {}) => {
 		const self = (input = "", args = {exceptions: []}) => {			
 			const result = [...children]
@@ -494,6 +487,20 @@
 		self.first = first
 		self.second = second
 		return self
+	}
+	
+	Term.subTerm = (term, name, value) => {
+		if (term[name] !== undefined) throw new Error(`[Habitat.Term] Sub-term '${name}' is already declared`)
+		term[name] = value
+		return term
+	}
+	
+	Term.subTerms = (term, subTerms) => {
+		for (const [name, value] of subTerms) {
+			if (term[name] !== undefined) throw new Error(`[Habitat.Term] Sub-term '${name}' is already declared`)
+			term[name] = value
+		}
+		return term
 	}
 	
 	Habitat.Term = Term

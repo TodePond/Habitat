@@ -342,3 +342,13 @@ const vertdef = MotherTode `
 `
 vertdef().log().output.d
 
+const decl = MotherTode `Hello :: "hello"`
+decl.Hello("hello").log()
+
+const decls = MotherTode `
+	:: "hi"
+	Hello "hello"
+	World "world"
+	Exclamation "!"
+`
+decls.Hello("hello").log()
