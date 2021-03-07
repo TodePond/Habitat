@@ -407,3 +407,8 @@ const selector = MotherTode `
 `
 
 selector("3 add 2").log().output.d
+
+const exper = MotherTode `
+	Hello :: "hello"
+	export Hello
+`.log(7).output.d

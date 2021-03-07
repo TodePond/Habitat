@@ -15,7 +15,7 @@
 			return result
 		}
 		
-		const func = new Function(`
+		const func = new Function(`global`, `
 			const scope = {}
 			const term = ${result.output}
 			for (const key in term) {
@@ -24,7 +24,7 @@
 			return term
 		`)
 		
-		const term = func()
+		const term = func(Habitat.MotherTode.global)
 		term.success = result.success
 		term.output = result.output
 		term.source = result.source
@@ -50,6 +50,7 @@
 	Habitat.MotherTode.install = (global) => {
 		global.MotherTode = Habitat.MotherTode	
 		Habitat.MotherTode.installed = true
+		Habitat.MotherTode.global = global
 		
 		const scope = Habitat.MotherTode.scope
 		const Term = Habitat.Term
@@ -122,6 +123,7 @@
 				chain,
 				args,
 				subTerm,
+				exp,
 			} = options
 			
 			let definition = match
@@ -143,10 +145,14 @@
 			if (subTerm !== undefined) {
 				const subTermsCode = subTerm.map(([name, value]) => `['${name}', ${value}]`).join(", ")
 				definition = `Term.subTerms(${definition}, [${subTermsCode}])`
-				/*for (const s of subTerm) {
-					const [name, value] = s
-					definition = `Term.subTerm(${definition}, "${name}", ${value})`
-				}*/
+			}
+			if (exp !== undefined) {
+				const lines = []
+				lines.push(`(() => {`)
+				lines.push(`	global.${exp[0]} = ${exp[1]}`)
+				lines.push(`	return ${definition}`)
+				lines.push(`})()`)
+				definition = lines.join("\n")
 			}
 			return definition
 		}
@@ -159,6 +165,7 @@
 			"chain",
 			"args",
 			"subTerm",
+			"exp",
 		]
 		
 		scope.HorizontalDefinition = Term.emit(
@@ -201,6 +208,7 @@
 		)
 		
 		scope.DefinitionEntry = Term.or([
+			Term.term("Export", scope),
 			Term.term("DefinitionProperty", scope),
 			Term.term("Declaration", scope),
 		])
@@ -225,6 +233,18 @@
 			),
 			([name, gap, term]) => {
 				return `{subTerm: ["${name}", "${term}"]},`
+			}
+		)
+		
+		scope.Export = Term.emit(
+			Term.list([
+				Term.string("export"),
+				Term.maybe(Term.term("Gap", scope)),
+				Term.term("Reference", scope),
+			]),
+			([exp, gap, term]) => {
+				const name = term.output.split("'")[1]
+				return `{exp: ["${name}", "${term}"]},`
 			}
 		)
 		
