@@ -420,6 +420,7 @@ Habitat.install = (global) => {
 //============//
 {
 
+	const Term = Habitat.Term
 	Habitat.MotherTode = (...args) => {
 		Term.resetCache()
 		const source = String.raw(...args)
@@ -463,7 +464,6 @@ Habitat.install = (global) => {
 	Habitat.MotherTode.scope = {}
 	
 	Habitat.MotherTode.install = (global) => {
-		//if (!Habitat.Term.installed) throw new Error('[MotherTode] MotherTode requires the Habitat.Term library')
 		global.MotherTode = Habitat.MotherTode	
 		Habitat.MotherTode.installed = true
 		Habitat.MotherTode.global = global
@@ -2184,3 +2184,21 @@ Habitat.install = (global) => {
 	Habitat.Type = {install, Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive}
 	
 }
+
+export {Habitat}
+export default Habitat
+export const {install} = Habitat
+export const {sleep} = Habitat.Async
+export const {print, dir, print9} = Habitat.Console
+export const {$, $$} = Habitat.Document
+export const {HTML} = Habitat
+export const {JavaScript} = Habitat
+export const {Keyboard} = Habitat
+export const {gcd, reduce} = Habitat.Math
+export const {MotherTode} = Habitat
+export const {Mouse} = Habitat
+export const {Random} = Habitat
+export const {Stage} = Habitat
+export const {Term} = Habitat
+export const {Touch} = Habitat
+export const {Int,Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive} = Habitat.Type

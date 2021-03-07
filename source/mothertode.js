@@ -3,8 +3,6 @@
 //============//
 {
 
-	
-	
 	Habitat.MotherTode = (...args) => {
 		Term.resetCache()
 		const source = String.raw(...args)
@@ -48,6 +46,7 @@
 	Habitat.MotherTode.scope = {}
 	
 	Habitat.MotherTode.install = (global) => {
+		//if (!Habitat.Term.installed) throw new Error('[MotherTode] MotherTode requires the Habitat.Term library')
 		global.MotherTode = Habitat.MotherTode	
 		Habitat.MotherTode.installed = true
 		Habitat.MotherTode.global = global
