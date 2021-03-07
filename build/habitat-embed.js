@@ -969,8 +969,12 @@ Habitat.install = (global) => {
 		)
 		
 		scope.NewLine = Term.list([
-			Term.maybe(Term.term("Gap", scope)),
-			Term.string("\n"),
+			Term.many(
+				Term.list([
+					Term.maybe(Term.term("Gap", scope)),
+					Term.string("\n"),
+				])
+			),
 			Term.term("Margin", scope),
 		])
 		

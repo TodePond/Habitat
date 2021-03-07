@@ -386,7 +386,7 @@ const whitespace = MotherTode `
 const EWAL = MotherTode `
 	:: Instruction {"\n" Instruction}
 	Instruction :: "Hello"
-	Instruction :: "Yo"
 `
 
 print(EWAL(`Hello`).output)
+
