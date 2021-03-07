@@ -378,15 +378,11 @@ fullWorldScope.Greeting("hellopond!").log()
 fullWorldScope.Greeting.World("pond").log()
 
 const whitespace = MotherTode `
-	Hello :: "hello"
+	:: Hello " " Name
+	>> ([hello, gap, name]) => 'Yo #{name}!'
 	
+	Hello :: "hello"
 	Name :: /[a-z]/+
 `.log()
-
-const EWAL = MotherTode `
-	:: Instruction {"\n" Instruction}
-	Instruction :: "Hello"
-`
-
-print(EWAL(`Hello`).output)
+whitespace("hello bob").log().output.d
 

@@ -319,10 +319,29 @@
 			([operator, gap, term = {}]) => `{args: \`${sanitise(term.output)}\`},`,
 		)
 		
-		scope.JavaScript = Term.or([
-			Term.term("JavaScriptMultiple", scope),
-			Term.term("JavaScriptSingle", scope),
-		])
+		scope.JavaScript = Term.emit(
+			Term.or([
+				Term.term("JavaScriptMultiple", scope),
+				Term.term("JavaScriptSingle", scope),
+			]),
+			({output}) => {
+				const state = {
+					escape: false,
+					output: "",
+				}
+				for (let i = 0; i < output.length; i++) {
+					const c = output[i]
+					if (state.escape) {
+						state.output += c
+						state.escape = false
+					}
+					else if (c === "'") state.output += "`"
+					else if (c === "#") state.output += "\\$"
+					else state.output += c
+				}
+				return state.output
+			}
+		)
 		
 		scope.JavaScriptSingle = Term.term("Line", scope)
 		scope.JavaScriptMultiple = Term.list([
