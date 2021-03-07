@@ -430,18 +430,22 @@ Habitat.install = (global) => {
 			return result
 		}
 		
-		const func = new Function(`global`, `
+		const output = `
+			const global = window
 			const scope = {}
 			const term = ${result.output}
 			for (const key in term) {
 				scope[key] = term[key]
 			}
 			return term
-		`)
+		`
+		const func = new Function(output)
 		
-		const term = func(Habitat.MotherTode.global)
+		const fullOutput = `(() => {\n${output}\n})()`
+		
+		const term = func()
 		term.success = result.success
-		term.output = result.output
+		term.output = fullOutput
 		term.source = result.source
 		term.tail = result.tail
 		term.input = result.input
