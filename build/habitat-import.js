@@ -428,7 +428,7 @@ Habitat.install = (global) => {
 		//print(source)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0, scopePath: ""})
 		if (!result.success) {
-			//result.log()
+			result.log()
 			return result
 		}
 		
@@ -487,11 +487,13 @@ Habitat.install = (global) => {
 			Term.term("Or", scope),
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
-			//Term.term("Any", scope),
+			Term.term("Any", scope),
 			
 			Term.term("HorizontalDefinition", scope),
 			Term.term("HorizontalList", scope),
 			
+			Term.term("GapReference", scope),
+			Term.term("EOFReference", scope),
 			Term.term("Reference", scope),
 			
 			Term.term("Group", scope),
@@ -500,8 +502,18 @@ Habitat.install = (global) => {
 			Term.term("OrGroup", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
-			Term.term("NoExceptions", scope),
+			//Term.term("NoExceptions", scope),
 		])
+		
+		scope.GapReference = Term.emit(
+			Term.string("_"),
+			"Term.many(Term.regExp(/ |	/))",
+		)
+		
+		scope.EOFReference = Term.emit(
+			Term.string("EOF"),
+			"Term.eof",
+		)
 		
 		scope.Reference = Term.emit(
 			Term.list([
@@ -686,7 +698,7 @@ Habitat.install = (global) => {
 			Term.list([
 				Term.string("::"),
 				Term.maybe(Term.term("Gap", scope)),
-				Term.except(Term.term("Term", scope), []),
+				Term.term("Term", scope),
 			]),
 			([operator, gap, term = {}]) => `{match: \`${sanitise(term.output)}\`}, `,
 		)
@@ -1429,7 +1441,7 @@ Habitat.install = (global) => {
 	const STYLE_SUCCESS = `font-weight: bold; color: rgb(0, 128, 255)`
 	const STYLE_FAILURE = `font-weight: bold; color: rgb(255, 70, 70)`
 	const STYLE_DEPTH = `font-weight: bold;`
-	const log = (result, depth = 7) => {
+	const log = (result, depth = 5) => {
 		
 		if (depth < 0) {
 			console.log("%cMaximum depth reached", STYLE_DEPTH)
@@ -1932,7 +1944,9 @@ Habitat.install = (global) => {
 	}
 	
 	Term.subTerm = (term, name, value) => {
-		if (term[name] !== undefined) throw new Error(`[Habitat.Term] Sub-term '${name}' is already declared`)
+		if (term[name] !== undefined) {
+			throw new Error(`[Habitat.Term] Sub-term '${name}' is already declared`)
+		}
 		term[name] = value
 		return term
 	}
@@ -1945,11 +1959,32 @@ Habitat.install = (global) => {
 		return term
 	}
 	
+	Term.select = (term, ids) => {
+		const self = (input = "", args = {exceptions: []}) => {
+			const result = self.term(input, args)
+			const children = ids.map(id => result[id])
+			return Term.result({
+				success: result.success,
+				output: result.output,
+				source: result.source,
+				tail: result.tail,
+				term: result.term,
+				error: result.error,
+				children,
+			})(input, args)
+		}
+		self.term = term
+		self.ids = ids
+		return self
+	}
+	
 	Habitat.Term = Term
 	Habitat.Term.install = (global) => {
 		global.Term = Habitat.Term	
 		Habitat.Term.installed = true
 	}
+	
+	
 	
 }
 

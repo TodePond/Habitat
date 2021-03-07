@@ -11,7 +11,7 @@
 		//print(source)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0, scopePath: ""})
 		if (!result.success) {
-			//result.log()
+			result.log()
 			return result
 		}
 		
@@ -70,11 +70,13 @@
 			Term.term("Or", scope),
 			Term.term("Maybe", scope),
 			Term.term("Many", scope),
-			//Term.term("Any", scope),
+			Term.term("Any", scope),
 			
 			Term.term("HorizontalDefinition", scope),
 			Term.term("HorizontalList", scope),
 			
+			Term.term("GapReference", scope),
+			Term.term("EOFReference", scope),
 			Term.term("Reference", scope),
 			
 			Term.term("Group", scope),
@@ -83,8 +85,18 @@
 			Term.term("OrGroup", scope),
 			Term.term("String", scope),
 			Term.term("RegExp", scope),
-			Term.term("NoExceptions", scope),
+			//Term.term("NoExceptions", scope),
 		])
+		
+		scope.GapReference = Term.emit(
+			Term.string("_"),
+			"Term.many(Term.regExp(/ |	/))",
+		)
+		
+		scope.EOFReference = Term.emit(
+			Term.string("EOF"),
+			"Term.eof",
+		)
 		
 		scope.Reference = Term.emit(
 			Term.list([
@@ -269,7 +281,7 @@
 			Term.list([
 				Term.string("::"),
 				Term.maybe(Term.term("Gap", scope)),
-				Term.except(Term.term("Term", scope), []),
+				Term.term("Term", scope),
 			]),
 			([operator, gap, term = {}]) => `{match: \`${sanitise(term.output)}\`}, `,
 		)

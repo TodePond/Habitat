@@ -339,7 +339,7 @@ const vertdef = MotherTode `
 `
 vertdef().log().output.d
 
-const decl = MotherTode `Hello :: "hello"`
+//const decl = MotherTode `Hello :: "hello"`
 //decl.Hello("hello").log()
 
 const decls = MotherTode `
@@ -360,7 +360,7 @@ const fullWorld = MotherTode `
 	Ending :: "!" | "."
 `
 fullWorld.Hello("hello").log()
-fullWorld("hello world.").log()
+fullWorld("hello world.").log().output.d
 
 const fullWorldScope = MotherTode `
 	:: Greeting.Hello World
@@ -385,4 +385,25 @@ const whitespace = MotherTode `
 	Name :: /[a-z]/+
 `.log()
 whitespace("hello bob").log().output.d
+/*
+const doubled = MotherTode `
+	Greeting :: "hello"
+	Greeting :: "hi"
+`*/
 
+Term.select(
+	Term.list([
+		Term.string("greet"),
+		Term.string(" "),
+		Term.string("world"),
+	]),
+	[2],
+)("greet world").log().output.d
+
+const selector = MotherTode `
+	:: Literal ([_] "add" [_]) Literal
+	>> ([left, inner, right]) => '#{left} + #{right}'
+	Literal :: /[0-9]/+
+`
+
+selector("3 add 2").log().output.d

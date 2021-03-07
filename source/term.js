@@ -8,7 +8,7 @@
 	const STYLE_SUCCESS = `font-weight: bold; color: rgb(0, 128, 255)`
 	const STYLE_FAILURE = `font-weight: bold; color: rgb(255, 70, 70)`
 	const STYLE_DEPTH = `font-weight: bold;`
-	const log = (result, depth = 7) => {
+	const log = (result, depth = 5) => {
 		
 		if (depth < 0) {
 			console.log("%cMaximum depth reached", STYLE_DEPTH)
@@ -511,7 +511,9 @@
 	}
 	
 	Term.subTerm = (term, name, value) => {
-		if (term[name] !== undefined) throw new Error(`[Habitat.Term] Sub-term '${name}' is already declared`)
+		if (term[name] !== undefined) {
+			throw new Error(`[Habitat.Term] Sub-term '${name}' is already declared`)
+		}
 		term[name] = value
 		return term
 	}
@@ -524,10 +526,31 @@
 		return term
 	}
 	
+	Term.select = (term, ids) => {
+		const self = (input = "", args = {exceptions: []}) => {
+			const result = self.term(input, args)
+			const children = ids.map(id => result[id])
+			return Term.result({
+				success: result.success,
+				output: result.output,
+				source: result.source,
+				tail: result.tail,
+				term: result.term,
+				error: result.error,
+				children,
+			})(input, args)
+		}
+		self.term = term
+		self.ids = ids
+		return self
+	}
+	
 	Habitat.Term = Term
 	Habitat.Term.install = (global) => {
 		global.Term = Habitat.Term	
 		Habitat.Term.installed = true
 	}
+	
+	
 	
 }
