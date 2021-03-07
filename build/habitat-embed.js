@@ -979,8 +979,12 @@ Habitat.install = (global) => {
 		])
 		
 		scope.Unindent = Term.list([
-			Term.maybe(Term.term("Gap", scope)),
-			Term.string("\n"),
+			Term.many(
+				Term.list([
+					Term.maybe(Term.term("Gap", scope)),
+					Term.string("\n"),
+				])
+			),
 			Term.args(
 				Term.term("Margin", scope),
 				(args) => {
