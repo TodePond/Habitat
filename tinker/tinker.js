@@ -412,3 +412,7 @@ const exper = MotherTode `
 	Hello :: "hello"
 	export Hello
 `.log(7).output.d
+
+const numm = MotherTode `
+	Num >> "12"
+`

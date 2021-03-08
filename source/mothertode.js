@@ -4,6 +4,14 @@
 {
 
 	Habitat.MotherTode = (...args) => {
+		return Habitat.MotherTode.read(true, args)
+	}
+	
+	Habitat.MotherTode.translate = (...args) => {
+		return Habitat.MotherTode.read(false, args)
+	}
+	
+	Habitat.MotherTode.read = (make = true, args) => {
 		Term.resetCache()
 		const source = String.raw(...args)
 		//print(source)
@@ -22,13 +30,15 @@
 			}
 			return term
 		`
+		const fullOutput = `(() => {\n${output}\n})()`
+		if (!make) return fullOutput
 		const func = new Function(output)
 		
-		const fullOutput = `(() => {\n${output}\n})()`
 		
 		const term = func()
 		term.success = result.success
-		term.output = fullOutput
+		term.output = result.output
+		term.translation = fullOutput
 		term.source = result.source
 		term.tail = result.tail
 		term.input = result.input
@@ -235,7 +245,7 @@
 				}
 			),
 			([name, gap, term]) => {
-				return `{subTerm: ["${name}", "${term}"]},`
+				return `{subTerm: [\`${name}\`, \`${sanitise(term.output)}\`]},`
 			}
 		)
 		
