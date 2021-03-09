@@ -17,7 +17,7 @@
 		//print(source)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0, scopePath: ""})
 		if (!result.success) {
-			result.log()
+			result.log(8)
 			return result
 		}
 		
@@ -156,8 +156,8 @@
 				definition = `Term.emit(${definition}, ${emit})`
 			}
 			if (subTerm !== undefined) {
-				const subTermsCode = subTerm.map(([name, value]) => `['${name}', ${value}]`).join(", ")
-				definition = `Term.subTerms(${definition}, [${subTermsCode}])`
+				const subTermsCode = subTerm.map(([name, value]) => `['${name}', ${value}]`).join(",\n")
+				definition = `Term.subTerms(${definition}, [\n${subTermsCode}\n])`
 			}
 			if (exp !== undefined) {
 				const lines = []
@@ -323,7 +323,7 @@
 			Term.list([
 				Term.string("++"),
 				Term.maybe(Term.term("Gap", scope)),
-				Term.except(Term.term("Term", scope), []),
+				Term.term("Term", scope),
 			]),
 			([operator, gap, term = {}]) => `{chain: \`${sanitise(term.output)}\`}, `,
 		)
@@ -427,7 +427,10 @@
 			Term.list([
 				Term.except(Term.term("Term", scope), [Term.term("Many", scope)]),
 				Term.maybe(Term.term("Gap", scope)),
-				Term.string("+"),
+				Term.check(
+					Term.string("+"),
+					(result) => result.tail[0] !== "+",
+				),
 			]),
 			([term]) => `Term.many(${term})`,
 		)

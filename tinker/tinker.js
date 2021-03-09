@@ -322,7 +322,7 @@ errorer("foo").log()
 const argser = MotherTode `:: "hi" @@ (args) => ({...args, foo: "bar"})`
 argser("hi").log()
 
-const chainer = MotherTode `++ /[abc]/ :: /[bcd]/`
+const chainer = MotherTode `:: /[bcd]/ ++ /[abc]/`
 chainer("b").log()
 //chainer("a").log() //should fail
 //chainer("d").log() //should fail
