@@ -430,6 +430,11 @@
 		return setValue(object[head], tail, value)
 	}
 	
+	Term.export = (term, global, name) => {
+		global[name] = term
+		return term
+	}
+	
 	Term.term = (key, object) => {
 		
 		// Get term from cache

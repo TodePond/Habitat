@@ -14,6 +14,7 @@
 	Habitat.MotherTode.read = (make = true, args) => {
 		Term.resetCache()
 		const source = String.raw(...args)
+		//const source = dirtySource.split("").map(c => `\\${c}`).join("")
 		//print(source)
 		const result = Term.term("MotherTode", Habitat.MotherTode.scope)(source, {exceptions: [], indentSize: 0, scopePath: ""})
 		if (!result.success) {
@@ -161,10 +162,11 @@
 			}
 			if (exp !== undefined) {
 				const lines = []
-				lines.push(`(() => {`)
+				lines.push(`Term.export(${definition}, global, "${exp[0]}")`)
+				/*lines.push(`(() => {`)
 				lines.push(`	global.${exp[0]} = ${exp[1]}`)
 				lines.push(`	return ${definition}`)
-				lines.push(`})()`)
+				lines.push(`})()`)*/
 				definition = lines.join("\n")
 			}
 			return definition
