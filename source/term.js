@@ -76,6 +76,9 @@
 	}
 	
 	Term.regExp = (regExp) => {
+		if (typeof regExp === "string") {
+			regExp = RegExp(regExp)
+		}
 		const term = (input = "", args = {exceptions: []}) => {
 			const finiteRegExp = new RegExp("^" + term.regExp.source + "$")
 			let i = 0

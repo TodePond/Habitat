@@ -22,15 +22,15 @@
 			return result
 		}
 		
-		const output = `
-			const global = window
-			const scope = {}
-			const term = ${result.output}
-			for (const key in term) {
-				scope[key] = term[key]
-			}
-			return term
-		`
+		const outputLines = []
+		outputLines.push("const global = window")
+		outputLines.push("const scope = {}")
+		outputLines.push(`const term = ${result.output}`)
+		outputLines.push("for (const key in term) {")
+		outputLines.push("	scope[key] = term[key]")
+		outputLines.push("}")
+		outputLines.push("return term")
+		const output = outputLines.map(line => `	${line}`).join("\n")
 		const fullOutput = `(() => {\n${output}\n})()`
 		if (!make) return fullOutput
 		let func
@@ -135,7 +135,7 @@
 			(name) => `Term.term('${name.args.scopePath}${name}', scope)`,
 		)
 		
-		const makeDefinition = (options = {}) => {
+		const makeDefinition = (options = {}, indentSize) => {
 			const {
 				match = `Term.string('')`,
 				emit,
@@ -164,8 +164,8 @@
 				definition = `Term.emit(${definition}, ${emit})`
 			}
 			if (subTerm !== undefined) {
-				const subTermsCode = subTerm.map(([name, value]) => `['${name}', ${value}]`).join(",\n")
-				definition = `Term.subTerms(${definition}, [\n${subTermsCode}\n])`
+				const subTermsCode = subTerm.map(([name, value]) => `['${name}', ${value}]`).join(`,${getMargin(indentSize+1)}\n`)
+				definition = `Term.subTerms(${definition}, [\n${getMargin(indentSize)}${subTermsCode}${getMargin(indentSize)}\n])`
 			}
 			if (exp !== undefined) {
 				const lines = []
@@ -223,7 +223,7 @@
 					}
 				}
 				
-				const definition = makeDefinition(options)
+				const definition = makeDefinition(options, result.args.indentSize)
 				return definition
 				
 			}
@@ -303,7 +303,7 @@
 					}
 				}
 				
-				const definition = makeDefinition(options)
+				const definition = makeDefinition(options, result.args.indentSize)
 				return definition
 			},
 		)
@@ -389,6 +389,8 @@
 						state.output += c
 						state.escape = false
 					}
+					else if (c === "\\" && output[i+1] === "n") state.output += "\\\\\\\\"
+					else if (c === "\\") state.escape = true
 					else if (c === "'") state.output += "`"
 					else if (c === "#") state.output += "\\$"
 					else state.output += c
@@ -677,11 +679,11 @@
 				Term.string(`/`),
 			]),
 			([left, inner]) => {
-				/*const source = inner.output.split("").map(c => {
-					if (c === "\\") return "\\\\\\\\"
+				const source = inner.output.split("").map(c => {
+					/*if (c === "\\") return "\\\\\\"*/
 					return c
-				}).join("")*/
-				return `Term.regExp(/${inner}/)`
+				}).join("")
+				return `Term.regExp(\`${inner}\`)`
 			},
 		)
 		
