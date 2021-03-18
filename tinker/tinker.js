@@ -223,7 +223,7 @@ scope.Divide = Term.list([
 	Term.string("/"),
 	Term.term("Number", scope),
 ])*/
-
+/*
 const hello = MotherTode `"hello"`
 hello("hello").log()
 
@@ -384,13 +384,13 @@ const whitespace = MotherTode `
 	Hello :: "hello"
 	Name :: /[a-z]/+
 `.log()
-whitespace("hello bob").log().output.d
+whitespace("hello bob").log().output.d*/
 /*
 const doubled = MotherTode `
 	Greeting :: "hello"
 	Greeting :: "hi"
 `*/
-
+/*
 Term.select(
 	Term.list([
 		Term.string("greet"),
@@ -416,3 +416,4 @@ const exper = MotherTode `
 const numm = MotherTode `
 	Num >> "12"
 `
+*/
