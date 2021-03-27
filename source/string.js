@@ -15,6 +15,15 @@
 			writable: true,
 		})
 		
+		Reflect.defineProperty(global.String.prototype, "toNumber", {
+			value(base) {
+				return parseInt(this, base)
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
+		
 		Habitat.String.installed = true
 		
 	}
