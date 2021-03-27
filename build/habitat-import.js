@@ -362,14 +362,13 @@ Habitat.install = (global) => {
 	if (!Habitat.JavaScript.installed) Habitat.JavaScript.install(global)
 	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
 	if (!Habitat.Math.installed)       Habitat.Math.install(global)
-	//if (!Habitat.MotherTode.installed) Habitat.MotherTode.install(global)
 	if (!Habitat.Mouse.installed)      Habitat.Mouse.install(global)
 	if (!Habitat.Number.installed)     Habitat.Number.install(global)
 	if (!Habitat.Object.installed)     Habitat.Object.install(global)
 	if (!Habitat.Property.installed)   Habitat.Property.install(global)
 	if (!Habitat.Random.installed)     Habitat.Random.install(global)
 	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
-	//if (!Habitat.Term.installed)       Habitat.Term.install(global)
+	if (!Habitat.String.installed)     Habitat.String.install(global)
 	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
 	
@@ -770,6 +769,31 @@ Habitat.install = (global) => {
 	
 }
 
+//========//
+// String //
+//========//
+{
+	
+	const install = (global) => {
+		
+		Reflect.defineProperty(global.String.prototype, "divide", {
+			value(n) {
+				const regExp = RegExp(`[^]{1,${n}}`, "g")
+				return this.match(regExp)
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
+		
+		Habitat.String.installed = true
+		
+	}
+	
+	Habitat.String = {install}
+	
+}
+
 //=======//
 // Touch //
 //=======//
@@ -957,10 +981,8 @@ export const {HTML} = Habitat
 export const {JavaScript} = Habitat
 export const {Keyboard} = Habitat
 export const {gcd, reduce} = Habitat.Math
-export const {MotherTode} = Habitat
 export const {Mouse} = Habitat
 export const {Random} = Habitat
 export const {Stage} = Habitat
-export const {Term} = Habitat
 export const {Touch} = Habitat
-export const {Int,Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive} = Habitat.Type
+export const {Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive} = Habitat.Type
