@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std/http/server.ts"
 import { serveFile } from "https://deno.land/std/http/file_server.ts"
 import { resolve } from "https://deno.land/std/path/mod.ts"
 const s = serve({port: 8000 })
-console.log("%cServer Running", "color: rgb(0, 128, 255)")
+console.log("%cServer Running on port 8000", "color: rgb(0, 128, 255)")
 for await (const req of s) {
 	const isDir = req.url.split(".").length === 1
 	if (isDir) {
