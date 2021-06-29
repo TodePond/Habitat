@@ -856,8 +856,11 @@ Habitat.install = (global) => {
 					const x = changedTouch.clientX
 					const y = changedTouch.clientY
 					const id = changedTouch.identifier
-					if (Touch[id] === undefined) Touch[id] = {position: [undefined, undefined]}
-					const touch = Touch[id]
+					let touch = Touch[id]
+					if (touch == undefined) {
+						touch = {position: [undefined, undefined]}
+						Touch[id] = touch
+					}
 					touch.position[0] = x
 					touch.position[1] = y
 				}
