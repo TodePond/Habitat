@@ -852,17 +852,23 @@ Habitat.install = (global) => {
 			})
 			
 			global.addEventListener("touchmove", e => {
-				for (const changedTouch of e.changedTouches) {
-					const x = changedTouch.clientX
-					const y = changedTouch.clientY
-					const id = changedTouch.identifier
-					let touch = Touch[id]
-					if (touch == undefined) {
-						touch = {position: [undefined, undefined]}
-						Touch[id] = touch
+				try {
+					for (const changedTouch of e.changedTouches) {
+						const x = changedTouch.clientX
+						const y = changedTouch.clientY
+						const id = changedTouch.identifier
+						let touch = Touch[id]
+						if (touch == undefined) {
+							touch = {position: []}
+							Touch[id] = touch
+						}
+
+						touch.position[0] = x
+						touch.position[1] = y
 					}
-					touch.position[0] = x
-					touch.position[1] = y
+				}
+				catch(e) {
+					console.error(e)
 				}
 			})
 			
@@ -873,7 +879,6 @@ Habitat.install = (global) => {
 				}
 				trim(Touch)
 			})
-			
 			
 			Reflect.defineProperty(Touch, "installed", {
 				value: true,
