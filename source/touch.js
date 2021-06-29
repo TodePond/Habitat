@@ -37,10 +37,10 @@
 					const x = changedTouch.clientX
 					const y = changedTouch.clientY
 					const id = changedTouch.identifier
-					if (Touches[id] === undefined) Touches[id] = [undefined, undefined]
+					if (Touches[id] === undefined) Touches[id] = {position: [undefined, undefined]}
 					const touch = Touches[id]
-					touch[0] = x
-					touch[1] = y
+					touch.position[0] = x
+					touch.position[1] = y
 				}
 			})
 			
@@ -52,12 +52,12 @@
 						const id = changedTouch.identifier
 						let touch = Touches[id]
 						if (touch == undefined) {
-							touch = []
+							touch = {position: [undefined, undefined]}
 							Touches[id] = touch
 						}
 						
-						touch[0] = x
-						touch[1] = y
+						touch.position[0] = x
+						touch.position[1] = y
 					}
 				}
 				catch(e) {
