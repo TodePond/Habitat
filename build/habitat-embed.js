@@ -859,12 +859,12 @@ Habitat.install = (global) => {
 						const id = changedTouch.identifier
 						let touch = Touches[id]
 						if (touch == undefined) {
-							touch = {position: []}
+							touch = []
 							Touches[id] = touch
 						}
-
-						touch.position[0] = x
-						touch.position[1] = y
+						
+						touch[0] = x
+						touch[1] = y
 					}
 				}
 				catch(e) {
