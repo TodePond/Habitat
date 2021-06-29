@@ -21,7 +21,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Random.installed)     Habitat.Random.install(global)
 	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
 	if (!Habitat.String.installed)     Habitat.String.install(global)
-	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
+	if (!Habitat.Touches.installed)    Habitat.Touches.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
 	
 	Habitat.installed = true

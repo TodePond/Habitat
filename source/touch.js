@@ -3,7 +3,7 @@
 //=======//
 {
 
-	const Touch = Habitat.Touch = []
+	const Touches = Habitat.Touches = []
 	
 	const trim = (a) => {
 		if (a.length == 0) return a
@@ -28,17 +28,17 @@
 		return a
 	}
 	
-	Reflect.defineProperty(Touch, "install", {
+	Reflect.defineProperty(Touches, "install", {
 		value(global) {
 			
-			global.Touch = Touch
+			global.Touches = Touches
 			global.addEventListener("touchstart", e => {
 				for (const changedTouch of e.changedTouches) {
 					const x = changedTouch.clientX
 					const y = changedTouch.clientY
 					const id = changedTouch.identifier
-					if (Touch[id] === undefined) Touch[id] = [undefined, undefined]
-					const touch = Touch[id]
+					if (Touches[id] === undefined) Touches[id] = [undefined, undefined]
+					const touch = Touches[id]
 					touch[0] = x
 					touch[1] = y
 				}
@@ -50,10 +50,10 @@
 						const x = changedTouch.clientX
 						const y = changedTouch.clientY
 						const id = changedTouch.identifier
-						let touch = Touch[id]
+						let touch = Touches[id]
 						if (touch == undefined) {
 							touch = {position: []}
-							Touch[id] = touch
+							Touches[id] = touch
 						}
 
 						touch.position[0] = x
@@ -68,12 +68,12 @@
 			global.addEventListener("touchend", e => {
 				for (const changedTouch of e.changedTouches) {
 					const id = changedTouch.identifier
-					Touch[id] = undefined
+					Touches[id] = undefined
 				}
-				trim(Touch)
+				trim(Touches)
 			})
 			
-			Reflect.defineProperty(Touch, "installed", {
+			Reflect.defineProperty(Touches, "installed", {
 				value: true,
 				configurable: true,
 				enumerable: false,

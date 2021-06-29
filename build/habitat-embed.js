@@ -369,7 +369,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Random.installed)     Habitat.Random.install(global)
 	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
 	if (!Habitat.String.installed)     Habitat.String.install(global)
-	if (!Habitat.Touch.installed)      Habitat.Touch.install(global)
+	if (!Habitat.Touches.installed)    Habitat.Touches.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
 	
 	Habitat.installed = true
@@ -810,7 +810,7 @@ Habitat.install = (global) => {
 //=======//
 {
 
-	const Touch = Habitat.Touch = []
+	const Touches = Habitat.Touches = []
 	
 	const trim = (a) => {
 		if (a.length == 0) return a
@@ -835,17 +835,17 @@ Habitat.install = (global) => {
 		return a
 	}
 	
-	Reflect.defineProperty(Touch, "install", {
+	Reflect.defineProperty(Touches, "install", {
 		value(global) {
 			
-			global.Touch = Touch
+			global.Touches = Touches
 			global.addEventListener("touchstart", e => {
 				for (const changedTouch of e.changedTouches) {
 					const x = changedTouch.clientX
 					const y = changedTouch.clientY
 					const id = changedTouch.identifier
-					if (Touch[id] === undefined) Touch[id] = [undefined, undefined]
-					const touch = Touch[id]
+					if (Touches[id] === undefined) Touches[id] = [undefined, undefined]
+					const touch = Touches[id]
 					touch[0] = x
 					touch[1] = y
 				}
@@ -857,10 +857,10 @@ Habitat.install = (global) => {
 						const x = changedTouch.clientX
 						const y = changedTouch.clientY
 						const id = changedTouch.identifier
-						let touch = Touch[id]
+						let touch = Touches[id]
 						if (touch == undefined) {
 							touch = {position: []}
-							Touch[id] = touch
+							Touches[id] = touch
 						}
 
 						touch.position[0] = x
@@ -875,12 +875,12 @@ Habitat.install = (global) => {
 			global.addEventListener("touchend", e => {
 				for (const changedTouch of e.changedTouches) {
 					const id = changedTouch.identifier
-					Touch[id] = undefined
+					Touches[id] = undefined
 				}
-				trim(Touch)
+				trim(Touches)
 			})
 			
-			Reflect.defineProperty(Touch, "installed", {
+			Reflect.defineProperty(Touches, "installed", {
 				value: true,
 				configurable: true,
 				enumerable: false,
