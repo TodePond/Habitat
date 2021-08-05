@@ -7,6 +7,7 @@ Habitat.install = (global) => {
 
 	if (!Habitat.Array.installed)      Habitat.Array.install(global)
 	if (!Habitat.Async.installed)      Habitat.Async.install(global)
+	if (!Habitat.Colour.installed)     Habitat.Colour.install(global)
 	if (!Habitat.Console.installed)    Habitat.Console.install(global)
 	if (!Habitat.Document.installed)   Habitat.Document.install(global)
 	if (!Habitat.Event.installed)      Habitat.Event.install(global)

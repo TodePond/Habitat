@@ -12,4 +12,5 @@ export const {Mouse} = Habitat
 export const {Random} = Habitat
 export const {Stage} = Habitat
 export const {Touch} = Habitat
+export const {Colour} = Habitat
 export const {Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive} = Habitat.Type
