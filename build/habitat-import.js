@@ -412,6 +412,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
 	if (!Habitat.String.installed)     Habitat.String.install(global)
 	if (!Habitat.Touches.installed)    Habitat.Touches.install(global)
+	if (!Habitat.Tween.installed)      Habitat.Tween.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
 	
 	Habitat.installed = true
@@ -938,6 +939,51 @@ Habitat.install = (global) => {
 }
 
 
+//=======//
+// Tween //
+//=======//
+{
+	Habitat.Tween = {}
+	
+	Habitat.Tween.install = (global) => {
+		Habitat.Tween.installed = true
+
+		Reflect.defineProperty(global.Object.prototype, "tween", {
+			value(propertyName, {from, to, over} = {}) {
+				if (to === undefined) to = this[propertyName]
+				if (from === undefined) from = this[propertyName]
+				if (over === undefined) over = 1000
+				over = 60 * over/1000
+				const difference = to - from
+
+				const promise = new Promise((resolve) => {
+					let i = 0
+					const tweener = setInterval(() => {
+						
+						this[propertyName] = from + i*difference/over
+						
+						i++
+						if (i > over) {
+							clearInterval(tweener)
+							resolve()
+						}
+	
+					}, 1000 / 60)
+
+				})
+
+				return promise
+
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
+
+	}
+	
+}
+
 //======//
 // Type //
 //======//
@@ -1035,16 +1081,19 @@ Habitat.install = (global) => {
 export {Habitat}
 export default Habitat
 export const {install} = Habitat
-export const {sleep} = Habitat.Async
-export const {print, dir, print9} = Habitat.Console
-export const {$, $$} = Habitat.Document
-export const {HTML} = Habitat
+
 export const {JavaScript} = Habitat
 export const {Keyboard} = Habitat
-export const {gcd, reduce} = Habitat.Math
 export const {Mouse} = Habitat
 export const {Random} = Habitat
 export const {Stage} = Habitat
 export const {Touch} = Habitat
 export const {Colour} = Habitat
+export const {HTML} = Habitat
+
+export const {sleep} = Habitat.Async
+export const {print, dir, print9} = Habitat.Console
+export const {$, $$} = Habitat.Document
+export const {gcd, reduce} = Habitat.Math
+export const {oneIn, maybe} = Habitat.Random
 export const {Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive} = Habitat.Type
