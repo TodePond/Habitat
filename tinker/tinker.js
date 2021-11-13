@@ -2,10 +2,14 @@ Habitat.install(window)
 
 window.age = 0
 
-tween("age", {from: 0, to: 10, over: 1000}).d
+tween("age", {from: 0, to: 60, over: 1000})
 
 
-
+let tickTock = true
 setInterval(() => {
-	print(window.age)
+	//if (age >= 60) return
+	if (tickTock) print("=".repeat(window.age))
+	else print("-".repeat(window.age))
+	tickTock = !tickTock
+	
 }, 1000 / 60)
