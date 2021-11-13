@@ -28,6 +28,7 @@
 	Habitat.Colour.Yellow = Habitat.Colour.make(255, 204, 70)
 	Habitat.Colour.Orange = Habitat.Colour.make(255, 128, 70)
 	Habitat.Colour.Pink = Habitat.Colour.make(255, 128, 128)
+	Habitat.Colour.Rose = Habitat.Colour.make(255, 128, 204)
 	Habitat.Colour.Cyan = Habitat.Colour.make(70, 204, 255)
 	Habitat.Colour.Purple = Habitat.Colour.make(128, 70, 255)
 
