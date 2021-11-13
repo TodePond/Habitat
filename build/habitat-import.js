@@ -1087,7 +1087,7 @@ export const {Keyboard} = Habitat
 export const {Mouse} = Habitat
 export const {Random} = Habitat
 export const {Stage} = Habitat
-export const {Touch} = Habitat
+export const {Touches} = Habitat
 export const {Colour} = Habitat
 export const {HTML} = Habitat
 
