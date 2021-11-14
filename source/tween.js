@@ -4,38 +4,52 @@
 {
 	Habitat.Tween = {}
 	
-	const getSteps = ({from, to, over, start, end} = {}) => {
+	let tt = true
+	Habitat.Tween.getSteps = ({from, to, over, launch, land} = {}) => {
 		if (to === undefined) to = this[propertyName]
 		if (from === undefined) from = this[propertyName]
 		if (over === undefined) over = 1000
-		if (start === undefined) start = 1.0
-		if (end === undefined) end = 1.0
+		if (launch === undefined) launch = 1.0
+		if (land === undefined) land = 1.0
 
 		const difference = to - from
 		const length = 60 * over/1000
-		const step = difference / length
+		
+		const jump = difference / length
+		const jumps = [jump].repeat(length)
 
-		const slope = 0.0
+		for (let i = 0; i < length; i++) {
+			const j = jumps[i]
+
+			const startness = (length-(i*land)) / length
+			const endness = (i*launch+1) / length
+
+			jumps[i] = j * (endness * startness)
+		}
 
 		const steps = []
-
-		let x = from
-
-		for (let i = 1; i <= length; i++) {
-
-			const easing = length-i
-			const racing = i
-
-			const ease = (easing*start + racing*end) / (end+start)
-			const race = (racing*end + easing*start) / (start+end)
-
-			// EASE IN
-			x += step * ease / (length)
-
-			// EASE OUT
-			x += step * race / (length)
-			steps.push(x)
+		let v = 0
+		for (const j of jumps) {
+			v += j
+			steps.push(v)
 		}
+
+		const error = to / steps[steps.length-1]
+		for (let i = 0; i < steps.length; i++) {
+			steps[i] *= error
+		}
+
+		/*for (const s of jumps) {
+			if (tt) print("=".repeat(s*100))
+			else print("-".repeat(s*100))
+			tt = !tt
+		}*/
+
+		/*for (const s of steps) {
+			if (tt) print("=".repeat(s))
+			else print("-".repeat(s))
+			tt = !tt
+		}*/
 
 		return steps
 	}
@@ -46,7 +60,7 @@
 		Reflect.defineProperty(global.Object.prototype, "tween", {
 			value(propertyName, options) {
 
-				const steps = getSteps(options).d
+				const steps = Habitat.Tween.getSteps(options)
 				
 				const promise = new Promise((resolve) => {
 					let i = 0
