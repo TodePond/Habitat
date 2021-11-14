@@ -4,10 +4,12 @@
 {
 	Habitat.Tween = {}
 	
-	const getSteps = ({from, to, over} = {}) => {
+	const getSteps = ({from, to, over, start, end} = {}) => {
 		if (to === undefined) to = this[propertyName]
 		if (from === undefined) from = this[propertyName]
 		if (over === undefined) over = 1000
+		if (start === undefined) start = 1.0
+		if (end === undefined) end = 1.0
 
 		const difference = to - from
 		const length = 60 * over/1000
@@ -19,19 +21,19 @@
 
 		let x = from
 
-		for (let i = 0; i < length; i++) {
+		for (let i = 1; i <= length; i++) {
 
-			const easing = length-1-i
+			const easing = length-i
 			const racing = i
 
-			const ease = (easing * slope + racing) / (1 + slope)
-			const race = (racing * slope + easing) / (1 + slope) 
+			const ease = (easing*start + racing*end) / (end+start)
+			const race = (racing*end + easing*start) / (start+end)
 
 			// EASE IN
-			//x += step * 2 * ease / (length - 1)
+			x += step * ease / (length)
 
 			// EASE OUT
-			x += step * 2 * race / (length - 1)
+			x += step * race / (length)
 			steps.push(x)
 		}
 
