@@ -946,9 +946,9 @@ Habitat.install = (global) => {
 	Habitat.Tween = {}
 	
 	let tt = true
-	Habitat.Tween.getSteps = ({from, to, over, launch = 1.0, land = 1.0} = {}) => {
-		if (to === undefined) to = this[propertyName]
-		if (from === undefined) from = this[propertyName]
+	Habitat.Tween.getSteps = ({from, to, over, launch = 1.0, land = 1.0} = {}, value) => {
+		if (to === undefined) to = value
+		if (from === undefined) from = value
 		if (over === undefined) over = 1000
 
 		launch = 1.0 - launch
@@ -1002,7 +1002,7 @@ Habitat.install = (global) => {
 		Reflect.defineProperty(global.Object.prototype, "tween", {
 			value(propertyName, options) {
 
-				const steps = Habitat.Tween.getSteps(options)
+				const steps = Habitat.Tween.getSteps(options, this[propertyName])
 				
 				const promise = new Promise((resolve) => {
 					let i = 0
