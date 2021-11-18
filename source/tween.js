@@ -13,9 +13,13 @@
 		launch = 1.0 - launch
 		land = 1.0 - land
 
+		const offset = from
+		to -= offset
+		from -= offset
+
 		const difference = to - from
 		const length = 60 * over/1000
-		
+
 		const jump = difference / length
 		const jumps = [jump].repeat(length)
 
@@ -28,17 +32,16 @@
 			jumps[i] = j * (endness * startness)
 		}
 
-		const steps = []
+		let steps = []
 		let v = 0
 		for (const j of jumps) {
 			v += j
 			steps.push(v)
 		}
-
-		const error = to / steps[steps.length-1]
-		for (let i = 0; i < steps.length; i++) {
-			steps[i] *= error
-		}
+		
+		const error = (to) / (steps[steps.length-1])
+		steps = steps.map(s => s * error)
+		steps = steps.map(s => s + offset)
 
 		/*for (const s of jumps) {
 			if (tt) print("=".repeat(s*100))
