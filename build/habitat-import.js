@@ -946,12 +946,13 @@ Habitat.install = (global) => {
 	Habitat.Tween = {}
 	
 	let tt = true
-	Habitat.Tween.getSteps = ({from, to, over, launch, land} = {}) => {
+	Habitat.Tween.getSteps = ({from, to, over, launch = 1.0, land = 1.0} = {}) => {
 		if (to === undefined) to = this[propertyName]
 		if (from === undefined) from = this[propertyName]
 		if (over === undefined) over = 1000
-		if (launch === undefined) launch = 1.0
-		if (land === undefined) land = 1.0
+
+		launch = 1.0 - launch
+		land = 1.0 - land
 
 		const difference = to - from
 		const length = 60 * over/1000
