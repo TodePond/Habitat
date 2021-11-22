@@ -8,21 +8,18 @@
 		Habitat.Tween.installed = true
 
 		Reflect.defineProperty(global.Object.prototype, "tween", {
-			value(propertyName, options) {
-				if (!options.from) options.from = this[propertyName]
-				if (!options.to) options.to = this[propertyName]
-				if (!options.over) options.over = 1000
-				if (!options.launch) options.launch = 0.5
-				if (!options.land) options.land = 0.5
+			value(propertyName, {to, from, over = 1000, launch = 0.5, land = 0.5} = {}) {
+				if (!from) from = this[propertyName]
+				if (!to) to = this[propertyName]
 
-				options.launch *= 2/3
-				options.land = 1/3 + (1 - options.land) * 2/3
+				launch *= 2/3
+				land = 1/3 + (1 - land) * 2/3
 
 				Object.defineProperty(this, propertyName, {
 					get: new Function(`
 						const before = ${this[propertyName]}
 						const start = ${performance.now()}
-						const { from, to, over, launch, land } = ${JSON.stringify(options)}
+						const { from, to, over, launch, land } = ${JSON.stringify({to, from, over, launch, land})}
 						const now = performance.now()
 
 						if (now > start + over) {
