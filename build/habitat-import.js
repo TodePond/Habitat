@@ -964,8 +964,12 @@ Habitat.install = (global) => {
 						const now = performance.now()
 
 						if (now > start + over) {
-							delete this[propertyName]
-							this[propertyName] = to
+							Reflect.defineProperty(this, propertyName, {
+								value: to,
+								writable: true,
+								configurable: true,
+								enumerable: true,
+							})
 							return to
 						} else {
 							const t = (now - start) / over
@@ -975,15 +979,23 @@ Habitat.install = (global) => {
 
 					},
 					set(value) {
-						delete this[propertyName]
+						Reflect.defineProperty(this, propertyName, {
+							value,
+							writable: true,
+							configurable: true,
+							enumerable: true,
+						})
 						this[propertyName] = to
 					},
+
+					configurable: true,
+					enumerable: true,
 				})
 			},
 			
 			configurable: true,
 			enumerable: false,
-			writable: true
+			writable: true,
 		})
 	}
 }
