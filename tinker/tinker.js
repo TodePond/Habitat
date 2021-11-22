@@ -2,6 +2,10 @@ Habitat.install(window)
 
 window.age = 0
 
+on.keydown(e => {
+	if (e.key === " ") tween("age", {from: 0, to: 60, over: 1000, launch: 0.0, land: 1.0})
+})
+
 tween("age", {from: 0, to: 60, over: 1000, launch: 0.0, land: 1.0})
 
 
