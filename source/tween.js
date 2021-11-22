@@ -15,7 +15,7 @@
 				launch *= 2/3
 				land = 1/3 + (1 - land) * 2/3
 
-				Object.defineProperty(this, propertyName, {
+				Reflect.defineProperty(this, propertyName, {
 					get: new Function(`
 						const before = ${this[propertyName]}
 						const start = ${performance.now()}
