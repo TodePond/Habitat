@@ -984,11 +984,12 @@ Habitat.install = (global) => {
 						delete this[propertyName]
 						this[propertyName] = to
 					},
-					configurable: true,
-					enumerable: false,
-					writable: true
 				})
-			}
+			},
+			
+			configurable: true,
+			enumerable: false,
+			writable: true
 		})
 	}
 }
