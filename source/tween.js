@@ -44,7 +44,6 @@
 							configurable: true,
 							enumerable: true,
 						})
-						this[propertyName] = to
 					},
 
 					configurable: true,
