@@ -37,13 +37,8 @@
 						}
 
 					},
-					set(value) {
-						Reflect.defineProperty(this, propertyName, {
-							value,
-							writable: true,
-							configurable: true,
-							enumerable: true,
-						})
+					set() {
+						
 					},
 
 					configurable: true,
