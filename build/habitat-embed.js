@@ -957,7 +957,7 @@ Habitat.install = (global) => {
 				if (!options.land) options.land = 0.5
 
 				options.launch *= 2/3
-				options.land *= 4/3
+				options.land = 1/3 + (1 - options.land) * 2/3
 
 				Object.defineProperty(this, propertyName, {
 					get: new Function(`
