@@ -79,7 +79,7 @@
 									easeoutbounce: ob,
 									easeinoutbounce: t => t<0.5 ? (1-ob(1-2*t))/2 : (1+ob(2*t-1))/2
 								}
-								if (ease.toLowerCase() in Object.keys(easefuncs))
+								if (Object.keys(easefuncs).includes(ease.toLowerCase()))
 									return easefuncs[ease.toLowerCase()](t) * (to - from) + from
 							}
 							const v = 3*t*(1-t)*(1-t)*launch + 3*t*t*(1-t)*land + t*t*t
