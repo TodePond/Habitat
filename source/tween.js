@@ -2,8 +2,6 @@
 // Tween //
 //=======//
 
-Habitat = {}
-
 {
 	Habitat.Tween = {}
 	
