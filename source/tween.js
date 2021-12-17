@@ -23,8 +23,10 @@ Habitat = {}
 	Habitat.Tween.EASE_IN_EXP = Habitat.Tween.EASE_IN_EXPONENTIAL = (e) => (t) => Math.pow(2, e*t - e) * t
 	Habitat.Tween.EASE_OUT_EXP = Habitat.Tween.EASE_OUT_EXPONENTIAL = (e) => (t) => 1 - Math.pow(2, -e*t) * (1-t)
 	Habitat.Tween.EASE_IN_OUT_EXP = Habitat.Tween.EASE_IN_OUT_EXPONENTIAL = (e) => (t) => {
-		if (t < 0.5) return Math.pow(2, 2*e*t - e)/2
-		return (2 - Math.pow(2, -2*e*t + e))/2
+		let f;
+		if (t < 0.5) f = t => Math.pow(2, 2*e*t - e)/2
+		else f = t => (2 - Math.pow(2, -2*e*t + e))/2
+		return f(t) * ((1-t)*f(0) + t*(f(1)-1))
 	}
 	Habitat.Tween.EASE_IN_CIRCULAR = (t) => 1 - Math.sqrt(1 - Math.pow(t, 2))
 	Habitat.Tween.EASE_OUT_CIRCULAR = (t) => Math.sqrt(1 - Math.pow(t - 1, 2))
