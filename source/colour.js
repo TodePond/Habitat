@@ -15,10 +15,16 @@
 		return makeColour([r, g, b], [h, s, l])
 	}
 
+	const hexify = (n) => {
+		const string = n.toString(16)
+		if (string.length === 2) return string
+		return "0"+string
+	}
+
 	const makeColour = ([r, g, b], [h, s, l]) => {
 		const rgb = `rgb(${r}, ${g}, ${b})`
 		const hsl = `hsl(${h}, ${s}%, ${l}%)`
-		const hex = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`
+		const hex = `#${hexify(r)}${hexify(g)}${hexify(b)}`
 
 		const colour = new Uint8Array([r, g, b])
 
