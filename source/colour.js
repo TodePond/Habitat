@@ -6,7 +6,9 @@
 	Habitat.Colour = {}
 
 	Habitat.Colour.make = (r, g, b) => {
+
 		const colour = new Uint8Array([r, g, b])
+
 		const string = `rgb(${r}, ${g}, ${b})`
 		const hex = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`
 		colour.toString = () => string
@@ -19,6 +21,10 @@
 		colour.r = r
 		colour.g = g
 		colour.b = b
+		
+		colour.red = r
+		colour.green = g
+		colour.blue = b
 
 		return colour
 	}
