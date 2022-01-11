@@ -23,14 +23,26 @@
 		const divisor = gcd(...numbers)
 		return numbers.map(n => n / divisor)
 	}
+
+	const wrap = (number, min, max) => {
+		const difference = max - min
+		while (number > max) {
+			number -= difference
+		}
+		while (number < min) {
+			number += difference
+		}
+		return number
+	}
 	
 	const install = (global) => {
 		global.Math.gcd = Habitat.Math.gcd
 		global.Math.reduce = Habitat.Math.reduce
+		global.Math.wrap = Habitat.Math.wrap
 		Habitat.Math.installed = true
 	}
 	
 	
-	Habitat.Math = {install, gcd, reduce}
+	Habitat.Math = {install, gcd, reduce, wrap}
 	
 }

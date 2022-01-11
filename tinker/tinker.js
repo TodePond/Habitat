@@ -1,2 +1,2 @@
 
-
+Habitat.install(this)
