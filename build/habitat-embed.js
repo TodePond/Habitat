@@ -135,12 +135,19 @@ const Habitat = {}
 		const hex = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`
 		colour.toString = () => string
 		colour.toHex = () => hex
+
 		colour.brightness = (r*299 + g*587 + b*114) / 1000 / 255
 		colour.isLight = colour.brightness > 0.7
 		colour.isDark = colour.brightness < 0.3
+		
+		colour.r = r
+		colour.g = g
+		colour.b = b
+
 		return colour
 	}
 
+	Habitat.Colour.Void = Habitat.Colour.make(12, 15, 20)
 	Habitat.Colour.Black = Habitat.Colour.make(23, 29, 40)
 	Habitat.Colour.Grey = Habitat.Colour.make(55, 67, 98)
 	Habitat.Colour.Silver = Habitat.Colour.make(159, 174, 201)
