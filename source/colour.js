@@ -166,22 +166,19 @@
 	
 	Habitat.Colour.Void = Habitat.Colour.make("rgb(6, 7, 10)")
 	Habitat.Colour.Black = Habitat.Colour.make(000)
-	Habitat.Colour.Grey = Habitat.Colour.make("rgb(55, 67, 98)")
-	Habitat.Colour.Silver = Habitat.Colour.make("rgb(159, 174, 204)")
-	Habitat.Colour.White = Habitat.Colour.make("rgb(242, 245, 247)")
+	Habitat.Colour.Grey = Habitat.Colour.make(112)
+	Habitat.Colour.Silver = Habitat.Colour.make(556)
+	Habitat.Colour.White = Habitat.Colour.make(888)
 
-	Habitat.Colour.Green = Habitat.Colour.make("rgb(70, 255, 128)")
-	Habitat.Colour.Red = Habitat.Colour.make("rgb(255, 67, 70)")
-	Habitat.Colour.Blue = Habitat.Colour.make("rgb(70, 128, 255)")
-	Habitat.Colour.Yellow = Habitat.Colour.make("rgb(255, 204, 70)")
-	Habitat.Colour.Orange = Habitat.Colour.make("rgb(255, 128, 70)")
-	Habitat.Colour.Pink = Habitat.Colour.make("rgb(255, 128, 128)")
-	Habitat.Colour.Rose = Habitat.Colour.make("rgb(255, 128, 204)")
-	Habitat.Colour.Cyan = Habitat.Colour.make("rgb(70, 204, 255)")
-	Habitat.Colour.Purple = Habitat.Colour.make("rgb(128, 67, 247)")
-
-
-	
+	Habitat.Colour.Green = Habitat.Colour.make(293)
+	Habitat.Colour.Red = Habitat.Colour.make(911)
+	Habitat.Colour.Blue = Habitat.Colour.make(239)
+	Habitat.Colour.Yellow = Habitat.Colour.make(961)
+	Habitat.Colour.Orange = Habitat.Colour.make(931)
+	Habitat.Colour.Pink = Habitat.Colour.make(933)
+	Habitat.Colour.Rose = Habitat.Colour.make(936)
+	Habitat.Colour.Cyan = Habitat.Colour.make(269)
+	Habitat.Colour.Purple = Habitat.Colour.make(418)
 
 	Habitat.Colour.install = (global) => {
 		global.Colour = Habitat.Colour
