@@ -141,7 +141,7 @@ const Habitat = {}
 
 			const red = reds[redId]
 			const green = greens[greenId]
-			const blue = blues[greenId]
+			const blue = blues[blueId]
 
 			const rgb = `rgb(${red}, ${green}, ${blue})`
 
