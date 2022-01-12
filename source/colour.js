@@ -15,7 +15,8 @@
 		context.fillRect(0, 0, 1, 1)
 
 		const data = context.getImageData(0, 0, 1, 1).data
-		const [red, green, blue, alpha] = data
+		const [red, green, blue] = data
+		const alpha = data[3] / 255
 		const [hue, saturation, lightness] = getHSL(red, green, blue)
 		const colour = new Uint8Array([red, green, blue, alpha])
 
@@ -23,6 +24,10 @@
 		colour.green = green
 		colour.blue = blue
 		colour.alpha = alpha
+
+		colour.hue = hue
+		colour.saturation = saturation
+		colour.lightness = lightness
 
 		colour.r = red
 		colour.g = green
@@ -84,37 +89,37 @@
 
 	}
 	
-	/*Habitat.Colour.add = (colour, {r=0, g=0, b=0, red=0, green=0, blue=0, h=0, s=0, l=0, hue=0, saturation=0, lightness=0} = {}) => {
+	Habitat.Colour.add = (colour, {red=0, green=0, blue=0, alpha=0, hue=0, saturation=0, lightness=0, r=0, g=0, b=0, a=0, h=0, s=0, l=0} = {}) => {
 		
-		const nr = clamp(colour.r + r + red, 0, 255)
-		const ng = clamp(colour.g + g + green, 0, 255)
-		const nb = clamp(colour.b + b + blue, 0, 255)
-		const rgbColour = Habitat.Colour.rgb(nr, ng, nb)
-		
-		const nh = wrap(rgbColour.h + h + hue, 0, 360)
-		const ns = clamp(rgbColour.s + s + saturation, 0, 100)
-		const nl = clamp(rgbColour.l + l + lightness, 0, 100)
-		const hslColour = Habitat.Colour.hsl(nh, ns, nl)
+		const newRed = clamp(colour.red + r + red, 0, 255)
+		const newGreen = clamp(colour.green + g + green, 0, 255)
+		const newBlue = clamp(colour.blue + b + blue, 0, 255)
+		const newAlpha = clamp(colour.alpha + a + alpha, 0, 1)
+		const rgbaStyle = `rgba(${newRed}, ${newGreen}, ${newBlue}, ${newAlpha})`
+		const rgbaColour = Habitat.Colour.make(rgbaStyle)
+
+		const newHue = wrap(rgbaColour.hue + h + hue, 0, 360)
+		const newSaturation = clamp(rgbaColour.saturation + s + saturation, 0, 100)
+		const newLightness = clamp(rgbaColour.lightness + l + lightness, 0, 100)
+		const hslStyle = `hsl(${newHue}, ${newSaturation}%, ${newLightness}%)`
+		const hslColour = Habitat.Colour.make(hslStyle)
 
 		return hslColour
 
 	}
 
-	Habitat.Colour.multiply = (colour, {r=1, g=1, b=1, red=1, green=1, blue=1, h=1, s=1, l=1, hue=1, saturation=1, lightness=1} = {}) => {
-		
-		const nr = clamp(colour.r * r * red, 0, 255)
-		const ng = clamp(colour.g * g * green, 0, 255)
-		const nb = clamp(colour.b * b * blue, 0, 255)
-		const rgbColour = Habitat.Colour.rgb(nr, ng, nb)
-		
-		const nh = wrap(rgbColour.h * h * hue, 0, 360)
-		const ns = clamp(rgbColour.s * s * saturation, 0, 100)
-		const nl = clamp(rgbColour.l * l * lightness, 0, 100)
-		const hslColour = Habitat.Colour.hsl(nh, ns, nl)
+	const clamp = (number, min, max) => {
+		if (number < min) return min
+		if (number > max) return max
+		return number
+	}
 
-		return hslColour
-
-	}*/
+	const wrap = (number, min, max) => {
+		const difference = max - min
+		while (number < min) number += difference
+		while (number > max) number -= difference
+		return number
+	}
 
 	Habitat.Colour.Void = Habitat.Colour.make("rgb(6, 7, 10)")
 	Habitat.Colour.Black = Habitat.Colour.make("rgb(23, 29, 40)")
