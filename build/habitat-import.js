@@ -140,6 +140,7 @@ const Habitat = {}
 
 		const data = context.getImageData(0, 0, 1, 1).data
 		const [red, green, blue, alpha] = data
+		const [hue, saturation, lightness] = getHSL(red, green, blue)
 		const colour = new Uint8Array([red, green, blue, alpha])
 
 		colour.red = red
@@ -155,13 +156,13 @@ const Habitat = {}
 		const rgb = `rgb(${red}, ${green}, ${blue})`
 		const rgba = `rgba(${red}, ${green}, ${blue}, ${alpha})`
 		const hex = `#${hexify(red)}${hexify(green)}${hexify(blue)}`
-		//const hsl = `hsl(${hue}, ${saturation}%, ${lightness}%)`
+		const hsl = `hsl(${hue}, ${saturation}%, ${lightness}%)`
 
 		colour.toString = () => hex
 		colour.rgb = rgb
 		colour.rgba = rgba
 		colour.hex = hex
-		//colour.hsl = hsl
+		colour.hsl = hsl
 
 		colour.brightness = (red*299 + green*587 + blue*114) / 1000 / 255
 		colour.isBright = colour.brightness > 0.7
@@ -176,10 +177,38 @@ const Habitat = {}
 		return "0"+string
 	}
 
+	//https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
+	const getHSL = (red, green, blue) => {
+
+		red /= 255
+		green /= 255
+		blue /= 255
+
+		const max = Math.max(red, green, blue)
+		const min = Math.min(red, green, blue)
+		const chroma = max - min
+
+		let lightness = (max + min) / 2
+		let saturation = 0
+		if (lightness !== 0 && lightness !== 1) {
+			saturation = (max - lightness) / Math.min(lightness, 1-lightness)
+		}
+		
+		let hue = 0
+		if (max === red) hue = (green-blue)/chroma
+		if (max === green) hue = 2 + (blue-red)/chroma
+		if (max === blue) hue = 4 + (red-green)/chroma
+
+		lightness *= 100
+		saturation *= 100
+		hue *= 60
+		while (hue < 0) hue += 360
+
+		return [hue, saturation, lightness]
+
+	}
 	
-	/*
-	
-	Habitat.Colour.add = (colour, {r=0, g=0, b=0, red=0, green=0, blue=0, h=0, s=0, l=0, hue=0, saturation=0, lightness=0} = {}) => {
+	/*Habitat.Colour.add = (colour, {r=0, g=0, b=0, red=0, green=0, blue=0, h=0, s=0, l=0, hue=0, saturation=0, lightness=0} = {}) => {
 		
 		const nr = clamp(colour.r + r + red, 0, 255)
 		const ng = clamp(colour.g + g + green, 0, 255)
