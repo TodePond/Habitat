@@ -7,6 +7,25 @@
 	
 	Habitat.Colour.make = (style) => {
 
+		if (typeof style === "number") {
+			let string = style.toString()
+			while (string.length < 3) string = "0"+string
+			
+			const redId = parseInt(string[0])
+			const greenId = parseInt(string[1])
+			const blueId = parseInt(string[2])
+
+			const red = reds[redId]
+			const green = greens[greenId]
+			const blue = blues[greenId]
+
+			const rgb = `rgb(${red}, ${green}, ${blue})`
+
+			const colour = Habitat.Colour.make(rgb)
+			colour.splash = style
+			return colour
+		}
+
 		const canvas = document.createElement("canvas")
 		const context = canvas.getContext("2d")
 		canvas.width = 1
@@ -89,7 +108,7 @@
 
 	}
 	
-	Habitat.Colour.add = (colour, {red=0, green=0, blue=0, alpha=0, hue=0, saturation=0, lightness=0, r=0, g=0, b=0, a=0, h=0, s=0, l=0} = {}) => {
+	Habitat.Colour.add = (colour, {red=0, green=0, blue=0, alpha=0, hue=0, saturation=0, lightness=0, r=0, g=0, b=0, a=0, h=0, s=0, l=0, splash=0} = {}) => {
 		
 		const newRed = clamp(colour.red + r + red, 0, 255)
 		const newGreen = clamp(colour.green + g + green, 0, 255)
@@ -109,7 +128,7 @@
 	}
 	
 	
-	Habitat.Colour.multiply = (colour, {red=1, green=1, blue=1, alpha=1, hue=1, saturation=1, lightness=1, r=1, g=1, b=1, a=1, h=1, s=1, l=1} = {}) => {
+	Habitat.Colour.multiply = (colour, {red=1, green=1, blue=1, alpha=1, hue=1, saturation=1, lightness=1, r=1, g=1, b=1, a=1, h=1, s=1, l=1, splash=1} = {}) => {
 		
 		const newRed = clamp(colour.red * r * red, 0, 255)
 		const newGreen = clamp(colour.green * g * green, 0, 255)
@@ -140,9 +159,13 @@
 		while (number > max) number -= difference
 		return number
 	}
-
+	
+	const reds   = [23, 55, 70,  98, 128, 159, 174, 204, 242, 255]
+	const greens = [29, 67, 98, 128, 159, 174, 204, 222, 245, 255]
+	const blues  = [40, 70, 98, 128, 159, 174, 204, 222, 247, 255]
+	
 	Habitat.Colour.Void = Habitat.Colour.make("rgb(6, 7, 10)")
-	Habitat.Colour.Black = Habitat.Colour.make("rgb(23, 29, 40)")
+	Habitat.Colour.Black = Habitat.Colour.make(000)
 	Habitat.Colour.Grey = Habitat.Colour.make("rgb(55, 67, 98)")
 	Habitat.Colour.Silver = Habitat.Colour.make("rgb(159, 174, 204)")
 	Habitat.Colour.White = Habitat.Colour.make("rgb(242, 245, 247)")
@@ -156,6 +179,9 @@
 	Habitat.Colour.Rose = Habitat.Colour.make("rgb(255, 128, 204)")
 	Habitat.Colour.Cyan = Habitat.Colour.make("rgb(70, 204, 255)")
 	Habitat.Colour.Purple = Habitat.Colour.make("rgb(128, 67, 247)")
+
+
+	
 
 	Habitat.Colour.install = (global) => {
 		global.Colour = Habitat.Colour
