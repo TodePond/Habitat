@@ -159,14 +159,18 @@ const Habitat = {}
 
 		const data = context.getImageData(0, 0, 1, 1).data
 		const [red, green, blue] = data
+		const splash = getSplash(red, green, blue)
 		const alpha = data[3] / 255
 		const [hue, saturation, lightness] = getHSL(red, green, blue)
 		const colour = new Uint8Array([red, green, blue, alpha])
-
+		colour.fullColour = true
+		
 		colour.red = red
 		colour.green = green
 		colour.blue = blue
 		colour.alpha = alpha
+
+		colour.splash = splash
 
 		colour.hue = hue
 		colour.saturation = saturation
@@ -201,6 +205,29 @@ const Habitat = {}
 		return "0"+string
 	}
 
+	const getSplash = (red, green, blue) => {
+		const closestRed = getClosest(red, reds).toString()
+		const closestGreen = getClosest(green, greens).toString()
+		const closestBlue = getClosest(blue, blues).toString()
+		const string = closestRed + closestGreen + closestBlue
+		const splash = parseInt(string)
+		return splash
+	}
+
+	const getClosest = (number, array) => {
+		let highscore = Infinity
+		let winner = 0
+		for (let i = 0; i < array.length; i++) {
+			const value = array[i]
+			const difference = Math.abs(number - value)
+			if (difference < highscore) {
+				highscore = difference
+				winner = i
+			}
+		}
+		return winner
+	}
+
 	//https://en.wikipedia.org/wiki/HSL_and_HSV#From_RGB
 	const getHSL = (red, green, blue) => {
 
@@ -222,6 +249,7 @@ const Habitat = {}
 		if (max === red) hue = (green-blue)/chroma
 		if (max === green) hue = 2 + (blue-red)/chroma
 		if (max === blue) hue = 4 + (red-green)/chroma
+		if (chroma === 0) hue = 0
 
 		lightness *= 100
 		saturation *= 100
@@ -232,7 +260,7 @@ const Habitat = {}
 
 	}
 	
-	Habitat.Colour.add = (colour, {red=0, green=0, blue=0, alpha=0, hue=0, saturation=0, lightness=0, r=0, g=0, b=0, a=0, h=0, s=0, l=0, splash=0} = {}) => {
+	Habitat.Colour.add = (colour, {red=0, green=0, blue=0, alpha=0, hue=0, saturation=0, lightness=0, r=0, g=0, b=0, a=0, h=0, s=0, l=0, splash, fullColour = false} = {}) => {
 		
 		const newRed = clamp(colour.red + r + red, 0, 255)
 		const newGreen = clamp(colour.green + g + green, 0, 255)
@@ -241,18 +269,26 @@ const Habitat = {}
 		const rgbaStyle = `rgba(${newRed}, ${newGreen}, ${newBlue}, ${newAlpha})`
 		const rgbaColour = Habitat.Colour.make(rgbaStyle)
 
+		if (fullColour) return rgbaColour
+
 		const newHue = wrap(rgbaColour.hue + h + hue, 0, 360)
 		const newSaturation = clamp(rgbaColour.saturation + s + saturation, 0, 100)
 		const newLightness = clamp(rgbaColour.lightness + l + lightness, 0, 100)
 		const hslStyle = `hsl(${newHue}, ${newSaturation}%, ${newLightness}%)`
 		const hslColour = Habitat.Colour.make(hslStyle)
 
+		if (splash !== undefined && splashed) {
+			const newSplash = hslColour.splash + splash
+			const splashColour = Habitat.Colour.make(newSplash)
+			return splashColour
+		}
+
 		return hslColour
 
 	}
 	
 	
-	Habitat.Colour.multiply = (colour, {red=1, green=1, blue=1, alpha=1, hue=1, saturation=1, lightness=1, r=1, g=1, b=1, a=1, h=1, s=1, l=1, splash=1} = {}) => {
+	Habitat.Colour.multiply = (colour, {red=1, green=1, blue=1, alpha=1, hue=1, saturation=1, lightness=1, r=1, g=1, b=1, a=1, h=1, s=1, l=1, splash, fullColour = false} = {}) => {
 		
 		const newRed = clamp(colour.red * r * red, 0, 255)
 		const newGreen = clamp(colour.green * g * green, 0, 255)
@@ -261,11 +297,19 @@ const Habitat = {}
 		const rgbaStyle = `rgba(${newRed}, ${newGreen}, ${newBlue}, ${newAlpha})`
 		const rgbaColour = Habitat.Colour.make(rgbaStyle)
 
+		if (fullColour) return rgbaColour
+
 		const newHue = wrap(rgbaColour.hue * h * hue, 0, 360)
 		const newSaturation = clamp(rgbaColour.saturation * s * saturation, 0, 100)
 		const newLightness = clamp(rgbaColour.lightness * l * lightness, 0, 100)
 		const hslStyle = `hsl(${newHue}, ${newSaturation}%, ${newLightness}%)`
 		const hslColour = Habitat.Colour.make(hslStyle)
+
+		if (splash !== undefined) {
+			const newSplash = hslColour.splash * splash
+			const splashColour = Habitat.Colour.make(newSplash)
+			return splashColour
+		}
 
 		return hslColour
 
