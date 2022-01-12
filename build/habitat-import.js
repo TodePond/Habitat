@@ -131,9 +131,9 @@ const Habitat = {}
 	
 	Habitat.Colour.hsl = (h, s, l) => {
 
-		h = wrap(h, 0, 360)
+		/*h = wrap(h, 0, 360)
 		s = wrap(s, 0, 100)
-		l = wrap(l, 0, 100)
+		l = wrap(l, 0, 100)*/
 
 		const [r, g, b] = getRGB(h, s, l)
 		return makeColour([r, g, b], [h, s, l])
@@ -141,9 +141,9 @@ const Habitat = {}
 
 	Habitat.Colour.rgb = (r, g, b) => {
 		
-		r = wrap(r, 0, 255)
+		/*r = wrap(r, 0, 255)
 		g = wrap(g, 0, 255)
-		b = wrap(b, 0, 255)
+		b = wrap(b, 0, 255)*/
 
 		const [h, s, l] = getHSL(r, g, b)
 		return makeColour([r, g, b], [h, s, l])
@@ -157,13 +157,13 @@ const Habitat = {}
 
 	const makeColour = ([r, g, b], [h, s, l]) => {
 		
-		r = wrap(r, 0, 255)
+		/*r = wrap(r, 0, 255)
 		g = wrap(g, 0, 255)
 		b = wrap(b, 0, 255)
 		
 		h = wrap(h, 0, 360)
 		s = wrap(s, 0, 100)
-		l = wrap(l, 0, 100)
+		l = wrap(l, 0, 100)*/
 
 		const rgb = `rgb(${r}, ${g}, ${b})`
 		const hsl = `hsl(${h}, ${s}%, ${l}%)`
@@ -212,7 +212,7 @@ const Habitat = {}
 
 		const c = (1 - Math.abs(2 * l - 1)) * s
 		const h_ = h / 60
-		const x = c * (1 - h_ % 2 - 1)
+		const x = c * (1 - Math.abs(h_) % 2 - 1)
 		const m = l - c/2
 
 		if (0 <= h && h < 60) {
