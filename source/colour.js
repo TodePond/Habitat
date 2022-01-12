@@ -6,11 +6,21 @@
 	Habitat.Colour = {}
 	
 	Habitat.Colour.hsl = (h, s, l) => {
+
+		h = wrap(h, 0, 360)
+		s = wrap(s, 0, 100)
+		l = wrap(l, 0, 100)
+
 		const [r, g, b] = getRGB(h, s, l)
 		return makeColour([r, g, b], [h, s, l])
 	}
 
 	Habitat.Colour.rgb = (r, g, b) => {
+		
+		r = wrap(r, 0, 255)
+		g = wrap(g, 0, 255)
+		b = wrap(b, 0, 255)
+
 		const [h, s, l] = getHSL(r, g, b)
 		return makeColour([r, g, b], [h, s, l])
 	}
@@ -22,6 +32,15 @@
 	}
 
 	const makeColour = ([r, g, b], [h, s, l]) => {
+		
+		r = wrap(r, 0, 255)
+		g = wrap(g, 0, 255)
+		b = wrap(b, 0, 255)
+		
+		h = wrap(h, 0, 360)
+		s = wrap(s, 0, 100)
+		l = wrap(l, 0, 100)
+
 		const rgb = `rgb(${r}, ${g}, ${b})`
 		const hsl = `hsl(${h}, ${s}%, ${l}%)`
 		const hex = `#${hexify(r)}${hexify(g)}${hexify(b)}`
@@ -57,6 +76,7 @@
 	}
 
 	//https://css-tricks.com/converting-color-spaces-in-javascript/
+	//https://en.wikipedia.org/wiki/HSL_and_HSV
 	const getRGB = (h, s, l) => {
 
 		let r = 0
@@ -67,7 +87,8 @@
 		l /= 100
 
 		const c = (1 - Math.abs(2 * l - 1)) * s
-		const x = c * (1 - Math.abs(h / 60) % 2 - 1)
+		const h_ = h / 60
+		const x = c * (1 - h_ % 2 - 1)
 		const m = l - c/2
 
 		if (0 <= h && h < 60) {
@@ -141,6 +162,35 @@
 		l *= 100
 
 		return [h, s, l]
+	}
+
+	const clamp = (number, min, max) => {
+		if (number < min) return min
+		if (number > max) return max
+		return number
+	}
+
+	const wrap = (number, min, max) => {
+		const difference = max - min
+		while (number < min) number += difference
+		while (number > max) number -= difference
+		return number
+	}
+
+	Habitat.Colour.add = (colour, {r=0, g=0, b=0, red=0, green=0, blue=0, h=0, s=0, l=0, hue=0, saturation=0, lightness=0} = {}) => {
+		
+		const nr = clamp(colour.r + r + red, 0, 255)
+		const ng = clamp(colour.g + g + green, 0, 255)
+		const nb = clamp(colour.b + b + blue, 0, 255)
+		const rgbColour = Habitat.Colour.rgb(nr, ng, nb)
+		
+		const nh = wrap(rgbColour.h + h + hue, 0, 360)
+		const ns = clamp(rgbColour.s + s + saturation, 0, 100)
+		const nl = clamp(rgbColour.l + l + lightness, 0, 100)
+		const hslColour = Habitat.Colour.hsl(nh, ns, nl)
+
+		return hslColour
+
 	}
 
 	Habitat.Colour.Void = Habitat.Colour.rgb(6, 7, 10)
