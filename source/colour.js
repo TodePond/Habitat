@@ -193,6 +193,22 @@
 
 	}
 
+	Habitat.Colour.multiply = (colour, {r=1, g=1, b=1, red=1, green=1, blue=1, h=1, s=1, l=1, hue=1, saturation=1, lightness=1} = {}) => {
+		
+		const nr = clamp(colour.r * r * red, 0, 255)
+		const ng = clamp(colour.g * g * green, 0, 255)
+		const nb = clamp(colour.b * b * blue, 0, 255)
+		const rgbColour = Habitat.Colour.rgb(nr, ng, nb)
+		
+		const nh = wrap(rgbColour.h * h * hue, 0, 360)
+		const ns = clamp(rgbColour.s * s * saturation, 0, 100)
+		const nl = clamp(rgbColour.l * l * lightness, 0, 100)
+		const hslColour = Habitat.Colour.hsl(nh, ns, nl)
+
+		return hslColour
+
+	}
+
 	Habitat.Colour.Void = Habitat.Colour.rgb(6, 7, 10)
 	Habitat.Colour.Black = Habitat.Colour.rgb(23, 29, 40)
 	Habitat.Colour.Grey = Habitat.Colour.rgb(55, 67, 98)
