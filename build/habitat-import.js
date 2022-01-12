@@ -231,6 +231,26 @@ const Habitat = {}
 		return hslColour
 
 	}
+	
+	
+	Habitat.Colour.multiply = (colour, {red=1, green=1, blue=1, alpha=1, hue=1, saturation=1, lightness=1, r=1, g=1, b=1, a=1, h=1, s=1, l=1} = {}) => {
+		
+		const newRed = clamp(colour.red * r * red, 0, 255)
+		const newGreen = clamp(colour.green * g * green, 0, 255)
+		const newBlue = clamp(colour.blue * b * blue, 0, 255)
+		const newAlpha = clamp(colour.alpha * a * alpha, 0, 1)
+		const rgbaStyle = `rgba(${newRed}, ${newGreen}, ${newBlue}, ${newAlpha})`
+		const rgbaColour = Habitat.Colour.make(rgbaStyle)
+
+		const newHue = wrap(rgbaColour.hue * h * hue, 0, 360)
+		const newSaturation = clamp(rgbaColour.saturation * s * saturation, 0, 100)
+		const newLightness = clamp(rgbaColour.lightness * l * lightness, 0, 100)
+		const hslStyle = `hsl(${newHue}, ${newSaturation}%, ${newLightness}%)`
+		const hslColour = Habitat.Colour.make(hslStyle)
+
+		return hslColour
+
+	}
 
 	const clamp = (number, min, max) => {
 		if (number < min) return min
