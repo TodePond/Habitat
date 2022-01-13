@@ -224,6 +224,18 @@
 	Habitat.Colour.Cyan = Habitat.Colour.make(269)
 	Habitat.Colour.Purple = Habitat.Colour.make(418)
 
+	Habitat.Colour.cache = []
+	Habitat.Colour.splash = (number) => {
+		if (Habitat.Colour.cache.length === 0) {
+			for (let i = 0; i < 1000; i++) {
+				const colour = Habitat.Colour.make(i)
+				Habitat.Colour.cache.push(colour)
+			}
+		}
+
+		return Habitat.Colour.cache[number]
+	}
+
 	Habitat.Colour.install = (global) => {
 		global.Colour = Habitat.Colour
 		Habitat.Colour.installed = true
