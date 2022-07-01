@@ -1,9 +1,4 @@
 
 Habitat.install(this)
 
-const Player = struct ({
-    name,
-    score: 0,
-    health: 10,
-})
-
+const scores = [3, 2, 5]

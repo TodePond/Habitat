@@ -54,6 +54,11 @@
 	Habitat.Random.maybe = (chance) => {
 		return Habitat.Random.oneIn(1 / chance)
 	}
+
+	Habitat.Random.from = (array) => {
+		const index = getRandomUint32() % array.length
+		return array[index]
+	}
 	
 	Habitat.Random.install = (global) => {
 		global.Random = Habitat.Random
