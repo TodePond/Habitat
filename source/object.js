@@ -17,8 +17,10 @@
 		})
 		
 		Reflect.defineProperty(global.Object.prototype, "keys", {
-			value() {
-				return Object.keys(this)
+			value: function*() {
+				for (const key in this) {
+					yield key
+				}
 			},
 			configurable: true,
 			enumerable: false,
@@ -26,8 +28,10 @@
 		})
 		
 		Reflect.defineProperty(global.Object.prototype, "values", {
-			value() {
-				return Object.values(this)
+			value: function*() {
+				for (const key in this) {
+					yield this[key]
+				}
 			},
 			configurable: true,
 			enumerable: false,
@@ -35,8 +39,10 @@
 		})
 		
 		Reflect.defineProperty(global.Object.prototype, "entries", {
-			value() {
-				return Object.entries(this)
+			value: function*() {
+				for (const key in this) {
+					yield [key, this[key]]
+				}
 			},
 			configurable: true,
 			enumerable: false,
