@@ -43,6 +43,16 @@
 			writable: true,
 		})
 		
+		Reflect.defineProperty(global.Object.prototype, "map", {
+			value(f) {
+				const values = [...Object.values(this)]
+				return values.map(f)
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
+		
 		Habitat.Object.installed = true
 		
 	}
