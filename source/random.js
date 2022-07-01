@@ -57,8 +57,6 @@
 	
 	Habitat.Random.install = (global) => {
 		global.Random = Habitat.Random
-		global.oneIn = Habitat.Random.oneIn
-		global.maybe = Habitat.Random.maybe
 		Habitat.Random.installed = true
 	}
 	
