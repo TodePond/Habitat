@@ -1,4 +1,4 @@
 
 Habitat.install(this)
 
-const scores = [3, 2, 5]
+Stage.start({scale: 0.8, aspectRatio: [2, 1]})
