@@ -49,7 +49,7 @@ const greens = [29, 67, 98, 128, 159, 174, 204, 222, 245, 255]
 const blues  = [40, 70, 98, 128, 159, 174, 204, 222, 247, 255]
 
 
-const Black = 000
+const Black = 0
 const Grey = 112
 const Silver = 556
 const White = 888
