@@ -8,21 +8,21 @@
 			this.end = undefined
 			this.isEmpty = true
 	
-			for (const item of iterable) {
-				this.push(item)
+			for (const value of iterable) {
+				this.push(value)
 			}
 		}
 		
 		*[Symbol.iterator]() {
 			let link = this.start
 			while (link !== undefined) {
-				yield link.item
+				yield link.value
 				link = link.next
 			}
 		}
 	
-		push(item) {
-			const link = makeLink(item)
+		push(value) {
+			const link = makeLink(value)
 			if (this.isEmpty) {
 				this.start = link
 				this.end = link
@@ -40,15 +40,15 @@
 				return undefined
 			}
 	
-			const item = this.start.item
+			const value = this.start.value
 			if (this.start === this.end) {
 				this.clear()
-				return item
+				return value
 			}
 	
 			this.end = this.end.previous
 			this.end.next = undefined
-			return item
+			return value
 		}
 	
 		shift() {
@@ -57,15 +57,15 @@
 				return undefined
 			}
 	
-			const item = this.start.item
+			const value = this.start.value
 			if (this.start === this.end) {
 				this.clear()
-				return item
+				return value
 			}
 	
 			this.start = this.start.next
 			this.start.previous = undefined
-			return item
+			return value
 		}
 	
 		clear() {
@@ -85,10 +85,10 @@
 	
 	}
 	
-	const makeLink = (item) => {
+	const makeLink = (value) => {
 		const previous = undefined
 		const next = undefined
-		const link = {item, previous, next}
+		const link = {value, previous, next}
 		return link
 	}
 
