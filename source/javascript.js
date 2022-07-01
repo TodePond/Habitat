@@ -3,15 +3,15 @@
 //============//
 {
 	
-	Habitat.JavaScript = (source) => {
+	Habitat.JS = (source) => {
 		const code = `return ${source}`
 		const func = new Function(code)()
 		return func
 	}
 	
-	Habitat.JavaScript.install = (global) => {
-		global.JavaScript = Habitat.JavaScript	
-		Habitat.JavaScript.installed = true
+	Habitat.JS.install = (global) => {
+		global.JS = Habitat.JS	
+		Habitat.JS.installed = true
 	}
 	
 }

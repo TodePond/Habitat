@@ -2,7 +2,7 @@ export {Habitat}
 export default Habitat
 export const {install} = Habitat
 
-export const {JavaScript} = Habitat
+export const {JS} = Habitat
 export const {Keyboard} = Habitat
 export const {Mouse} = Habitat
 export const {Random} = Habitat

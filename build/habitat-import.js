@@ -543,15 +543,15 @@ const Habitat = {}
 //============//
 {
 	
-	Habitat.JavaScript = (source) => {
+	Habitat.JS = (source) => {
 		const code = `return ${source}`
 		const func = new Function(code)()
 		return func
 	}
 	
-	Habitat.JavaScript.install = (global) => {
-		global.JavaScript = Habitat.JavaScript	
-		Habitat.JavaScript.installed = true
+	Habitat.JS.install = (global) => {
+		global.JS = Habitat.JS	
+		Habitat.JS.installed = true
 	}
 	
 }
@@ -1434,7 +1434,7 @@ export {Habitat}
 export default Habitat
 export const {install} = Habitat
 
-export const {JavaScript} = Habitat
+export const {JS} = Habitat
 export const {Keyboard} = Habitat
 export const {Mouse} = Habitat
 export const {Random} = Habitat
