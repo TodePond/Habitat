@@ -14,6 +14,6 @@ export const {HTML} = Habitat
 export const {sleep} = Habitat.Async
 export const {print, dir, print9} = Habitat.Console
 export const {$, $$} = Habitat.Document
-export const {gcd, reduce} = Habitat.Math
+export const {gcd, reduce, wrap, clamp} = Habitat.Math
 export const {oneIn, maybe} = Habitat.Random
 export const {Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive} = Habitat.Type
