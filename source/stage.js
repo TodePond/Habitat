@@ -7,7 +7,6 @@
 	Habitat.Stage.start = (options = {}) => {
 		
 		const {
-			canvas,
 			context,
 			scale = 1.0,
 			aspectRatio,
@@ -18,7 +17,7 @@
 			resize = () => {},
 		} = options
 
-		const stage = {canvas, context, scale, aspectRatio, speed, paused, tick, update, resize}
+		const stage = {context, scale, aspectRatio, speed, paused, tick, update, resize}
 
 		if (document.body === null) {
 			addEventListener("load", () => register(stage))
@@ -31,20 +30,17 @@
 
 	const register = (stage) => {
 		
-		// Create a canvas if none was provided
-		if (stage.canvas === undefined) {
-			stage.canvas = document.createElement("canvas")
-			stage.canvas.style["background-color"] = "#171d28"
-			stage.canvas.style["image-rendering"] = "pixelated"
+		// Create a context + canvas if none was provided
+		if (stage.context === undefined) {
+			const canvas = document.createElement("canvas")
+			canvas.style["background-color"] = "#171d28"
+			canvas.style["image-rendering"] = "pixelated"
 			document.body.style["background-color"] = "#06070a"
 			document.body.style["margin"] = "0px"
 			document.body.style["overflow"] = "hidden"
-			document.body.appendChild(stage.canvas)
-		}
+			document.body.appendChild(canvas)
 
-		// Create a context if none was provided
-		if (stage.context === undefined) {
-			stage.context = stage.canvas.getContext("2d")
+			stage.context = canvas.getContext("2d")
 		}
 
 		addEventListener("resize", () => resize(stage))
@@ -60,8 +56,8 @@
 	const tick = (stage) => {
 		stage.clock += stage.speed
 		while (stage.clock > 0) {
-			if (!stage.paused) stage.update(stage.context, stage.canvas)
-			stage.tick(stage.context, stage.canvas)
+			if (!stage.paused) stage.update(stage.context)
+			stage.tick(stage.context, stage)
 			stage.clock--
 		}
 		
@@ -86,18 +82,19 @@
 		const scaledWidth = width * stage.scale
 		const scaledHeight = height * stage.scale
 
-		stage.canvas.width = Math.round(scaledWidth)
-		stage.canvas.height = Math.round(scaledHeight)
-		stage.canvas.style["width"] = stage.canvas.width
-		stage.canvas.style["height"] = stage.canvas.height
+		const {canvas} = stage.context
+		canvas.width = Math.round(scaledWidth)
+		canvas.height = Math.round(scaledHeight)
+		canvas.style["width"] = canvas.width
+		canvas.style["height"] = canvas.height
 		
 		const marginHorizontal = (innerWidth - scaledWidth)/2
 		const marginVertical = (innerHeight - scaledHeight)/2
-		stage.canvas.style["margin-left"] = marginHorizontal
-		stage.canvas.style["margin-right"] = marginHorizontal
-		stage.canvas.style["margin-top"] = marginVertical
-		stage.canvas.style["margin-bottom"] = marginVertical
-		stage.resize(stage.context, stage.canvas)
+		canvas.style["margin-left"] = marginHorizontal
+		canvas.style["margin-right"] = marginHorizontal
+		canvas.style["margin-top"] = marginVertical
+		canvas.style["margin-bottom"] = marginVertical
+		stage.resize(stage.context)
 	}
 	
 	Habitat.Stage.install = (global) => {
