@@ -591,6 +591,107 @@ const Habitat = {}
 }
 
 
+//============//
+// LinkedList //
+//============//
+{
+	Habitat.LinkedList = class LinkedList {
+		constructor(iterable = []) {
+			this.start = undefined
+			this.end = undefined
+			this.isEmpty = true
+	
+			for (const item of iterable) {
+				this.push(item)
+			}
+		}
+		
+		*[Symbol.iterator]() {
+			let link = this.start
+			while (link !== undefined) {
+				yield link.item
+				link = link.next
+			}
+		}
+	
+		push(item) {
+			const link = makeLink(item)
+			if (this.isEmpty) {
+				this.start = link
+				this.end = link
+				this.isEmpty = false
+			} else {
+				this.end.next = link
+				link.previous = this.end
+				this.end = link
+			}
+		}
+	
+		pop() {
+			
+			if (this.isEmpty) {
+				return undefined
+			}
+	
+			const item = this.start.item
+			if (this.start === this.end) {
+				this.clear()
+				return item
+			}
+	
+			this.end = this.end.previous
+			this.end.next = undefined
+			return item
+		}
+	
+		shift() {
+	
+			if (this.isEmpty) {
+				return undefined
+			}
+	
+			const item = this.start.item
+			if (this.start === this.end) {
+				this.clear()
+				return item
+			}
+	
+			this.start = this.start.next
+			this.start.previous = undefined
+			return item
+		}
+	
+		clear() {
+			this.start = undefined
+			this.end = undefined
+			this.isEmpty = true
+		}
+	
+		setStart(link) {
+			this.start = link
+			link.previous = undefined
+		}
+
+		toString() {
+			return [...this].toString()
+		}
+	
+	}
+	
+	const makeLink = (item) => {
+		const previous = undefined
+		const next = undefined
+		const link = {item, previous, next}
+		return link
+	}
+
+	Habitat.LinkedList.install = (global) => {
+		global.LinkedList = Habitat.LinkedList
+		Habitat.LinkedList.installed = true
+	}
+	
+}
+
 //======//
 // Main //
 //======//
@@ -607,6 +708,7 @@ Habitat.install = (global) => {
 	if (!Habitat.HTML.installed)       Habitat.HTML.install(global)
 	if (!Habitat.JavaScript.installed) Habitat.JavaScript.install(global)
 	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
+	if (!Habitat.LinkedList.installed) Habitat.LinkedList.install(global)
 	if (!Habitat.Math.installed)       Habitat.Math.install(global)
 	if (!Habitat.Mouse.installed)      Habitat.Mouse.install(global)
 	if (!Habitat.Number.installed)     Habitat.Number.install(global)
@@ -615,6 +717,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Random.installed)     Habitat.Random.install(global)
 	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
 	if (!Habitat.String.installed)     Habitat.String.install(global)
+	if (!Habitat.Struct.installed)     Habitat.Struct.install(global)
 	if (!Habitat.Touches.installed)    Habitat.Touches.install(global)
 	if (!Habitat.Tween.installed)      Habitat.Tween.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
@@ -775,6 +878,31 @@ Habitat.install = (global) => {
 				writable: true,
 			})
 		}
+
+		Reflect.defineProperty(global.Number.prototype, "map", {
+			value(f) {
+				const array = []
+				for (let i = 0; i < this; i++) {
+					const value = f(i)
+					array.push(value)
+				}
+				return array
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
+
+		Reflect.defineProperty(global.Number.prototype, "forEach", {
+			value(f) {
+				for (let i = 0; i < this; i++) {
+					f(i)
+				}
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Habitat.Number.installed = true
 		
@@ -1086,14 +1214,14 @@ Habitat.install = (global) => {
 	
 }
 
-//=======//
+//========//
 // Struct //
-//=======//
+//========//
 {
 	Habitat.Struct = {}
 	Habitat.Struct.struct = (parameters) => (arguments) => ({...parameters, ...arguments})
 	
-	Habitat.Stage.install = (global) => {
+	Habitat.Struct.install = (global) => {
 		global.struct = Habitat.Struct.struct
 		Habitat.struct = Habitat.Struct.struct
 		Habitat.Struct.installed = true

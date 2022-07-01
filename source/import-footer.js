@@ -10,6 +10,7 @@ export const {Stage} = Habitat
 export const {Touches} = Habitat
 export const {Colour} = Habitat
 export const {HTML} = Habitat
+export const {LinkedList} = Habitat
 
 export const {sleep} = Habitat.Async
 export const {print, dir, print9} = Habitat.Console

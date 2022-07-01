@@ -53,6 +53,31 @@
 				writable: true,
 			})
 		}
+
+		Reflect.defineProperty(global.Number.prototype, "map", {
+			value(f) {
+				const array = []
+				for (let i = 0; i < this; i++) {
+					const value = f(i)
+					array.push(value)
+				}
+				return array
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
+
+		Reflect.defineProperty(global.Number.prototype, "forEach", {
+			value(f) {
+				for (let i = 0; i < this; i++) {
+					f(i)
+				}
+			},
+			configurable: true,
+			enumerable: false,
+			writable: true,
+		})
 		
 		Habitat.Number.installed = true
 		
