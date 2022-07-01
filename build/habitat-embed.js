@@ -1064,12 +1064,13 @@ Habitat.install = (global) => {
 			aspectRatio,
 			speed = 1.0,
 			paused = false,
+			clock = 0,
 			tick = () => {},
 			update = () => {},
 			resize = () => {},
 		} = options
 
-		const stage = {context, scale, aspectRatio, speed, paused, tick, update, resize}
+		const stage = {context, scale, aspectRatio, speed, paused, clock, tick, update, resize}
 
 		if (document.body === null) {
 			addEventListener("load", () => register(stage))
