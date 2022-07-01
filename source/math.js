@@ -26,12 +26,14 @@
 
 	const wrap = (number, min, max) => {
 		const difference = max - min
-		while (number > max) {
-			number -= difference
-		}
-		while (number < min) {
-			number += difference
-		}
+		while (number > max) number -= difference
+		while (number < min) number += difference
+		return number
+	}
+
+	const clamp = (number, min, max) => {
+		if (number > max) return max
+		if (number < min) return min
 		return number
 	}
 	
@@ -39,10 +41,11 @@
 		global.Math.gcd = Habitat.Math.gcd
 		global.Math.reduce = Habitat.Math.reduce
 		global.Math.wrap = Habitat.Math.wrap
+		global.Math.clamp = Habitat.Math.clamp
 		Habitat.Math.installed = true
 	}
 	
 	
-	Habitat.Math = {install, gcd, reduce, wrap}
+	Habitat.Math = {install, gcd, reduce, wrap, clamp}
 	
 }
