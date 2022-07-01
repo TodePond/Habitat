@@ -1091,7 +1091,6 @@ Habitat.install = (global) => {
 			document.body.style["margin"] = "0px"
 			document.body.style["overflow"] = "hidden"
 			document.body.appendChild(canvas)
-
 			stage.context = canvas.getContext("2d")
 		}
 
