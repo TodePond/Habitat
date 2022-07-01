@@ -831,8 +831,13 @@ Habitat.install = (global) => {
 		
 		Reflect.defineProperty(global.Object.prototype, "map", {
 			value(f) {
-				const values = [...Object.values(this)]
-				return values.map(f)
+				const entries = [...Object.entries(this)]
+				const newEntries = entries.map(([key, value]) => [key, f(value, key)])
+				const newObject = {}
+				for (const [key, value] of newEntries) {
+					newObject[key] = value
+				}
+				return newObject
 			},
 			configurable: true,
 			enumerable: false,

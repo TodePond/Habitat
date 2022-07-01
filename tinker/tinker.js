@@ -1,6 +1,7 @@
 
 Habitat.install(this)
 
-print("yo")
+const scores = new Map()
 
-
+scores.set("maths", 2)
+scores.set("english", 3)
