@@ -12,7 +12,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Document.installed)   Habitat.Document.install(global)
 	if (!Habitat.Event.installed)      Habitat.Event.install(global)
 	if (!Habitat.HTML.installed)       Habitat.HTML.install(global)
-	if (!Habitat.JavaScript.installed) Habitat.JavaScript.install(global)
+	if (!Habitat.JS.installed)         Habitat.JS.install(global)
 	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
 	if (!Habitat.LinkedList.installed) Habitat.LinkedList.install(global)
 	if (!Habitat.Math.installed)       Habitat.Math.install(global)
