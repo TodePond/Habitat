@@ -3,8 +3,7 @@
 //============//
 {
 	
-	Habitat.JavaScript = (...args) => {
-		const source = String.raw(...args)
+	Habitat.JavaScript = (source) => {
 		const code = `return ${source}`
 		const func = new Function(code)()
 		return func

@@ -3,8 +3,7 @@
 //======//
 {
 
-	Habitat.HTML = (...args) => {
-		const source = String.raw(...args)
+	Habitat.HTML = (source) => {
 		const template = document.createElement("template")
 		template.innerHTML = source
 		return template.content
