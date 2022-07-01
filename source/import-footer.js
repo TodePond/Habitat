@@ -16,4 +16,5 @@ export const {print, dir, print9} = Habitat.Console
 export const {$, $$} = Habitat.Document
 export const {gcd, reduce, wrap, clamp} = Habitat.Math
 export const {oneIn, maybe} = Habitat.Random
+export const {struct} = Habitat.Struct
 export const {Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive} = Habitat.Type
