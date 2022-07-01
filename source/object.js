@@ -45,7 +45,7 @@
 		
 		Reflect.defineProperty(global.Object.prototype, "map", {
 			value(f) {
-				const entries = [...Object.entries(this)]
+				const entries = Object.entries(this)
 				const newEntries = entries.map(([key, value]) => [key, f(value, key)])
 				const newObject = {}
 				for (const [key, value] of newEntries) {
