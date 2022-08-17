@@ -211,6 +211,10 @@ const Habitat = {}
 
 		Habitat.Colour.make = (style) => {
 
+			if (global.document === undefined) {
+				throw new Error(`[Habitat] Sorry, colour.js is currently broken when 'document' isn't defined`)
+			}
+
 			if (typeof style === "number") {
 				let string = style.toString()
 				while (string.length < 3) string = "0"+string
@@ -228,10 +232,6 @@ const Habitat = {}
 				const colour = Habitat.Colour.make(rgb)
 				colour.splash = style
 				return colour
-			}
-	
-			if (document === undefined) {
-				return
 			}
 	
 			const canvas = global.document.createElement("canvas")
@@ -337,24 +337,31 @@ const Habitat = {}
 
 		}
 
-		Habitat.Colour.Void = Habitat.Colour.make("rgb(6, 7, 10)")
-		Habitat.Colour.Black = Habitat.Colour.make(0)
-		Habitat.Colour.Grey = Habitat.Colour.make(112)
-		Habitat.Colour.Silver = Habitat.Colour.make(556)
-		Habitat.Colour.White = Habitat.Colour.make(888)
-	
-		Habitat.Colour.Green = Habitat.Colour.make(293)
-		Habitat.Colour.Red = Habitat.Colour.make(911)
-		Habitat.Colour.Blue = Habitat.Colour.make(239)
-		Habitat.Colour.Yellow = Habitat.Colour.make(961)
-		Habitat.Colour.Orange = Habitat.Colour.make(931)
-		Habitat.Colour.Pink = Habitat.Colour.make(933)
-		Habitat.Colour.Rose = Habitat.Colour.make(936)
-		Habitat.Colour.Cyan = Habitat.Colour.make(269)
-		Habitat.Colour.Purple = Habitat.Colour.make(418)
+		if (global.document !== undefined) {
+			Habitat.Colour.Void = Habitat.Colour.make("rgb(6, 7, 10)")
+			Habitat.Colour.Black = Habitat.Colour.make(0)
+			Habitat.Colour.Grey = Habitat.Colour.make(112)
+			Habitat.Colour.Silver = Habitat.Colour.make(556)
+			Habitat.Colour.White = Habitat.Colour.make(888)
+		
+			Habitat.Colour.Green = Habitat.Colour.make(293)
+			Habitat.Colour.Red = Habitat.Colour.make(911)
+			Habitat.Colour.Blue = Habitat.Colour.make(239)
+			Habitat.Colour.Yellow = Habitat.Colour.make(961)
+			Habitat.Colour.Orange = Habitat.Colour.make(931)
+			Habitat.Colour.Pink = Habitat.Colour.make(933)
+			Habitat.Colour.Rose = Habitat.Colour.make(936)
+			Habitat.Colour.Cyan = Habitat.Colour.make(269)
+			Habitat.Colour.Purple = Habitat.Colour.make(418)
+		}
 	
 		Habitat.Colour.cache = []
 		Habitat.Colour.splash = (number) => {
+			
+			if (global.document === undefined) {
+				throw new Error(`[Habitat] Sorry, colour.js is currently broken when 'document' isn't defined`)
+			}
+
 			if (Habitat.Colour.cache.length === 0) {
 				for (let i = 0; i < 1000; i++) {
 					const colour = Habitat.Colour.make(i)
