@@ -801,8 +801,8 @@ Habitat.install = (global) => {
 			})
 			
 			global.addEventListener("mousemove", e => {
-				Mouse.position[0] = event.clientX
-				Mouse.position[1] = event.clientY
+				Mouse.position[0] = e.clientX
+				Mouse.position[1] = e.clientY
 			})
 			
 			Reflect.defineProperty(Mouse, "installed", {
