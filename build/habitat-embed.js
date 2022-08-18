@@ -927,7 +927,8 @@ Habitat.install = (global) => {
 	Habitat.Object = {}
 	Habitat.Object.install = (global) => {
 		
-		Reflect.defineProperty(global.Object.prototype, Symbol.iterator, {
+		// Removed because of incompatibility with Deno
+		/*Reflect.defineProperty(global.Object.prototype, Symbol.iterator, {
 			value: function*() {
 				for (const key in this) {
 					yield this[key]
@@ -936,7 +937,7 @@ Habitat.install = (global) => {
 			configurable: true,
 			enumerable: false,
 			writable: true,
-		})
+		})*/
 		
 		Reflect.defineProperty(global.Object.prototype, "keys", {
 			value: function*() {
