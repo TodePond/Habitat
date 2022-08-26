@@ -1,7 +1,9 @@
+# As of the 26th August, I'm redesigning how Habitat is structured, so this readme might be out-of-date
+
 <img align="right" height="100" src="http://todepond.com/IMG/Habitat@0.25x.png">
 
 # Habitat
-Habitat is a collection of JavaScript tools and libraries that I have built up for my personal use. The full documentation for it is here: [l2wilson94.gitbook.io/habitat](https://l2wilson94.gitbook.io/habitat/)
+Habitat is a collection of JavaScript tools and libraries that I have built up for my personal use. The full documentation for it is here: [todepond.gitbook.io/habitat](https://todepond.gitbook.io/habitat/)
 
 ## How to use it
 You can embed it, like this:
