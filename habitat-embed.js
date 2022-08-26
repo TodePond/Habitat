@@ -1,5 +1,3 @@
-const Habitat = {}
-
 //=======//
 // Array //
 //=======//
@@ -108,7 +106,6 @@ const Habitat = {}
 	Habitat.Array = {install}
 	
 }
-
 //=======//
 // Async //
 //=======//
@@ -121,7 +118,6 @@ const Habitat = {}
 	
 	Habitat.Async = {install, sleep}
 }
-
 //========//
 // Colour //
 //========//
@@ -377,7 +373,6 @@ const Habitat = {}
 	}
 	
 }
-
 //=========//
 // Console //
 //=========//
@@ -445,7 +440,6 @@ const Habitat = {}
 	
 	Habitat.Console = {install, print, dir, print9}
 }
-
 //==========//
 // Document //
 //==========//
@@ -488,7 +482,6 @@ const Habitat = {}
 	
 }
 
-
 //=======//
 // Event //
 //=======//
@@ -529,7 +522,6 @@ const Habitat = {}
 	
 }
 
-
 //======//
 // HTML //
 //======//
@@ -548,7 +540,27 @@ const Habitat = {}
 	
 }
 
+//export {Habitat}
+//export default Habitat
+//export const {install} = Habitat
 
+//export const {JS} = Habitat
+//export const {Keyboard} = Habitat
+//export const {Mouse} = Habitat
+//export const {Random} = Habitat
+//export const {Stage} = Habitat
+//export const {Touches} = Habitat
+//export const {Colour} = Habitat
+//export const {HTML} = Habitat
+//export const {LinkedList} = Habitat
+
+//export const {sleep} = Habitat.Async
+//export const {print, dir, print9} = Habitat.Console
+//export const {$, $$} = Habitat.Document
+//export const {gcd, reduce, wrap, clamp} = Habitat.Math
+//export const {oneIn, maybe} = Habitat.Random
+//export const {struct} = Habitat.Struct
+//export const {Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive} = Habitat.Type
 //============//
 // JavaScript //
 //============//
@@ -566,7 +578,6 @@ const Habitat = {}
 	}
 	
 }
-
 
 //==========//
 // Keyboard //
@@ -598,7 +609,6 @@ const Habitat = {}
 	})
 	
 }
-
 
 //============//
 // LinkedList //
@@ -700,7 +710,7 @@ const Habitat = {}
 	}
 	
 }
-
+const Habitat = {}
 //======//
 // Main //
 //======//
@@ -733,7 +743,6 @@ Habitat.install = (global) => {
 	Habitat.installed = true
 	
 }
-
 //======//
 // Math //
 //======//
@@ -786,7 +795,6 @@ Habitat.install = (global) => {
 	
 }
 
-
 //=======//
 // Mouse //
 //=======//
@@ -829,7 +837,6 @@ Habitat.install = (global) => {
 	})
 	
 }
-
 
 //========//
 // Number //
@@ -919,7 +926,6 @@ Habitat.install = (global) => {
 	Habitat.Number = {install}
 	
 }
-
 //========//
 // Object //
 //========//
@@ -992,7 +998,6 @@ Habitat.install = (global) => {
 	}
 	
 }
-
 //========//
 // Random //
 //========//
@@ -1061,7 +1066,6 @@ Habitat.install = (global) => {
 	}
 	
 }
-
 //=======//
 // Stage //
 //=======//
@@ -1167,7 +1171,6 @@ Habitat.install = (global) => {
 	}
 	
 }
-
 //========//
 // String //
 //========//
@@ -1201,7 +1204,6 @@ Habitat.install = (global) => {
 	Habitat.String = {install}
 	
 }
-
 //========//
 // Struct //
 //========//
@@ -1216,7 +1218,6 @@ Habitat.install = (global) => {
 	}
 	
 }
-
 //=======//
 // Touch //
 //=======//
@@ -1306,7 +1307,6 @@ Habitat.install = (global) => {
 	
 	
 }
-
 
 //=======//
 // Tween //
@@ -1422,7 +1422,6 @@ Habitat.install = (global) => {
 		})
 	}
 }
-
 
 //======//
 // Type //
