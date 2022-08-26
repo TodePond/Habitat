@@ -45,9 +45,11 @@ const trimStart = (string) => {
 	for (let i = 0; i < string.length; i++) {
 		const char = string[i]
 		if (char === " " || char === "	") continue
-		return string.slice(i)
+		const trimmed = string.slice(i)
+		const trimming = string.slice(0, i)
+		return {trimmed, trimming}
 	}
-	return ""
+	return {trimmed: "", trimming: ""}
 }
 
 const getConstName = (line) => {
@@ -59,31 +61,34 @@ const getConstName = (line) => {
 	}
 }
 
-const stripSource = (source, name) => {
+const sanitiseSource = (source, name) => {
 	const lines = source.split("\n")
-	const trimmedLines = lines.map(line => trimStart(line))
+	const trims = lines.map(line => trimStart(line))
 	const strippedLines = []
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i]
-		const trimmedLine = trimmedLines[i]
-		const snippet = trimmedLine.slice(0, "export ".length)
+		const trim = trims[i]
+		const {trimmed, trimming} = trim
+		const exportSnippet = trimmed.slice(0, "export ".length)
+		const importSnippet = trimmed.slice(0, "import ".length)
 		
-		if (snippet === "export ") {
-			const trimLength = line.length - trimmedLine.length
+		if (exportSnippet === "export ") {
+			const trimLength = line.length - trimmed.length
 			const strippedLine = line.slice("export ".length + trimLength)
 			const constSnippet = strippedLine.slice(0, "const ".length)
 			if (constSnippet !== "const ") {
 				console.log(`%cError: Sorry, Frogasaurus only supports exports when you write 'const' immediately after.\n%c${name}:${i}\n\n	${line}\n`, RED, "")
 				return
 			}
-			strippedLines.push(strippedLine)
+			strippedLines.push(`\t${trimming}${strippedLine}`)
 			continue
 		}
 
-		strippedLines.push(line)
+		strippedLines.push(`\t${line}`)
 	}
 
-	return strippedLines.join("\n")
+	const blocked = `{\n${strippedLines.join("\n")}\n}`
+	return blocked
 }
 
 const buildSource = async (projectName) => {
@@ -92,13 +97,15 @@ const buildSource = async (projectName) => {
 		
 	const entries = await readDirectory("source")
 	const sources = entries.map(entry => entry.source)
-	const strippedSources = entries.map(entry => stripSource(entry.source, entry.name))
-	if (strippedSources.includes(undefined)) {
+
+	const sanitisedSources = entries.map(entry => sanitiseSource(entry.source, entry.name))
+	if (sanitisedSources.includes(undefined)) {
 		console.log("%cFailed build!", RED)
+		return
 	}
 	
 	const importSource = sources.join("\n")
-	const embedSource = strippedSources.join("\n")
+	const embedSource = sanitisedSources.join("\n")
 	
 	await writeFile(`${projectName}-import.js`, importSource)
 	await writeFile(`${projectName}-embed.js`, embedSource)

@@ -1,0 +1,7 @@
+{
+	const Habitat = {}
+	
+	const createGlobal = () => {
+	
+	}
+}
