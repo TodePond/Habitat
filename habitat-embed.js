@@ -1,25 +1,38 @@
-Frogasaurus.files["source/console.js"] = async () => {
-	const registerGlobal = Frogasaurus.import("registerGlobal")
-	
-	const print = console.log.bind(console)
-	registerGlobal({print})
+//=============//
+// FROGASAURUS //
+//=============//
+const Frogasaurus = {}
 
-	Frogasaurus.export(print, "print")
+//========//
+// SOURCE //
+//========//
+{
+	//====== ./console.js ======
+	{
+		Frogasaurus["./console.js"] = {}
+		const print = console.log.bind(console)
+
+		Frogasaurus["./console.js"].print = print
+	}
+
+	//====== ./greet.js ======
+	{
+		Frogasaurus["./greet.js"] = {}
+		
+		const greet = () => {
+			print("world")
+		}
+
+		Frogasaurus["./greet.js"].greet = greet
+	}
+
+	const { print } = Frogasaurus["./console.js"]
 }
 
-Frogasaurus.files["source/global.js"] = async () => {
-	const globals = {}
-	const install = (globalObject) => {
-		for (const key in globals) {
-			const value = globals[key]
-			globalObject[key] = value
-		}
-	}
-	
-	const registerGlobal = ({key, value}) => {
-		globals[key] = value
-	}
-
-	Frogasaurus.export(install, "install")
-	Frogasaurus.export(registerGlobal, "registerGlobal")
+//=========//
+// EXPORTS //
+//=========//
+const Habitat = {
+	print: Frogasaurus["./console.js"].print,
+	greet: Frogasaurus["./greet.js"].greet,
 }

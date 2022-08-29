@@ -1,15 +1,36 @@
-import { registerGlobal } from "./global.js"
+//=============//
+// FROGASAURUS //
+//=============//
+const Frogasaurus = {}
 
-export const print = console.log.bind(console)
-registerGlobal({print})
-const globals = {}
-export const install = (globalObject) => {
-	for (const key in globals) {
-		const value = globals[key]
-		globalObject[key] = value
+//========//
+// SOURCE //
+//========//
+{
+	//====== ./console.js ======
+	{
+		Frogasaurus["./console.js"] = {}
+		const print = console.log.bind(console)
+
+		Frogasaurus["./console.js"].print = print
 	}
+
+	//====== ./greet.js ======
+	{
+		Frogasaurus["./greet.js"] = {}
+		
+		const greet = () => {
+			print("world")
+		}
+
+		Frogasaurus["./greet.js"].greet = greet
+	}
+
+	const { print } = Frogasaurus["./console.js"]
 }
 
-export const registerGlobal = ({key, value}) => {
-	globals[key] = value
-}
+//=========//
+// EXPORTS //
+//=========//
+export const { print } = Frogasaurus["./console.js"]
+export const { greet } = Frogasaurus["./greet.js"]
