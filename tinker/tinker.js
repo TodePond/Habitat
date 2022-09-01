@@ -1,16 +1,17 @@
 Habitat.install(window);
 
 const lu = {
-	score: 0
+	score: 20
 }
 
-const max = 100
+const max = 10
+const offset = 10
 let tickTock = true
 setInterval(() => {
 	if (lu.score === max) return
-	print(`${tickTock? "+" : "-"}${"#".repeat(lu.score)}`)
+	const count = Math.clamp(offset + lu.score, 0, Infinity)
+	print(`${tickTock? "+" : "-"}${"#".repeat(count)}`)
 	tickTock = !tickTock
 }, 20)
 
-lu.tween("score", {to: max, easy: Habitat.Tween.SUPER_SMOOTH, launch: 0.0, land: 0.0})
-
+lu.tween("score", {to: max, ease: Habitat.Tween.SUPER_SMOOTH})
