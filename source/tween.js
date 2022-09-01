@@ -65,7 +65,7 @@
 			if (t <= 0) return 0
 			if (t >= 1) return 1
 			const f = (t) => Math.exp(-1/t)
-			return f(t)/(f(t) - f(1-t))
+			return f(t)/(f(t) + f(1-t))
 	}
 
 	Habitat.Tween.install = (global) => {
