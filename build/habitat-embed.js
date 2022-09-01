@@ -1369,6 +1369,15 @@ Habitat.install = (global) => {
 		return (1+Habitat.Tween.EASE_OUT_BOUNCE(2*t-1))/2
 	}
 
+	// Super Smooth function with "perfect" derivatives
+	// From https://youtu.be/vD5g8aVscUI
+	Habitat.Tween.SUPER_SMOOTH = (t) => {
+			if (t <= 0) return 0
+			if (t >= 1) return 1
+			const f = (t) => Math.exp(-1/t)
+			return f(t)/(f(t) - f(1-t))
+	}
+
 	Habitat.Tween.install = (global) => {
 		Habitat.Tween.installed = true
 
