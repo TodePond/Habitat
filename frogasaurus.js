@@ -200,19 +200,6 @@ const transpileSource = (source, name, path) => {
 	return {success: true, output: scopedSource, exportResults, importResults, path}
 }
 
-const getDependencyMap = (sourceResults) => {
-	const dependencies = {}
-	for (const sourceResult of sourceResults) {
-		dependencies[sourceResult.path] = sourceResult.importResults.map(importResult => importResult.path)
-	}
-	return dependencies
-}
-
-const getOrderedSourceResults = (sourceResults) => {
-	const dependencyMap = getDependencyMap(sourceResults)
-	return sourceResults
-}
-
 const build = async (projectName) => {
 
 	console.clear()
@@ -278,7 +265,7 @@ const build = async (projectName) => {
 
 	const transpiledSource = "{\n" + sourceResults.map(result => result.output).join("\n\n") + importFooterSource + "\n}"
 
-	const importSource = HEADER + transpiledSource + FOOTER_TITLE + exportFooterSource
+	const importSource = HEADER + transpiledSource + FOOTER_TITLE + exportFooterSource + "\n\nexport " + globalFooterSource
 	const embedSource = HEADER + transpiledSource + FOOTER_TITLE + globalFooterSource
 		
 	await writeFile(`${projectName.toLowerCase()}-import.js`, importSource)

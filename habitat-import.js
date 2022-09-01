@@ -34,3 +34,8 @@ const Frogasaurus = {}
 //=========//
 export const { print } = Frogasaurus["./console.js"]
 export const { greet } = Frogasaurus["./greet.js"]
+
+export const Habitat = {
+	print: Frogasaurus["./console.js"].print,
+	greet: Frogasaurus["./greet.js"].greet,
+}
