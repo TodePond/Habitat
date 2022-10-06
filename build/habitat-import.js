@@ -702,39 +702,6 @@ const Habitat = {}
 }
 
 //======//
-// Main //
-//======//
-Habitat.install = (global) => {
-
-	if (Habitat.installed) return
-
-	if (!Habitat.Array.installed)      Habitat.Array.install(global)
-	if (!Habitat.Async.installed)      Habitat.Async.install(global)
-	if (!Habitat.Colour.installed)     Habitat.Colour.install(global)
-	if (!Habitat.Console.installed)    Habitat.Console.install(global)
-	if (!Habitat.Document.installed)   Habitat.Document.install(global)
-	if (!Habitat.Event.installed)      Habitat.Event.install(global)
-	if (!Habitat.HTML.installed)       Habitat.HTML.install(global)
-	if (!Habitat.JS.installed)         Habitat.JS.install(global)
-	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
-	if (!Habitat.LinkedList.installed) Habitat.LinkedList.install(global)
-	if (!Habitat.Math.installed)       Habitat.Math.install(global)
-	if (!Habitat.Mouse.installed)      Habitat.Mouse.install(global)
-	if (!Habitat.Number.installed)     Habitat.Number.install(global)
-	if (!Habitat.Object.installed)     Habitat.Object.install(global)
-	if (!Habitat.Random.installed)     Habitat.Random.install(global)
-	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
-	if (!Habitat.String.installed)     Habitat.String.install(global)
-	if (!Habitat.Struct.installed)     Habitat.Struct.install(global)
-	if (!Habitat.Touches.installed)    Habitat.Touches.install(global)
-	if (!Habitat.Tween.installed)      Habitat.Tween.install(global)
-	if (!Habitat.Type.installed)       Habitat.Type.install(global)
-	
-	Habitat.installed = true
-	
-}
-
-//======//
 // Math //
 //======//
 {
@@ -1526,6 +1493,79 @@ Habitat.install = (global) => {
 	Habitat.Type = {install, Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive}
 	
 }
+
+//======//
+// Main //
+//======//
+Habitat.install = (global) => {
+
+	if (Habitat.installed) return
+
+	if (!Habitat.Array.installed)      Habitat.Array.install(global)
+	if (!Habitat.Async.installed)      Habitat.Async.install(global)
+	if (!Habitat.Colour.installed)     Habitat.Colour.install(global)
+	if (!Habitat.Console.installed)    Habitat.Console.install(global)
+	if (!Habitat.Document.installed)   Habitat.Document.install(global)
+	if (!Habitat.Event.installed)      Habitat.Event.install(global)
+	if (!Habitat.HTML.installed)       Habitat.HTML.install(global)
+	if (!Habitat.JS.installed)         Habitat.JS.install(global)
+	if (!Habitat.Keyboard.installed)   Habitat.Keyboard.install(global)
+	if (!Habitat.LinkedList.installed) Habitat.LinkedList.install(global)
+	if (!Habitat.Math.installed)       Habitat.Math.install(global)
+	if (!Habitat.Mouse.installed)      Habitat.Mouse.install(global)
+	if (!Habitat.Number.installed)     Habitat.Number.install(global)
+	if (!Habitat.Object.installed)     Habitat.Object.install(global)
+	if (!Habitat.Random.installed)     Habitat.Random.install(global)
+	if (!Habitat.Stage.installed)      Habitat.Stage.install(global)
+	if (!Habitat.String.installed)     Habitat.String.install(global)
+	if (!Habitat.Struct.installed)     Habitat.Struct.install(global)
+	if (!Habitat.Touches.installed)    Habitat.Touches.install(global)
+	if (!Habitat.Tween.installed)      Habitat.Tween.install(global)
+	if (!Habitat.Type.installed)       Habitat.Type.install(global)
+	if (!Habitat.memo.installed)       Habitat.memo.install(global)
+	
+	Habitat.installed = true
+	
+}
+
+//=========//
+// Memoize //
+//=========//
+{
+	// Memoize the function - Modified from https://tjinlag.medium.com/memoize-javascript-function-638f3b7c80e9
+    // keymaker is optional and allows you to specifiy a method for generating the key for the cache
+    // It should be used if the default method is not suitable for the use case
+    // The memo function returns a new function that will now be memoized, meaning it caches results
+	Habitat.memo = (fn, keyMaker) => {
+        // Make a Map (similar to an object but with faster lookup) to store the results of the function
+        const cache = new Map()
+
+        return (...args) => {
+            // Make a key that will be used to look up the results of the function
+            // This keyMaker is not very efficent, but should work for more use cases
+            // A better keyMaker would be one that is specific to the use case, such as (a) => args[0]
+            const key = keyMaker ? keyMaker.apply(this, args) : args.map(JSON.stringify).join('')
+
+            // If the key is in the cache, return the value
+            if (cache.has(key)) {
+                return cache.get(key)
+            }
+
+            // If the key is not in the cache, run the function and store the result in the cache
+            const result = fn.apply(this, args)
+            cache.set(key, result)
+
+            return result
+        }
+	}
+	
+	Habitat.memo.install = (global) => {
+		global.memo = Habitat.memo	
+		Habitat.memo.installed = true
+	}
+	
+}
+
 
 export {Habitat}
 export default Habitat
