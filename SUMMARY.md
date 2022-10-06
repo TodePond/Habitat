@@ -25,3 +25,4 @@
 * [Touches](libraries/touch.md)
 * [Tween](libraries/tween.md)
 * [Type](libraries/type.md)
+* [Memoization](libraries/memo.md)
