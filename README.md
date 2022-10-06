@@ -4,7 +4,7 @@
 
 Habitat is a collection of JavaScript tools and libraries that I have built up for my personal use.
 
-Its source code is all available here: [github.com/l2wilson94/habitat](https://github.com/l2wilson94/habitat)
+Its source code is all available here: [github.com/TodePond/Habitat](https://github.com/TodePond/Habitat)
 
 ## How to use it
 
