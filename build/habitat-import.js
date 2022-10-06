@@ -729,6 +729,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Touches.installed)    Habitat.Touches.install(global)
 	if (!Habitat.Tween.installed)      Habitat.Tween.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
+	if (!Habitat.MEMOIZE.installed)    Habitat.MEMOIZE.install(global)
 	
 	Habitat.installed = true
 	
@@ -1526,6 +1527,45 @@ Habitat.install = (global) => {
 	Habitat.Type = {install, Int, Positive, Negative, UInt, UpperCase, LowerCase, WhiteSpace, PureObject, Primitive}
 	
 }
+
+//=========//
+// Memoize //
+//=========//
+{
+	// Memoize the function - Modified from https://tjinlag.medium.com/memoize-javascript-function-638f3b7c80e9
+    // keymaker is optional and allows you to specifiy a method for generating the key for the cache
+    // It should be used if the default method is not suitable for the use case
+    // The MEMOIZE function returns a new function that will now be memoized, meaning it caches results
+	Habitat.MEMOIZE = (fn, keyMaker) => {
+        // Make a Map (similar to an object but with faster lookup) to store the results of the function
+        const cache = new Map()
+
+        return (...args) => {
+            // Make a key that will be used to look up the results of the function
+            // This keyMaker is not very efficent, but should work for more use cases
+            // A better keyMaker would be one that is specific to the use case, such as (a) => args[0]
+            const key = keyMaker ? keyMaker.apply(this, args) : args.map(JSON.stringify).join('')
+
+            // If the key is in the cache, return the value
+            if (cache.has(key)) {
+                return cache.get(key)
+            }
+
+            // If the key is not in the cache, run the function and store the result in the cache
+            const result = fn.apply(this, args)
+            cache.set(key, result)
+
+            return result
+        }
+	}
+	
+	Habitat.MEMOIZE.install = (global) => {
+		global.MEMOIZE = Habitat.MEMOIZE	
+		Habitat.MEMOIZE.installed = true
+	}
+	
+}
+
 
 export {Habitat}
 export default Habitat
