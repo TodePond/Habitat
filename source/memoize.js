@@ -5,8 +5,8 @@
 	// Memoize the function - Modified from https://tjinlag.medium.com/memoize-javascript-function-638f3b7c80e9
     // keymaker is optional and allows you to specifiy a method for generating the key for the cache
     // It should be used if the default method is not suitable for the use case
-    // The MEMOIZE function returns a new function that will now be memoized, meaning it caches results
-	Habitat.MEMOIZE = (fn, keyMaker) => {
+    // The memo function returns a new function that will now be memoized, meaning it caches results
+	Habitat.memo = (fn, keyMaker) => {
         // Make a Map (similar to an object but with faster lookup) to store the results of the function
         const cache = new Map()
 
@@ -29,9 +29,9 @@
         }
 	}
 	
-	Habitat.MEMOIZE.install = (global) => {
-		global.MEMOIZE = Habitat.MEMOIZE	
-		Habitat.MEMOIZE.installed = true
+	Habitat.memo.install = (global) => {
+		global.memo = Habitat.memo	
+		Habitat.memo.installed = true
 	}
 	
 }

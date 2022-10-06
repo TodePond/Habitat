@@ -26,7 +26,7 @@ Habitat.install = (global) => {
 	if (!Habitat.Touches.installed)    Habitat.Touches.install(global)
 	if (!Habitat.Tween.installed)      Habitat.Tween.install(global)
 	if (!Habitat.Type.installed)       Habitat.Type.install(global)
-	if (!Habitat.MEMOIZE.installed)    Habitat.MEMOIZE.install(global)
+	if (!Habitat.memo.installed)       Habitat.memo.install(global)
 	
 	Habitat.installed = true
 	
