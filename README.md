@@ -40,4 +40,4 @@ Or, you can import specific global functions:
 import {print} from "./habitat-import.js"
 ```
 
-There are more examples of how to use Habitat in the [examples](https://github.com/l2wilson94/Habitat/tree/main/examples) folder.
+There are more examples of how to use Habitat in the [examples](https://github.com/l2wilson94/Habitat/tree/main/examples) folder!
