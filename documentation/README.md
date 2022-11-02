@@ -1,2 +1,2 @@
 # Habitat Documentation
-Welcome to the new Habitat documentation!
+* [Console](console.md)

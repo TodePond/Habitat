@@ -20,7 +20,7 @@ const HabitatFrogasaurus = {}
 			print(message)
 		}
 		
-		const registerDebug = (global) => {
+		const registerDebugMethods = (global) => {
 			
 			defineGetter(global.Object.prototype, "d", function() {
 				const value = this.valueOf()
@@ -38,7 +38,7 @@ const HabitatFrogasaurus = {}
 
 		HabitatFrogasaurus["./console.js"].print = print
 		HabitatFrogasaurus["./console.js"].print9 = print9
-		HabitatFrogasaurus["./console.js"].registerDebug = registerDebug
+		HabitatFrogasaurus["./console.js"].registerDebugMethods = registerDebugMethods
 	}
 
 	//====== ./habitat.js ======
@@ -73,6 +73,6 @@ const HabitatFrogasaurus = {}
 const Habitat = {
 	print: HabitatFrogasaurus["./console.js"].print,
 	print9: HabitatFrogasaurus["./console.js"].print9,
-	registerDebug: HabitatFrogasaurus["./console.js"].registerDebug,
+	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
 	defineGetter: HabitatFrogasaurus["./habitat.js"].defineGetter,
 }

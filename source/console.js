@@ -9,7 +9,7 @@ export const print9 = (message) => {
 	print(message)
 }
 
-export const registerDebug = (global) => {
+export const registerDebugMethods = (global) => {
 	
 	defineGetter(global.Object.prototype, "d", function() {
 		const value = this.valueOf()
