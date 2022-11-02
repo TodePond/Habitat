@@ -83,6 +83,16 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./array.js"].repeatArray = repeatArray
 	}
 
+	//====== ./async.js ======
+	{
+		HabitatFrogasaurus["./async.js"] = {}
+		const sleep = (duration) => {
+			new Promise(resolve => setTimeout(resolve, duration))
+		}
+
+		HabitatFrogasaurus["./async.js"].sleep = sleep
+	}
+
 	//====== ./console.js ======
 	{
 		HabitatFrogasaurus["./console.js"] = {}
@@ -147,6 +157,7 @@ const HabitatFrogasaurus = {}
 // EXPORTS //
 //=========//
 export const { shuffleArray, trimArray, repeatArray } = HabitatFrogasaurus["./array.js"]
+export const { sleep } = HabitatFrogasaurus["./async.js"]
 export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 export const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
 
@@ -154,6 +165,7 @@ export const Habitat = {
 	shuffleArray: HabitatFrogasaurus["./array.js"].shuffleArray,
 	trimArray: HabitatFrogasaurus["./array.js"].trimArray,
 	repeatArray: HabitatFrogasaurus["./array.js"].repeatArray,
+	sleep: HabitatFrogasaurus["./async.js"].sleep,
 	print: HabitatFrogasaurus["./console.js"].print,
 	print9: HabitatFrogasaurus["./console.js"].print9,
 	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
