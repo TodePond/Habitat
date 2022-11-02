@@ -166,6 +166,7 @@ const HabitatFrogasaurus = {}
 		const PINK = new Splash(936)
 		const CYAN = new Splash(269)
 		const PURPLE = new Splash(418)
+		const CORAL = new Splash(933)
 		
 		const RAINBOW_COLOURS = [
 			GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE,
@@ -174,6 +175,7 @@ const HabitatFrogasaurus = {}
 		const ALL_COLOURS = [
 			BLACK, GREY, SILVER, WHITE,
 			GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE,
+			CORAL,
 		]
 		
 
@@ -193,6 +195,7 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./colour.js"].PINK = PINK
 		HabitatFrogasaurus["./colour.js"].CYAN = CYAN
 		HabitatFrogasaurus["./colour.js"].PURPLE = PURPLE
+		HabitatFrogasaurus["./colour.js"].CORAL = CORAL
 		HabitatFrogasaurus["./colour.js"].RAINBOW_COLOURS = RAINBOW_COLOURS
 		HabitatFrogasaurus["./colour.js"].ALL_COLOURS = ALL_COLOURS
 	}
@@ -262,7 +265,7 @@ const HabitatFrogasaurus = {}
 //=========//
 export const { shuffleArray, trimArray, repeatArray } = HabitatFrogasaurus["./array.js"]
 export const { sleep } = HabitatFrogasaurus["./async.js"]
-export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE, RAINBOW_COLOURS, ALL_COLOURS } = HabitatFrogasaurus["./colour.js"]
+export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE, CORAL, RAINBOW_COLOURS, ALL_COLOURS } = HabitatFrogasaurus["./colour.js"]
 export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 export const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
 
@@ -287,6 +290,7 @@ export const Habitat = {
 	PINK: HabitatFrogasaurus["./colour.js"].PINK,
 	CYAN: HabitatFrogasaurus["./colour.js"].CYAN,
 	PURPLE: HabitatFrogasaurus["./colour.js"].PURPLE,
+	CORAL: HabitatFrogasaurus["./colour.js"].CORAL,
 	RAINBOW_COLOURS: HabitatFrogasaurus["./colour.js"].RAINBOW_COLOURS,
 	ALL_COLOURS: HabitatFrogasaurus["./colour.js"].ALL_COLOURS,
 	print: HabitatFrogasaurus["./console.js"].print,

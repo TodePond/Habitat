@@ -68,6 +68,7 @@ export const ORANGE = new Splash(931)
 export const PINK = new Splash(936)
 export const CYAN = new Splash(269)
 export const PURPLE = new Splash(418)
+export const CORAL = new Splash(933)
 
 export const RAINBOW_COLOURS = [
 	GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE,
@@ -76,4 +77,5 @@ export const RAINBOW_COLOURS = [
 export const ALL_COLOURS = [
 	BLACK, GREY, SILVER, WHITE,
 	GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE,
+	CORAL,
 ]
