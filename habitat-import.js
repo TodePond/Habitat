@@ -93,6 +93,110 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./async.js"].sleep = sleep
 	}
 
+	//====== ./colour.js ======
+	{
+		HabitatFrogasaurus["./colour.js"] = {}
+		//===========//
+		// UTILITIES //
+		//===========//
+		const wrap = (number, min, max) => {
+			const range = max - min + 1
+			while (number < min) number += range
+			while (number > max) number -= range
+			return number
+		}
+		
+		const getDigits = (number) => {
+			const chars = number.toString().padStart(3, "0").split("")
+			const digits = chars.map(v => parseInt(v))
+			return digits
+		}
+		
+		//=========//
+		// CLASSES //
+		//=========//
+		const Colour = class extends Array {
+			constructor(red, green, blue) {
+				super()
+				this.push(red, green, blue)
+			}
+		
+			toString() {
+				const [red, green, blue] = this.map(v => v.toString(16).padStart(2, "0"))
+				return `#${red}${green}${blue}`
+			}
+		
+		}
+		
+		const Splash = class extends Colour {
+			constructor(number) {
+				const [hundreds, tens, ones] = getDigits(wrap(number, 0, 999))
+				const red = RED_SPLASH_VALUES[hundreds]
+				const green = GREEN_SPLASH_VALUES[tens]
+				const blue = BLUE_SPLASH_VALUES[ones]
+				super(red, green, blue)
+			}
+		}
+		
+		//===========//
+		// FUNCTIONS //
+		//===========//
+		const showColour = (colour) => {
+			console.log("%c   ", `background-color: ${colour}`)
+		}
+		
+		//===========//
+		// CONSTANTS //
+		//===========//
+		const RED_SPLASH_VALUES   = [23, 55, 70,  98, 128, 159, 174, 204, 242, 255]
+		const GREEN_SPLASH_VALUES = [29, 67, 98, 128, 159, 174, 204, 222, 245, 255]
+		const BLUE_SPLASH_VALUES  = [40, 70, 98, 128, 159, 174, 204, 222, 247, 255]
+		
+		const VOID = new Colour("rgb(6, 7, 10)")
+		const BLACK = new Splash(0)
+		const GREY = new Splash(112)
+		const SILVER = new Splash(556)
+		const WHITE = new Splash(999)
+		
+		const GREEN = new Splash(293)
+		const RED = new Splash(911)
+		const BLUE = new Splash(239)
+		const YELLOW = new Splash(961)
+		const ORANGE = new Splash(931)
+		const PINK = new Splash(936)
+		const CYAN = new Splash(269)
+		const PURPLE = new Splash(418)
+		
+		const RAINBOW_COLOURS = [
+			GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE,
+		]
+		
+		const ALL_COLOURS = [
+			BLACK, GREY, SILVER, WHITE,
+			GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE,
+		]
+		
+
+		HabitatFrogasaurus["./colour.js"].Colour = Colour
+		HabitatFrogasaurus["./colour.js"].Splash = Splash
+		HabitatFrogasaurus["./colour.js"].showColour = showColour
+		HabitatFrogasaurus["./colour.js"].VOID = VOID
+		HabitatFrogasaurus["./colour.js"].BLACK = BLACK
+		HabitatFrogasaurus["./colour.js"].GREY = GREY
+		HabitatFrogasaurus["./colour.js"].SILVER = SILVER
+		HabitatFrogasaurus["./colour.js"].WHITE = WHITE
+		HabitatFrogasaurus["./colour.js"].GREEN = GREEN
+		HabitatFrogasaurus["./colour.js"].RED = RED
+		HabitatFrogasaurus["./colour.js"].BLUE = BLUE
+		HabitatFrogasaurus["./colour.js"].YELLOW = YELLOW
+		HabitatFrogasaurus["./colour.js"].ORANGE = ORANGE
+		HabitatFrogasaurus["./colour.js"].PINK = PINK
+		HabitatFrogasaurus["./colour.js"].CYAN = CYAN
+		HabitatFrogasaurus["./colour.js"].PURPLE = PURPLE
+		HabitatFrogasaurus["./colour.js"].RAINBOW_COLOURS = RAINBOW_COLOURS
+		HabitatFrogasaurus["./colour.js"].ALL_COLOURS = ALL_COLOURS
+	}
+
 	//====== ./console.js ======
 	{
 		HabitatFrogasaurus["./console.js"] = {}
@@ -158,6 +262,7 @@ const HabitatFrogasaurus = {}
 //=========//
 export const { shuffleArray, trimArray, repeatArray } = HabitatFrogasaurus["./array.js"]
 export const { sleep } = HabitatFrogasaurus["./async.js"]
+export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE, RAINBOW_COLOURS, ALL_COLOURS } = HabitatFrogasaurus["./colour.js"]
 export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 export const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
 
@@ -166,6 +271,24 @@ export const Habitat = {
 	trimArray: HabitatFrogasaurus["./array.js"].trimArray,
 	repeatArray: HabitatFrogasaurus["./array.js"].repeatArray,
 	sleep: HabitatFrogasaurus["./async.js"].sleep,
+	Colour: HabitatFrogasaurus["./colour.js"].Colour,
+	Splash: HabitatFrogasaurus["./colour.js"].Splash,
+	showColour: HabitatFrogasaurus["./colour.js"].showColour,
+	VOID: HabitatFrogasaurus["./colour.js"].VOID,
+	BLACK: HabitatFrogasaurus["./colour.js"].BLACK,
+	GREY: HabitatFrogasaurus["./colour.js"].GREY,
+	SILVER: HabitatFrogasaurus["./colour.js"].SILVER,
+	WHITE: HabitatFrogasaurus["./colour.js"].WHITE,
+	GREEN: HabitatFrogasaurus["./colour.js"].GREEN,
+	RED: HabitatFrogasaurus["./colour.js"].RED,
+	BLUE: HabitatFrogasaurus["./colour.js"].BLUE,
+	YELLOW: HabitatFrogasaurus["./colour.js"].YELLOW,
+	ORANGE: HabitatFrogasaurus["./colour.js"].ORANGE,
+	PINK: HabitatFrogasaurus["./colour.js"].PINK,
+	CYAN: HabitatFrogasaurus["./colour.js"].CYAN,
+	PURPLE: HabitatFrogasaurus["./colour.js"].PURPLE,
+	RAINBOW_COLOURS: HabitatFrogasaurus["./colour.js"].RAINBOW_COLOURS,
+	ALL_COLOURS: HabitatFrogasaurus["./colour.js"].ALL_COLOURS,
 	print: HabitatFrogasaurus["./console.js"].print,
 	print9: HabitatFrogasaurus["./console.js"].print9,
 	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
