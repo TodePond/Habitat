@@ -152,7 +152,7 @@ const HabitatFrogasaurus = {}
 		const GREEN_SPLASH_VALUES = [29, 67, 98, 128, 159, 174, 204, 222, 245, 255]
 		const BLUE_SPLASH_VALUES  = [40, 70, 98, 128, 159, 174, 204, 222, 247, 255]
 		
-		const VOID = new Colour("rgb(6, 7, 10)")
+		const VOID = new Colour(6, 7, 10)
 		const BLACK = new Splash(0)
 		const GREY = new Splash(112)
 		const SILVER = new Splash(556)
@@ -161,9 +161,9 @@ const HabitatFrogasaurus = {}
 		const GREEN = new Splash(293)
 		const RED = new Splash(911)
 		const BLUE = new Splash(239)
-		const YELLOW = new Splash(961)
+		const YELLOW = new Splash(991)
 		const ORANGE = new Splash(931)
-		const PINK = new Splash(936)
+		const PINK = new Splash(937)
 		const CYAN = new Splash(269)
 		const PURPLE = new Splash(418)
 		const CORAL = new Splash(933)
@@ -174,8 +174,7 @@ const HabitatFrogasaurus = {}
 		
 		const ALL_COLOURS = [
 			BLACK, GREY, SILVER, WHITE,
-			GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE,
-			CORAL,
+			RED, BLUE, YELLOW, PURPLE, GREEN, ORANGE, PINK, CORAL,
 		]
 		
 

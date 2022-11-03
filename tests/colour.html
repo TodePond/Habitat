@@ -1,0 +1,40 @@
+<script src="../habitat-embed.js"></script>
+<script>
+
+	for (const key in Habitat) {
+		window[key] = Habitat[key]
+	}
+
+	const canvas = document.createElement("canvas")
+	const context = canvas.getContext("2d")
+
+	addEventListener("load", () => {
+		document.body.style["margin"] = 0
+		canvas.width = innerWidth
+		canvas.height = innerHeight
+		canvas.style["width"] = innerWidth
+		canvas.style["height"] = innerHeight
+
+		document.body.appendChild(canvas)
+		context.fillStyle = BLACK
+		context.fillRect(0, 0, canvas.width, canvas.height)
+
+		const size = 300
+		const margin = 20
+		let x = margin
+		let y = margin
+		let i = 0
+		for (const colour of [VOID, ...ALL_COLOURS.slice(1)]) {
+			console.log(colour)
+			context.fillStyle = colour
+			context.fillRect(x, y, size, size)
+			x += size + margin
+			if (i === 3 || x + size + margin > innerWidth) {
+				x = margin
+				y += size + margin
+			}
+			i++
+		}
+	})
+
+</script>
