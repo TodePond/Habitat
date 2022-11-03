@@ -4,7 +4,7 @@ export const print = console.log.bind(console)
 
 let printCount = 0
 export const print9 = (message) => {
-	if (printCount  > 9) return
+	if (printCount > 9) return
 	printCount++
 	print(message)
 }

@@ -125,12 +125,12 @@ const HabitatFrogasaurus = {}
 				const [red, green, blue] = this.map(v => v.toString(16).padStart(2, "0"))
 				return `#${red}${green}${blue}`
 			}
-		
 		}
 		
 		const Splash = class extends Colour {
 			constructor(number) {
-				const [hundreds, tens, ones] = getDigits(wrap(number, 0, 999), 3)
+				const wrappedNumber = wrap(number, 0, 999)
+				const [hundreds, tens, ones] = getDigits(wrappedNumber, 3)
 				const red = RED_SPLASH_VALUES[hundreds]
 				const green = GREEN_SPLASH_VALUES[tens]
 				const blue = BLUE_SPLASH_VALUES[ones]
@@ -212,7 +212,7 @@ const HabitatFrogasaurus = {}
 		
 		let printCount = 0
 		const print9 = (message) => {
-			if (printCount  > 9) return
+			if (printCount > 9) return
 			printCount++
 			print(message)
 		}
