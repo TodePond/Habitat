@@ -283,6 +283,22 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./habitat.js"].defineGetter = defineGetter
 	}
 
+	//====== ./html.js ======
+	{
+		HabitatFrogasaurus["./html.js"] = {}
+		const HTML = (source) => {
+			const template = document.createElement("template")
+			template.innerHTML = source
+			const {content} = template
+			if (content.childElementCount === 1) {
+				return content.firstChild
+			}
+			return template.content
+		}
+
+		HabitatFrogasaurus["./html.js"].HTML = HTML
+	}
+
 	const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
 
 }
@@ -297,6 +313,7 @@ export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./con
 export const { $, $$ } = HabitatFrogasaurus["./document.js"]
 export const { fireEvent } = HabitatFrogasaurus["./event.js"]
 export const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
+export const { HTML } = HabitatFrogasaurus["./html.js"]
 
 export const Habitat = {
 	shuffleArray: HabitatFrogasaurus["./array.js"].shuffleArray,
@@ -330,4 +347,5 @@ export const Habitat = {
 	$$: HabitatFrogasaurus["./document.js"].$$,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
 	defineGetter: HabitatFrogasaurus["./habitat.js"].defineGetter,
+	HTML: HabitatFrogasaurus["./html.js"].HTML,
 }
