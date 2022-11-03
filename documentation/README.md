@@ -6,3 +6,4 @@
 * [Document](document.md)
 * [Event](event.md)
 * [HTML](html.md)
+* [JavaScript](javascript.md)
