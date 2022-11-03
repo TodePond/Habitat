@@ -19,12 +19,13 @@
 		context.fillStyle = BLACK
 		context.fillRect(0, 0, canvas.width, canvas.height)
 
-		const size = 300
-		const margin = 20
+		const size = 100
+		const margin = 10
 		let x = margin
 		let y = margin
 		let i = 0
-		for (const colour of [VOID, ...ALL_COLOURS.slice(1)]) {
+		for (const colour of COLOURS) {
+			if (colour === BLACK) continue
 			console.log(colour)
 			context.fillStyle = colour
 			context.fillRect(x, y, size, size)

@@ -70,11 +70,15 @@ export const CYAN = new Splash(269)
 export const PURPLE = new Splash(418)
 export const CORAL = new Splash(933)
 
-export const RAINBOW_COLOURS = [
-	GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE,
+export const HUES = [
+	GREEN, CYAN, BLUE, PURPLE, PINK, CORAL, RED, ORANGE, YELLOW,
 ]
 
-export const ALL_COLOURS = [
-	BLACK, GREY, SILVER, WHITE,
-	RED, BLUE, YELLOW, PURPLE, GREEN, ORANGE, PINK, CORAL,
+export const SHADES = [
+	VOID, BLACK, GREY, SILVER, WHITE,
+]
+
+export const COLOURS = [
+	...SHADES,
+	...HUES,
 ]

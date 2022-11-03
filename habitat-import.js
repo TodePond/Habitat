@@ -168,13 +168,17 @@ const HabitatFrogasaurus = {}
 		const PURPLE = new Splash(418)
 		const CORAL = new Splash(933)
 		
-		const RAINBOW_COLOURS = [
-			GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE,
+		const HUES = [
+			GREEN, CYAN, BLUE, PURPLE, PINK, CORAL, RED, ORANGE, YELLOW,
 		]
 		
-		const ALL_COLOURS = [
-			BLACK, GREY, SILVER, WHITE,
-			RED, BLUE, YELLOW, PURPLE, GREEN, ORANGE, PINK, CORAL,
+		const SHADES = [
+			VOID, BLACK, GREY, SILVER, WHITE,
+		]
+		
+		const COLOURS = [
+			...SHADES,
+			...HUES,
 		]
 		
 
@@ -195,8 +199,9 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./colour.js"].CYAN = CYAN
 		HabitatFrogasaurus["./colour.js"].PURPLE = PURPLE
 		HabitatFrogasaurus["./colour.js"].CORAL = CORAL
-		HabitatFrogasaurus["./colour.js"].RAINBOW_COLOURS = RAINBOW_COLOURS
-		HabitatFrogasaurus["./colour.js"].ALL_COLOURS = ALL_COLOURS
+		HabitatFrogasaurus["./colour.js"].HUES = HUES
+		HabitatFrogasaurus["./colour.js"].SHADES = SHADES
+		HabitatFrogasaurus["./colour.js"].COLOURS = COLOURS
 	}
 
 	//====== ./console.js ======
@@ -264,7 +269,7 @@ const HabitatFrogasaurus = {}
 //=========//
 export const { shuffleArray, trimArray, repeatArray } = HabitatFrogasaurus["./array.js"]
 export const { sleep } = HabitatFrogasaurus["./async.js"]
-export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE, CORAL, RAINBOW_COLOURS, ALL_COLOURS } = HabitatFrogasaurus["./colour.js"]
+export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE, CORAL, HUES, SHADES, COLOURS } = HabitatFrogasaurus["./colour.js"]
 export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 export const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
 
@@ -290,8 +295,9 @@ export const Habitat = {
 	CYAN: HabitatFrogasaurus["./colour.js"].CYAN,
 	PURPLE: HabitatFrogasaurus["./colour.js"].PURPLE,
 	CORAL: HabitatFrogasaurus["./colour.js"].CORAL,
-	RAINBOW_COLOURS: HabitatFrogasaurus["./colour.js"].RAINBOW_COLOURS,
-	ALL_COLOURS: HabitatFrogasaurus["./colour.js"].ALL_COLOURS,
+	HUES: HabitatFrogasaurus["./colour.js"].HUES,
+	SHADES: HabitatFrogasaurus["./colour.js"].SHADES,
+	COLOURS: HabitatFrogasaurus["./colour.js"].COLOURS,
 	print: HabitatFrogasaurus["./console.js"].print,
 	print9: HabitatFrogasaurus["./console.js"].print9,
 	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
