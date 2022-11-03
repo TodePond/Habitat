@@ -238,6 +238,16 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./console.js"].registerDebugMethods = registerDebugMethods
 	}
 
+	//====== ./document.js ======
+	{
+		HabitatFrogasaurus["./document.js"] = {}
+		const $ = (...args) => document.querySelector(...args)
+		const $$ = (...args) => document.querySelectorAll(...args)
+
+		HabitatFrogasaurus["./document.js"].$ = $
+		HabitatFrogasaurus["./document.js"].$$ = $$
+	}
+
 	//====== ./habitat.js ======
 	{
 		HabitatFrogasaurus["./habitat.js"] = {}
@@ -271,6 +281,7 @@ export const { shuffleArray, trimArray, repeatArray } = HabitatFrogasaurus["./ar
 export const { sleep } = HabitatFrogasaurus["./async.js"]
 export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE, CORAL, HUES, SHADES, COLOURS } = HabitatFrogasaurus["./colour.js"]
 export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./console.js"]
+export const { $, $$ } = HabitatFrogasaurus["./document.js"]
 export const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
 
 export const Habitat = {
@@ -301,5 +312,7 @@ export const Habitat = {
 	print: HabitatFrogasaurus["./console.js"].print,
 	print9: HabitatFrogasaurus["./console.js"].print9,
 	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
+	$: HabitatFrogasaurus["./document.js"].$,
+	$$: HabitatFrogasaurus["./document.js"].$$,
 	defineGetter: HabitatFrogasaurus["./habitat.js"].defineGetter,
 }

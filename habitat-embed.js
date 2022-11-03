@@ -238,6 +238,16 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./console.js"].registerDebugMethods = registerDebugMethods
 	}
 
+	//====== ./document.js ======
+	{
+		HabitatFrogasaurus["./document.js"] = {}
+		const $ = (...args) => document.querySelector(...args)
+		const $$ = (...args) => document.querySelectorAll(...args)
+
+		HabitatFrogasaurus["./document.js"].$ = $
+		HabitatFrogasaurus["./document.js"].$$ = $$
+	}
+
 	//====== ./habitat.js ======
 	{
 		HabitatFrogasaurus["./habitat.js"] = {}
@@ -295,5 +305,7 @@ const Habitat = {
 	print: HabitatFrogasaurus["./console.js"].print,
 	print9: HabitatFrogasaurus["./console.js"].print9,
 	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
+	$: HabitatFrogasaurus["./document.js"].$,
+	$$: HabitatFrogasaurus["./document.js"].$$,
 	defineGetter: HabitatFrogasaurus["./habitat.js"].defineGetter,
 }
