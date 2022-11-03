@@ -1,4 +1,4 @@
-# As of the 26th August, I'm redesigning how Habitat is structured, so this readme might be out-of-date
+# This branch is an old version of Habitat, kept for legacy reasons
 
 <img align="right" height="100" src="http://todepond.com/IMG/Habitat@0.25x.png">
 
