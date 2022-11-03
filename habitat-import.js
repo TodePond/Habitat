@@ -248,6 +248,19 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./document.js"].$$ = $$
 	}
 
+	//====== ./event.js ======
+	{
+		HabitatFrogasaurus["./event.js"] = {}
+		const fireEvent = (name, options = {}) => {
+			const {target = window, bubbles = true, cancelable = true, ...data} = options
+			const event = new Event(name, {bubbles, cancelable})
+			Object.assign(event, data)
+			target.dispatchEvent(event)
+		}
+
+		HabitatFrogasaurus["./event.js"].fireEvent = fireEvent
+	}
+
 	//====== ./habitat.js ======
 	{
 		HabitatFrogasaurus["./habitat.js"] = {}
@@ -282,6 +295,7 @@ export const { sleep } = HabitatFrogasaurus["./async.js"]
 export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE, CORAL, HUES, SHADES, COLOURS } = HabitatFrogasaurus["./colour.js"]
 export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 export const { $, $$ } = HabitatFrogasaurus["./document.js"]
+export const { fireEvent } = HabitatFrogasaurus["./event.js"]
 export const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
 
 export const Habitat = {
@@ -314,5 +328,6 @@ export const Habitat = {
 	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
 	$: HabitatFrogasaurus["./document.js"].$,
 	$$: HabitatFrogasaurus["./document.js"].$$,
+	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
 	defineGetter: HabitatFrogasaurus["./habitat.js"].defineGetter,
 }

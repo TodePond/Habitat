@@ -248,6 +248,19 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./document.js"].$$ = $$
 	}
 
+	//====== ./event.js ======
+	{
+		HabitatFrogasaurus["./event.js"] = {}
+		const fireEvent = (name, options = {}) => {
+			const {target = window, bubbles = true, cancelable = true, ...data} = options
+			const event = new Event(name, {bubbles, cancelable})
+			Object.assign(event, data)
+			target.dispatchEvent(event)
+		}
+
+		HabitatFrogasaurus["./event.js"].fireEvent = fireEvent
+	}
+
 	//====== ./habitat.js ======
 	{
 		HabitatFrogasaurus["./habitat.js"] = {}
@@ -307,5 +320,6 @@ const Habitat = {
 	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
 	$: HabitatFrogasaurus["./document.js"].$,
 	$$: HabitatFrogasaurus["./document.js"].$$,
+	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
 	defineGetter: HabitatFrogasaurus["./habitat.js"].defineGetter,
 }

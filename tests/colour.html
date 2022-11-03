@@ -1,9 +1,7 @@
 <script src="../habitat-embed.js"></script>
 <script>
 
-	for (const key in Habitat) {
-		window[key] = Habitat[key]
-	}
+	Object.assign(window, Habitat)
 
 	const canvas = document.createElement("canvas")
 	const context = canvas.getContext("2d")
