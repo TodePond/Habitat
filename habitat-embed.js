@@ -311,6 +311,27 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./javascript.js"].JavaScript = JavaScript
 	}
 
+	//====== ./keyboard.js ======
+	{
+		HabitatFrogasaurus["./keyboard.js"] = {}
+		const keyboard = {}
+		let isKeyboardTracked = false
+		const getKeyboard = () => {
+			if (isKeyboardTracked) return keyboard
+			addEventListener("keydown", (e) => {
+				keyboard[e.key] = true
+			})
+			
+			addEventListener("keyup", (e) => {
+				keyboard[e.key] = false
+			})
+		
+			return keyboard
+		}
+
+		HabitatFrogasaurus["./keyboard.js"].getKeyboard = getKeyboard
+	}
+
 	const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
 
 }
@@ -352,4 +373,5 @@ const Habitat = {
 	defineGetter: HabitatFrogasaurus["./habitat.js"].defineGetter,
 	HTML: HabitatFrogasaurus["./html.js"].HTML,
 	JavaScript: HabitatFrogasaurus["./javascript.js"].JavaScript,
+	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
 }
