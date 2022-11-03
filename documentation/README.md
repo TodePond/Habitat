@@ -1,4 +1,5 @@
 # Habitat Documentation
 * [Array](array.md)
 * [Async](async.md)
+* [Colour](colour.md)
 * [Console](console.md)

@@ -106,8 +106,8 @@ const HabitatFrogasaurus = {}
 			return number
 		}
 		
-		const getDigits = (number) => {
-			const chars = number.toString().padStart(3, "0").split("")
+		const getDigits = (number, digitCount) => {
+			const chars = number.toString().padStart(digitCount, "0").split("")
 			const digits = chars.map(v => parseInt(v))
 			return digits
 		}
@@ -130,7 +130,7 @@ const HabitatFrogasaurus = {}
 		
 		const Splash = class extends Colour {
 			constructor(number) {
-				const [hundreds, tens, ones] = getDigits(wrap(number, 0, 999))
+				const [hundreds, tens, ones] = getDigits(wrap(number, 0, 999), 3)
 				const red = RED_SPLASH_VALUES[hundreds]
 				const green = GREEN_SPLASH_VALUES[tens]
 				const blue = BLUE_SPLASH_VALUES[ones]
@@ -142,7 +142,7 @@ const HabitatFrogasaurus = {}
 		// FUNCTIONS //
 		//===========//
 		const showColour = (colour) => {
-			console.log("%c   ", `background-color: ${colour}`)
+			console.log("%c   ", `background-color: ${new Colour(...colour)}`)
 		}
 		
 		//===========//
