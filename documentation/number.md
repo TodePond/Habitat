@@ -23,7 +23,7 @@ getDigits(28) //[2, 8]
 ```
 
 ## `simplifyRatio(...numbers)`
-Simplify some numbers down to their smallest, while still keeping the same ratio between their sizes.
+Simplify some `numbers` down to their smallest, maintaining the ratio between their sizes.
 ```js
 simplifyRatio(3, 9, 6) //[1, 3, 2]
 ```
