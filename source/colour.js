@@ -1,15 +1,14 @@
 //===========//
 // UTILITIES //
 //===========//
-const wrap = (number, min, max) => {
-	const range = max - min + 1
-	while (number < min) number += range
-	while (number > max) number -= range
+const wrapSplashNumber = (number) => {
+	while (number < 0) number += 1000
+	while (number > 999) number -= 1000
 	return number
 }
 
-const getDigits = (number, digitCount) => {
-	const chars = number.toString().padStart(digitCount, "0").split("")
+const getThreeDigits = (number) => {
+	const chars = number.toString().padStart(3, "0").split("")
 	const digits = chars.map(v => parseInt(v))
 	return digits
 }
@@ -31,8 +30,8 @@ export const Colour = class extends Array {
 
 export const Splash = class extends Colour {
 	constructor(number) {
-		const wrappedNumber = wrap(number, 0, 999)
-		const [hundreds, tens, ones] = getDigits(wrappedNumber, 3)
+		const wrappedNumber = wrapSplashNumber(number)
+		const [hundreds, tens, ones] = getThreeDigits(wrappedNumber, 3)
 		const red = RED_SPLASH_VALUES[hundreds]
 		const green = GREEN_SPLASH_VALUES[tens]
 		const blue = BLUE_SPLASH_VALUES[ones]

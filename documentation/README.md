@@ -10,3 +10,4 @@
 * [JavaScript](javascript.md)
 * [Keyboard](keyboard.md)
 * [Linked List](linked-list.md)
+* [Number](number.md)

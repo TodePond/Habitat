@@ -99,15 +99,14 @@ const HabitatFrogasaurus = {}
 		//===========//
 		// UTILITIES //
 		//===========//
-		const wrap = (number, min, max) => {
-			const range = max - min + 1
-			while (number < min) number += range
-			while (number > max) number -= range
+		const wrapSplashNumber = (number) => {
+			while (number < 0) number += 1000
+			while (number > 999) number -= 1000
 			return number
 		}
 		
-		const getDigits = (number, digitCount) => {
-			const chars = number.toString().padStart(digitCount, "0").split("")
+		const getThreeDigits = (number) => {
+			const chars = number.toString().padStart(3, "0").split("")
 			const digits = chars.map(v => parseInt(v))
 			return digits
 		}
@@ -129,8 +128,8 @@ const HabitatFrogasaurus = {}
 		
 		const Splash = class extends Colour {
 			constructor(number) {
-				const wrappedNumber = wrap(number, 0, 999)
-				const [hundreds, tens, ones] = getDigits(wrappedNumber, 3)
+				const wrappedNumber = wrapSplashNumber(number)
+				const [hundreds, tens, ones] = getThreeDigits(wrappedNumber, 3)
 				const red = RED_SPLASH_VALUES[hundreds]
 				const green = GREEN_SPLASH_VALUES[tens]
 				const blue = BLUE_SPLASH_VALUES[ones]
@@ -426,6 +425,66 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./linked-list.js"].LinkedList = LinkedList
 	}
 
+	//====== ./number.js ======
+	{
+		HabitatFrogasaurus["./number.js"] = {}
+		const clamp = (number, min, max) => {
+			if (number < min) return min
+			if (number > max) return max
+			return number
+		}
+		
+		const wrap = (number, min, max) => {
+			const range = max - min + 1
+			while (number < min) number += range
+			while (number > max) number -= range
+			return number
+		}
+		
+		const getDigits = (number) => {
+			const chars = number.toString().split("")
+			const digits = chars.map(v => parseInt(v)).filter(v => !isNaN(v))
+			return digits
+		}
+		
+		const gcd = (...numbers) => {
+			const [head, ...tail] = numbers
+			if (numbers.length === 1) return head
+			if (numbers.length > 2) return gcd(head, gcd(...tail))
+			
+			let [a, b] = [head, ...tail]
+			while (true) {
+				if (b === 0) return a
+				a = a % b
+				if (a === 0) return b
+				b = b % a
+			}
+		}
+		
+		const simplifyRatio = (...numbers) => {
+			const divisor = gcd(...numbers)
+			return numbers.map(n => n / divisor)
+		}
+		
+		const numbersBetween = function* (start, end) {
+			let i = start
+			if (i <= end) do {
+				yield i
+				i++
+			} while (i <= end) else while (i >= end) {
+				yield i
+				i--
+			}
+		}
+
+		HabitatFrogasaurus["./number.js"].clamp = clamp
+		HabitatFrogasaurus["./number.js"].wrap = wrap
+		HabitatFrogasaurus["./number.js"].getDigits = getDigits
+		HabitatFrogasaurus["./number.js"].gcd = gcd
+		HabitatFrogasaurus["./number.js"].simplifyRatio = simplifyRatio
+		HabitatFrogasaurus["./number.js"].numbersBetween = numbersBetween
+	}
+
 	const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
 
 }
@@ -469,4 +528,10 @@ const Habitat = {
 	JavaScript: HabitatFrogasaurus["./javascript.js"].JavaScript,
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
+	clamp: HabitatFrogasaurus["./number.js"].clamp,
+	wrap: HabitatFrogasaurus["./number.js"].wrap,
+	getDigits: HabitatFrogasaurus["./number.js"].getDigits,
+	gcd: HabitatFrogasaurus["./number.js"].gcd,
+	simplifyRatio: HabitatFrogasaurus["./number.js"].simplifyRatio,
+	numbersBetween: HabitatFrogasaurus["./number.js"].numbersBetween,
 }
