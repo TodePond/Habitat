@@ -1,10 +1,14 @@
 # Keyboard
 
 ## `getKeyboard()`
-Get an object that contains the state of every key.
-<br>`true` = down
-<br>`false` = up
-<br>`undefined` = not pressed yet
+Get an object that tracks the state of every key.
+
+| Value       | Meaning                      |
+| ----------- | ---------------------------- |
+| `true`      | Key is down                  |
+| `false`     | Key is up                    |
+| `undefined` | Key has not been pressed yet |
+
 ```js
 const keyboard = getKeyboard()
 on("click", () => {
