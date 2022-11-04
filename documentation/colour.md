@@ -24,22 +24,22 @@ const pink = new Splash(937)
 
 ## Theme Colours
 There are some preset colours. 
-| Colour   | Value                | Splash |
-| -------- | -------------------- | ------ |
-| `VOID`   | `rgb(6, 7, 10)`      |        |
-| `BLACK`  | `rgb(23, 29, 40)`    | 000    |
-| `GREY`   | `rgb(55, 67, 98)`    | 112    |
-| `SILVER` | `rgb(159, 174, 201)` | 556    |
-| `WHITE`  | `rgb(255, 255, 255)` | 999    |
-| `GREEN`  | `rgb(70, 255, 128)`  | 293    |
-| `CYAN`   | `rgb(70, 204, 255)`  | 269    |
-| `BLUE`   | `rgb(70, 128, 255)`  | 239    |
-| `PURPLE` | `rgb(128, 67, 247)`  | 418    |
-| `PINK`   | `rgb(255, 128, 222)` | 937    |
-| `CORAL`  | `rgb(255, 128, 128)` | 933    |
-| `RED`    | `rgb(255, 67, 70)`   | 911    |
-| `ORANGE` | `rgb(255, 128, 70)`  | 931    |
-| `YELLOW` | `rgb(255, 255, 70)`  | 991    |
+| Colour   | Splash | Value                |
+| -------- | ------ | -------------------- |
+| `VOID`   |        | `rgb(6, 7, 10)`      |
+| `BLACK`  | 000    | `rgb(23, 29, 40)` |
+| `GREY`   | 112    | `rgb(55, 67, 98)`    |
+| `SILVER` | 556    | `rgb(159, 174, 201)` |
+| `WHITE`  | 999    | `rgb(255, 255, 255)` |
+| `GREEN`  | 293    | `rgb(70, 255, 128)`  |
+| `CYAN`   | 269    | `rgb(70, 204, 255)`  |
+| `BLUE`   | 239    | `rgb(70, 128, 255)`  |
+| `PURPLE` | 418    | `rgb(128, 67, 247)`  |
+| `PINK`   | 937    | `rgb(255, 128, 222)` |
+| `CORAL`  | 933    | `rgb(255, 128, 128)` |
+| `RED`    | 911    | `rgb(255, 67, 70)`   |
+| `ORANGE` | 931    | `rgb(255, 128, 70)`  |
+| `YELLOW` | 991    | `rgb(255, 255, 70)`  |
 
 There are some preset arrays of colours.
 | Array     | Colours
