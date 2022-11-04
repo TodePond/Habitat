@@ -376,8 +376,38 @@ const HabitatFrogasaurus = {}
 		
 			return keyboard
 		}
+		
+		let isKeyDownTracked = false
+		const keyDownFuncs = new Map()
+		const onKeyDown = (key, func) => {
+			if (!isKeyDownTracked) {
+				isKeyDownTracked = true
+				addEventListener("keydown", (e) => {
+					const func = keyDownFuncs.get(key)
+					if (func === undefined) return
+					func(e)
+				}, {passive: false})
+			}
+			keyDownFuncs.set(key, func)
+		}
+		
+		let isKeyUpTracked = false
+		const keyUpFuncs = new Map()
+		const onKeyUp = (key, func) => {
+			if (!isKeyUpTracked) {
+				isKeyUpTracked = true
+				addEventListener("keyup", (e) => {
+					const func = keyUpFuncs.get(key)
+					if (func === undefined) return
+					func(e)
+				}, {passive: false})
+			}
+			keyUpFuncs.set(key, func)
+		}
 
 		HabitatFrogasaurus["./keyboard.js"].getKeyboard = getKeyboard
+		HabitatFrogasaurus["./keyboard.js"].onKeyDown = onKeyDown
+		HabitatFrogasaurus["./keyboard.js"].onKeyUp = onKeyUp
 	}
 
 	//====== ./linked-list.js ======
@@ -701,6 +731,8 @@ const Habitat = {
 	JavaScript: HabitatFrogasaurus["./javascript.js"].JavaScript,
 	_: HabitatFrogasaurus["./json.js"]._,
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
+	onKeyDown: HabitatFrogasaurus["./keyboard.js"].onKeyDown,
+	onKeyUp: HabitatFrogasaurus["./keyboard.js"].onKeyUp,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
 	memo: HabitatFrogasaurus["./memo.js"].memo,
 	getMouse: HabitatFrogasaurus["./mouse.js"].getMouse,
