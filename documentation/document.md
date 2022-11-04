@@ -1,13 +1,13 @@
 # Document
 
 ## `$(selector)`
-Select an `Element`.
+Select an Element.
 ```javascript
 const button = $("button")
 ```
 
 ## `$$(selector)`
-Select a `NodeList`.
+Select a NodeList.
 ```javascript
 const buttons = $$("button")
 ```

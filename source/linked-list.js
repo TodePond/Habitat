@@ -21,16 +21,18 @@ export const LinkedList = class {
 		return [...this].toString()
 	}
 
-	push(value) {
-		const link = makeLink(value)
-		if (this.isEmpty) {
-			this.start = link
-			this.end = link
-			this.isEmpty = false
-		} else {
-			this.end.next = link
-			link.previous = this.end
-			this.end = link
+	push(...values) {
+		for (const value of values) {
+			const link = makeLink(value)
+			if (this.isEmpty) {
+				this.start = link
+				this.end = link
+				this.isEmpty = false
+			} else {
+				this.end.next = link
+				link.previous = this.end
+				this.end = link
+			}
 		}
 	}
 

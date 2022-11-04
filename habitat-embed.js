@@ -260,28 +260,6 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./event.js"].fireEvent = fireEvent
 	}
 
-	//====== ./habitat.js ======
-	{
-		HabitatFrogasaurus["./habitat.js"] = {}
-		const defineGetter = (object, name, get) => {
-			return Reflect.defineProperty(object, name, {
-				get,
-				set(value) {
-					Reflect.defineProperty(this, name, {
-						value,
-						configurable: true,
-						writable: true,
-						enumerable: true
-					})
-				},
-				configurable: true,
-				enumerable: false,
-			})
-		}
-
-		HabitatFrogasaurus["./habitat.js"].defineGetter = defineGetter
-	}
-
 	//====== ./html.js ======
 	{
 		HabitatFrogasaurus["./html.js"] = {}
@@ -357,16 +335,18 @@ const HabitatFrogasaurus = {}
 				return [...this].toString()
 			}
 		
-			push(value) {
-				const link = makeLink(value)
-				if (this.isEmpty) {
-					this.start = link
-					this.end = link
-					this.isEmpty = false
-				} else {
-					this.end.next = link
-					link.previous = this.end
-					this.end = link
+			push(...values) {
+				for (const value of values) {
+					const link = makeLink(value)
+					if (this.isEmpty) {
+						this.start = link
+						this.end = link
+						this.isEmpty = false
+					} else {
+						this.end.next = link
+						link.previous = this.end
+						this.end = link
+					}
 				}
 			}
 		
@@ -485,7 +465,29 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./number.js"].numbersBetween = numbersBetween
 	}
 
-	const { defineGetter } = HabitatFrogasaurus["./habitat.js"]
+	//====== ./property.js ======
+	{
+		HabitatFrogasaurus["./property.js"] = {}
+		const defineGetter = (object, name, get) => {
+			return Reflect.defineProperty(object, name, {
+				get,
+				set(value) {
+					Reflect.defineProperty(this, name, {
+						value,
+						configurable: true,
+						writable: true,
+						enumerable: true
+					})
+				},
+				configurable: true,
+				enumerable: false,
+			})
+		}
+
+		HabitatFrogasaurus["./property.js"].defineGetter = defineGetter
+	}
+
+	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 
 }
 
@@ -523,7 +525,6 @@ const Habitat = {
 	$: HabitatFrogasaurus["./document.js"].$,
 	$$: HabitatFrogasaurus["./document.js"].$$,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
-	defineGetter: HabitatFrogasaurus["./habitat.js"].defineGetter,
 	HTML: HabitatFrogasaurus["./html.js"].HTML,
 	JavaScript: HabitatFrogasaurus["./javascript.js"].JavaScript,
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
@@ -534,4 +535,5 @@ const Habitat = {
 	gcd: HabitatFrogasaurus["./number.js"].gcd,
 	simplifyRatio: HabitatFrogasaurus["./number.js"].simplifyRatio,
 	numbersBetween: HabitatFrogasaurus["./number.js"].numbersBetween,
+	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
 }

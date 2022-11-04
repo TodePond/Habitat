@@ -1,4 +1,4 @@
-import { defineGetter } from "./habitat.js"
+import { defineGetter } from "./property.js"
 
 export const print = console.log.bind(console)
 

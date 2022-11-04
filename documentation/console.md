@@ -7,7 +7,7 @@ print("Hello world!")
 ```
 
 ## `print9(message)`
-Print a message to the console. Only works the first 9 times you run it. Useful when you want to debug something in a loop, but not clog up the console.
+Print a `message` to the console. Only works the first 9 times you run it. Useful when you want to debug something in a loop, but not clog up the console.
 ```javascript
 for (let i = 0; i < 100; i++) {
     print9("This message prints 9 times")

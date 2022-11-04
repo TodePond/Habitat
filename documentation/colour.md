@@ -1,7 +1,7 @@
 # Colour
 
 ## `new Colour(red, green, blue)`
-Make a `Colour` object.
+Make a Colour object.
 ```javascript
 const pink = new Colour(255, 128, 222)
 ```

@@ -35,7 +35,7 @@ gcd(10, 15, 35) //5
 ```
 
 ## `numbersBetween(start, end)`
-Make an iterable between `start` and `end` (inclusive).
+Iterate between `start` and `end` (inclusive).
 ```javascript
 for (const i of numbersBetween(10, 0)) {
     print(i)

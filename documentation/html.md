@@ -1,7 +1,7 @@
 # HTML
 
 ## `HTML(source)`
-Make elements with `HTML`.
+Make elements with HTML.
 ```javascript
 const canvas = HTML("<canvas></canvas>")
 ```

@@ -1,7 +1,4 @@
-# Habitat
-
-These functions are used internally by Habitat.
-<br>You can use them too.
+# Property
 
 ## `defineGetter(object, name, get)`
 Define a getter property on an `object`.
@@ -15,7 +12,7 @@ defineGetter(player, "name", function() {
 print(player.name) //"Player 1"
 ```
 
-The getter can be overriden.
+You can override the getter.
 ```javascript
 player.name = "Lu"
 print(player.name) //"Lu"

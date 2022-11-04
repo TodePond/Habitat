@@ -1,7 +1,7 @@
 # JavaScript
 
 ## `JavaScript(source)`
-Run some `JavaScript`.
+Run some javascript.
 ```javascript
 const score = JavaScript("2 + 3")
 ```
