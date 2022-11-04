@@ -2,9 +2,9 @@
 
 ## `fireEvent(name, options = {})`
 Fire an event.
-```js
+```javascript
 fireEvent("click")
 ```
-```js
+```javascript
 fireEvent("click", {target: $("button")})
 ```

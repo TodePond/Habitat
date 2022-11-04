@@ -18,25 +18,25 @@ clamp(-5, 0, 10) //5
 
 ## `getDigits(number)`
 Get an array of a `number`'s digits.
-```js
+```javascript
 getDigits(28) //[2, 8]
 ```
 
 ## `simplifyRatio(...numbers)`
 Simplify some `numbers` down to their smallest, maintaining the ratio between their sizes.
-```js
+```javascript
 simplifyRatio(3, 9, 6) //[1, 3, 2]
 ```
 
 ## `gcd(...numbers)`
 Find the greatest common divisor of some `numbers`.
-```js
+```javascript
 gcd(10, 15, 35) //5
 ```
 
 ## `numbersBetween(start, end)`
 Make an iterable between `start` and `end` (inclusive).
-```js
+```javascript
 for (const i of numbersBetween(10, 0)) {
     print(i)
 }

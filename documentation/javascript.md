@@ -2,6 +2,6 @@
 
 ## `JavaScript(source)`
 Run some javascript.
-```js
+```javascript
 const score = JavaScript("2 + 3")
 ```

@@ -2,7 +2,7 @@
 
 ## `new LinkedList(iterable = [])`
 Make a `LinkedList`.
-```js
+```javascript
 const scores = new LinkedList([3, 2, 5])
 ```
 
@@ -15,7 +15,7 @@ const scores = new LinkedList([3, 2, 5])
 
 ## `[Symbol.iterator]()`
 Iterate through the `LinkedList`.
-```js
+```javascript
 const scores = new LinkedList([3, 2, 5])
 for (const score of scores) {
     print(score)

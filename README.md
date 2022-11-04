@@ -16,7 +16,7 @@ You can embed it, like this:
 </script>
 ```
 Or import it like this:
-```js
+```javascript
 import { print } from "./habitat-import.js"
 print("Hello world!")
 ```

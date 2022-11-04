@@ -9,7 +9,7 @@ Get an object that tracks the state of every key.
 | `false`     | Key is up                    |
 | `undefined` | Key has not been pressed yet |
 
-```js
+```javascript
 const keyboard = getKeyboard()
 on("click", () => {
 	if (keyboard["Enter"]) print("The enter key is pressed down")

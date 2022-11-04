@@ -2,10 +2,10 @@
 
 ## `HTML(source)`
 Make elements with `HTML`.
-```js
+```javascript
 const canvas = HTML("<canvas></canvas>")
 ```
-```js
+```javascript
 const greeting = HTML(`
 	<h1>Greeting</h1>
 	<p>Hello world!</p>

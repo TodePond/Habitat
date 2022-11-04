@@ -2,12 +2,12 @@
 
 ## `$(selector)`
 Select an `Element`.
-```js
+```javascript
 const button = $("button")
 ```
 
 ## `$$(selector)`
 Select a `NodeList`.
-```js
+```javascript
 const buttons = $$("button")
 ```
