@@ -1,23 +1,23 @@
 # Colour
 
 ## `new Colour(red, green, blue)`
-Make a colour object.
+Make a colour.
 ```javascript
 const pink = new Colour(255, 128, 222)
 ```
 
-Colour objects can be used as arrays.
+Colours can be used as arrays.
 ```javascript
 const [red, green, blue] = pink
 ```
 
-Colour objects can be used as strings.
+Colours can be used as strings.
 ```javascript
 print(`Hex code: ${pink}`)
 ```
 
 ## `new Splash(number)`
-Make a colour object with a three-digit `number`. The digits represent the red, green and blue channels of the colour.
+Make a colour with a three-digit `number`. The digits represent the red, green and blue channels of the colour.
 ```javascript
 const pink = new Splash(937)
 ```
