@@ -415,6 +415,26 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./linked-list.js"].LinkedList = LinkedList
 	}
 
+	//====== ./memo.js ======
+	{
+		HabitatFrogasaurus["./memo.js"] = {}
+		const memo = (func) => {
+			const cache = new Map()
+			return (...args) => {
+				const key = JSON.stringify(args)
+				if (cache.has(key)) {
+					return cache.get(key)
+				}
+		
+				const result = func(...args)
+				cache.set(key, result)
+				return result
+			}
+		}
+
+		HabitatFrogasaurus["./memo.js"].memo = memo
+	}
+
 	//====== ./number.js ======
 	{
 		HabitatFrogasaurus["./number.js"] = {}
@@ -515,6 +535,7 @@ export const { JavaScript } = HabitatFrogasaurus["./javascript.js"]
 export const { _ } = HabitatFrogasaurus["./json.js"]
 export const { getKeyboard } = HabitatFrogasaurus["./keyboard.js"]
 export const { LinkedList } = HabitatFrogasaurus["./linked-list.js"]
+export const { memo } = HabitatFrogasaurus["./memo.js"]
 export const { clamp, wrap, getDigits, gcd, simplifyRatio, numbersBetween } = HabitatFrogasaurus["./number.js"]
 export const { defineGetter } = HabitatFrogasaurus["./property.js"]
 
@@ -554,6 +575,7 @@ export const Habitat = {
 	_: HabitatFrogasaurus["./json.js"]._,
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
+	memo: HabitatFrogasaurus["./memo.js"].memo,
 	clamp: HabitatFrogasaurus["./number.js"].clamp,
 	wrap: HabitatFrogasaurus["./number.js"].wrap,
 	getDigits: HabitatFrogasaurus["./number.js"].getDigits,
