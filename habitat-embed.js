@@ -288,6 +288,16 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./javascript.js"].JavaScript = JavaScript
 	}
 
+	//====== ./json.js ======
+	{
+		HabitatFrogasaurus["./json.js"] = {}
+		const _ = (...value) => {
+			return JSON.stringify(value)
+		}
+
+		HabitatFrogasaurus["./json.js"]._ = _
+	}
+
 	//====== ./keyboard.js ======
 	{
 		HabitatFrogasaurus["./keyboard.js"] = {}
@@ -527,6 +537,7 @@ const Habitat = {
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
 	HTML: HabitatFrogasaurus["./html.js"].HTML,
 	JavaScript: HabitatFrogasaurus["./javascript.js"].JavaScript,
+	_: HabitatFrogasaurus["./json.js"]._,
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
 	clamp: HabitatFrogasaurus["./number.js"].clamp,

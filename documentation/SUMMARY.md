@@ -10,6 +10,7 @@
 * [Event](event.md)
 * [HTML](html.md)
 * [JavaScript](javascript.md)
+* [JSON](json.md)
 * [Keyboard](keyboard.md)
 * [Linked List](linked-list.md)
 * [Number](number.md)
