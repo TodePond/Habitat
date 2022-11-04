@@ -1,7 +1,17 @@
 let isCursorTracked = false
+const buttonNames = ["Left", "Middle", "Right", "Back", "Forward"]
 const cursor = {
-	position: [undefined, undefined]
+	position: [undefined, undefined],
+	down: undefined,
+	buttons: {},
 }
+
 export const getCursor = () => {
-	addEventListener
+	if (isCursorTracked) return cursor
+	
+	addEventListener("pointermove", (e) => {
+		
+	})
+
+	return cursor
 }

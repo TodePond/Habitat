@@ -1,7 +1,8 @@
 <script src="../habitat-embed.js"></script>
 <script>
 
-	Object.assign(window, Habitat)
+	Habitat.registerGlobals()
+	registerMethods()
 
 	const canvas = document.createElement("canvas")
 	const context = canvas.getContext("2d")

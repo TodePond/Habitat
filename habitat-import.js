@@ -96,6 +96,7 @@ const HabitatFrogasaurus = {}
 	//====== ./colour.js ======
 	{
 		HabitatFrogasaurus["./colour.js"] = {}
+		
 		//===========//
 		// UTILITIES //
 		//===========//
@@ -115,14 +116,21 @@ const HabitatFrogasaurus = {}
 		// CLASSES //
 		//=========//
 		const Colour = class extends Array {
-			constructor(red, green, blue) {
+			constructor(red, green, blue, alpha = 255) {
 				super()
 				this.push(red, green, blue)
+				if (alpha !== undefined) {
+					this.push(alpha)
+				}
 			}
 		
 			toString() {
-				const [red, green, blue] = this.map(v => v.toString(16).padStart(2, "0"))
-				return `#${red}${green}${blue}`
+				const [red, green, blue, alpha] = this.map(v => v.toString(16).padStart(2, "0"))
+				if (this.alpha === 255) {
+					return `#${red}${green}${blue}`
+				}
+		
+				return `#${red}${green}${blue}${alpha}`
 			}
 		}
 		
@@ -142,6 +150,27 @@ const HabitatFrogasaurus = {}
 		//===========//
 		const showColour = (colour) => {
 			console.log("%c   ", `background-color: ${new Colour(...colour)}`)
+		}
+		
+		//=========//
+		// METHODS //
+		//=========//
+		const registerColourMethods = () => {
+			defineGetter(Array.prototype, "red", function() {
+				return this[0]
+			})
+		
+			defineGetter(Array.prototype, "green", function() {
+				return this[1]
+			})
+		
+			defineGetter(Array.prototype, "blue", function() {
+				return this[2]
+			})
+		
+			defineGetter(Array.prototype, "alpha", function() {
+				return this[3]
+			})
 		}
 		
 		//===========//
@@ -184,6 +213,7 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./colour.js"].Colour = Colour
 		HabitatFrogasaurus["./colour.js"].Splash = Splash
 		HabitatFrogasaurus["./colour.js"].showColour = showColour
+		HabitatFrogasaurus["./colour.js"].registerColourMethods = registerColourMethods
 		HabitatFrogasaurus["./colour.js"].VOID = VOID
 		HabitatFrogasaurus["./colour.js"].BLACK = BLACK
 		HabitatFrogasaurus["./colour.js"].GREY = GREY
@@ -216,15 +246,15 @@ const HabitatFrogasaurus = {}
 			print(message)
 		}
 		
-		const registerDebugMethods = (global) => {
+		const registerDebugMethods = () => {
 			
-			defineGetter(global.Object.prototype, "d", function() {
+			defineGetter(Object.prototype, "d", function() {
 				const value = this.valueOf()
 				print(value)
 				return value
 			})
 			
-			defineGetter(global.Object.prototype, "d9", function() {
+			defineGetter(Object.prototype, "d9", function() {
 				const value = this.valueOf()
 				print9(value)
 				return value
@@ -266,9 +296,21 @@ const HabitatFrogasaurus = {}
 		
 		const registerMethods = () => {
 			registerDebugMethods()
+			registerColourMethods()
+		}
+		
+		const registerGlobals = () => {
+			Object.assign(window, Habitat)
+		}
+		
+		const registerEverything = () => {
+			registerGlobals()
+			registerMethods()
 		}
 
 		HabitatFrogasaurus["./habitat.js"].registerMethods = registerMethods
+		HabitatFrogasaurus["./habitat.js"].registerGlobals = registerGlobals
+		HabitatFrogasaurus["./habitat.js"].registerEverything = registerEverything
 	}
 
 	//====== ./html.js ======
@@ -510,11 +552,21 @@ const HabitatFrogasaurus = {}
 	{
 		HabitatFrogasaurus["./pointer.js"] = {}
 		let isCursorTracked = false
+		const buttonNames = ["Left", "Middle", "Right", "Back", "Forward"]
 		const cursor = {
-			position: [undefined, undefined]
+			position: [undefined, undefined],
+			down: undefined,
+			buttons: {},
 		}
+		
 		const getCursor = () => {
-			addEventListener
+			if (isCursorTracked) return cursor
+			
+			addEventListener("pointermove", (e) => {
+				
+			})
+		
+			return cursor
 		}
 
 		HabitatFrogasaurus["./pointer.js"].getCursor = getCursor
@@ -543,6 +595,7 @@ const HabitatFrogasaurus = {}
 	}
 
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
+	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 
 }
@@ -552,11 +605,11 @@ const HabitatFrogasaurus = {}
 //=========//
 export const { shuffleArray, trimArray, repeatArray } = HabitatFrogasaurus["./array.js"]
 export const { sleep } = HabitatFrogasaurus["./async.js"]
-export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, CYAN, BLUE, PURPLE, PINK, CORAL, RED, ORANGE, YELLOW, HUES, SHADES, COLOURS } = HabitatFrogasaurus["./colour.js"]
+export const { Colour, Splash, showColour, registerColourMethods, VOID, BLACK, GREY, SILVER, WHITE, GREEN, CYAN, BLUE, PURPLE, PINK, CORAL, RED, ORANGE, YELLOW, HUES, SHADES, COLOURS } = HabitatFrogasaurus["./colour.js"]
 export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 export const { $, $$ } = HabitatFrogasaurus["./document.js"]
 export const { fireEvent } = HabitatFrogasaurus["./event.js"]
-export const { registerMethods } = HabitatFrogasaurus["./habitat.js"]
+export const { registerMethods, registerGlobals, registerEverything } = HabitatFrogasaurus["./habitat.js"]
 export const { HTML } = HabitatFrogasaurus["./html.js"]
 export const { JavaScript } = HabitatFrogasaurus["./javascript.js"]
 export const { _ } = HabitatFrogasaurus["./json.js"]
@@ -575,6 +628,7 @@ export const Habitat = {
 	Colour: HabitatFrogasaurus["./colour.js"].Colour,
 	Splash: HabitatFrogasaurus["./colour.js"].Splash,
 	showColour: HabitatFrogasaurus["./colour.js"].showColour,
+	registerColourMethods: HabitatFrogasaurus["./colour.js"].registerColourMethods,
 	VOID: HabitatFrogasaurus["./colour.js"].VOID,
 	BLACK: HabitatFrogasaurus["./colour.js"].BLACK,
 	GREY: HabitatFrogasaurus["./colour.js"].GREY,
@@ -599,6 +653,8 @@ export const Habitat = {
 	$$: HabitatFrogasaurus["./document.js"].$$,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
 	registerMethods: HabitatFrogasaurus["./habitat.js"].registerMethods,
+	registerGlobals: HabitatFrogasaurus["./habitat.js"].registerGlobals,
+	registerEverything: HabitatFrogasaurus["./habitat.js"].registerEverything,
 	HTML: HabitatFrogasaurus["./html.js"].HTML,
 	JavaScript: HabitatFrogasaurus["./javascript.js"].JavaScript,
 	_: HabitatFrogasaurus["./json.js"]._,

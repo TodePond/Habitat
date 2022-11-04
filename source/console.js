@@ -9,15 +9,15 @@ export const print9 = (message) => {
 	print(message)
 }
 
-export const registerDebugMethods = (global) => {
+export const registerDebugMethods = () => {
 	
-	defineGetter(global.Object.prototype, "d", function() {
+	defineGetter(Object.prototype, "d", function() {
 		const value = this.valueOf()
 		print(value)
 		return value
 	})
 	
-	defineGetter(global.Object.prototype, "d9", function() {
+	defineGetter(Object.prototype, "d9", function() {
 		const value = this.valueOf()
 		print9(value)
 		return value

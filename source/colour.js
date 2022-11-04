@@ -1,3 +1,5 @@
+import { defineGetter } from "./property.js"
+
 //===========//
 // UTILITIES //
 //===========//
@@ -17,14 +19,21 @@ const getThreeDigits = (number) => {
 // CLASSES //
 //=========//
 export const Colour = class extends Array {
-	constructor(red, green, blue) {
+	constructor(red, green, blue, alpha = 255) {
 		super()
 		this.push(red, green, blue)
+		if (alpha !== undefined) {
+			this.push(alpha)
+		}
 	}
 
 	toString() {
-		const [red, green, blue] = this.map(v => v.toString(16).padStart(2, "0"))
-		return `#${red}${green}${blue}`
+		const [red, green, blue, alpha] = this.map(v => v.toString(16).padStart(2, "0"))
+		if (this.alpha === 255) {
+			return `#${red}${green}${blue}`
+		}
+
+		return `#${red}${green}${blue}${alpha}`
 	}
 }
 
@@ -44,6 +53,27 @@ export const Splash = class extends Colour {
 //===========//
 export const showColour = (colour) => {
 	console.log("%c   ", `background-color: ${new Colour(...colour)}`)
+}
+
+//=========//
+// METHODS //
+//=========//
+export const registerColourMethods = () => {
+	defineGetter(Array.prototype, "red", function() {
+		return this[0]
+	})
+
+	defineGetter(Array.prototype, "green", function() {
+		return this[1]
+	})
+
+	defineGetter(Array.prototype, "blue", function() {
+		return this[2]
+	})
+
+	defineGetter(Array.prototype, "alpha", function() {
+		return this[3]
+	})
 }
 
 //===========//

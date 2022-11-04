@@ -1,6 +1,6 @@
 # Colour
 
-## `new Colour(red, green, blue)`
+## `new Colour(red, green, blue, alpha = 255)`
 Make a colour.
 ```javascript
 const pink = new Colour(255, 128, 222)
@@ -8,7 +8,7 @@ const pink = new Colour(255, 128, 222)
 
 Colours can be used as arrays.
 ```javascript
-const [red, green, blue] = pink
+const [red, green, blue, alpha] = pink
 ```
 
 Colours can be used as strings.
@@ -47,3 +47,30 @@ There are some preset arrays of colours.
 | `SHADES`  | `VOID` `BLACK` `GREY` `SILVER` |
 | `HUES`    | `GREEN` `CYAN` `BLUE` `PURPLE` `PINK` `CORAL` `RED` `ORANGE` `YELLOW`  |
 | `COLOURS` | All colours |
+
+## `registerColourMethods()`
+Register the following methods.
+```javascript
+registerColourMethods()
+```
+
+#### `Array.prototype.red`
+Get the first element of an array.
+```javascript
+const pink = new Colour(255, 128, 222)
+print(pink.red) //255
+```
+
+#### `Array.prototype.green`
+Get the second element of an array.
+```javascript
+const pink = new Colour(255, 128, 222)
+print(pink.green) //128
+```
+
+#### `Array.prototype.blue`
+Get the second element of an array.
+```javascript
+const pink = new Colour(255, 128, 222)
+print(pink.blue) //222
+```
