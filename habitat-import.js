@@ -260,6 +260,17 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./event.js"].fireEvent = fireEvent
 	}
 
+	//====== ./habitat.js ======
+	{
+		HabitatFrogasaurus["./habitat.js"] = {}
+		
+		const registerMethods = () => {
+			registerDebugMethods()
+		}
+
+		HabitatFrogasaurus["./habitat.js"].registerMethods = registerMethods
+	}
+
 	//====== ./html.js ======
 	{
 		HabitatFrogasaurus["./html.js"] = {}
@@ -498,9 +509,15 @@ const HabitatFrogasaurus = {}
 	//====== ./pointer.js ======
 	{
 		HabitatFrogasaurus["./pointer.js"] = {}
-		
+		let isCursorTracked = false
+		const cursor = {
+			position: [undefined, undefined]
+		}
+		const getCursor = () => {
+			addEventListener
+		}
 
-
+		HabitatFrogasaurus["./pointer.js"].getCursor = getCursor
 	}
 
 	//====== ./property.js ======
@@ -526,6 +543,7 @@ const HabitatFrogasaurus = {}
 	}
 
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
+	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 
 }
 
@@ -538,6 +556,7 @@ export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GRE
 export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 export const { $, $$ } = HabitatFrogasaurus["./document.js"]
 export const { fireEvent } = HabitatFrogasaurus["./event.js"]
+export const { registerMethods } = HabitatFrogasaurus["./habitat.js"]
 export const { HTML } = HabitatFrogasaurus["./html.js"]
 export const { JavaScript } = HabitatFrogasaurus["./javascript.js"]
 export const { _ } = HabitatFrogasaurus["./json.js"]
@@ -545,7 +564,7 @@ export const { getKeyboard } = HabitatFrogasaurus["./keyboard.js"]
 export const { LinkedList } = HabitatFrogasaurus["./linked-list.js"]
 export const { memo } = HabitatFrogasaurus["./memo.js"]
 export const { clamp, wrap, getDigits, gcd, simplifyRatio, numbersBetween } = HabitatFrogasaurus["./number.js"]
-export const {  } = HabitatFrogasaurus["./pointer.js"]
+export const { getCursor } = HabitatFrogasaurus["./pointer.js"]
 export const { defineGetter } = HabitatFrogasaurus["./property.js"]
 
 export const Habitat = {
@@ -579,6 +598,7 @@ export const Habitat = {
 	$: HabitatFrogasaurus["./document.js"].$,
 	$$: HabitatFrogasaurus["./document.js"].$$,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
+	registerMethods: HabitatFrogasaurus["./habitat.js"].registerMethods,
 	HTML: HabitatFrogasaurus["./html.js"].HTML,
 	JavaScript: HabitatFrogasaurus["./javascript.js"].JavaScript,
 	_: HabitatFrogasaurus["./json.js"]._,
@@ -591,5 +611,6 @@ export const Habitat = {
 	gcd: HabitatFrogasaurus["./number.js"].gcd,
 	simplifyRatio: HabitatFrogasaurus["./number.js"].simplifyRatio,
 	numbersBetween: HabitatFrogasaurus["./number.js"].numbersBetween,
+	getCursor: HabitatFrogasaurus["./pointer.js"].getCursor,
 	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
 }

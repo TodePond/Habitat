@@ -260,6 +260,17 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./event.js"].fireEvent = fireEvent
 	}
 
+	//====== ./habitat.js ======
+	{
+		HabitatFrogasaurus["./habitat.js"] = {}
+		
+		const registerMethods = () => {
+			registerDebugMethods()
+		}
+
+		HabitatFrogasaurus["./habitat.js"].registerMethods = registerMethods
+	}
+
 	//====== ./html.js ======
 	{
 		HabitatFrogasaurus["./html.js"] = {}
@@ -498,9 +509,15 @@ const HabitatFrogasaurus = {}
 	//====== ./pointer.js ======
 	{
 		HabitatFrogasaurus["./pointer.js"] = {}
-		
+		let isCursorTracked = false
+		const cursor = {
+			position: [undefined, undefined]
+		}
+		const getCursor = () => {
+			addEventListener
+		}
 
-
+		HabitatFrogasaurus["./pointer.js"].getCursor = getCursor
 	}
 
 	//====== ./property.js ======
@@ -526,6 +543,7 @@ const HabitatFrogasaurus = {}
 	}
 
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
+	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 
 }
 
@@ -563,6 +581,7 @@ const Habitat = {
 	$: HabitatFrogasaurus["./document.js"].$,
 	$$: HabitatFrogasaurus["./document.js"].$$,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
+	registerMethods: HabitatFrogasaurus["./habitat.js"].registerMethods,
 	HTML: HabitatFrogasaurus["./html.js"].HTML,
 	JavaScript: HabitatFrogasaurus["./javascript.js"].JavaScript,
 	_: HabitatFrogasaurus["./json.js"]._,
@@ -575,5 +594,6 @@ const Habitat = {
 	gcd: HabitatFrogasaurus["./number.js"].gcd,
 	simplifyRatio: HabitatFrogasaurus["./number.js"].simplifyRatio,
 	numbersBetween: HabitatFrogasaurus["./number.js"].numbersBetween,
+	getCursor: HabitatFrogasaurus["./pointer.js"].getCursor,
 	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
 }
