@@ -1,5 +1,4 @@
 # Habitat
-
 Habitat is a collection of JavaScript helpers that I use in my hobby projects.<br>
 You can embed it, like this:
 ```html
