@@ -20,7 +20,7 @@ export const onKeyDown = (key, func) => {
 	if (!isKeyDownTracked) {
 		isKeyDownTracked = true
 		addEventListener("keydown", (e) => {
-			const func = keyDownFuncs.get(key)
+			const func = keyDownFuncs.get(e.key)
 			if (func === undefined) return
 			func(e)
 		}, {passive: false})
@@ -34,7 +34,7 @@ export const onKeyUp = (key, func) => {
 	if (!isKeyUpTracked) {
 		isKeyUpTracked = true
 		addEventListener("keyup", (e) => {
-			const func = keyUpFuncs.get(key)
+			const func = keyUpFuncs.get(e.key)
 			if (func === undefined) return
 			func(e)
 		}, {passive: false})

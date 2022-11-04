@@ -383,7 +383,7 @@ const HabitatFrogasaurus = {}
 			if (!isKeyDownTracked) {
 				isKeyDownTracked = true
 				addEventListener("keydown", (e) => {
-					const func = keyDownFuncs.get(key)
+					const func = keyDownFuncs.get(e.key)
 					if (func === undefined) return
 					func(e)
 				}, {passive: false})
@@ -397,7 +397,7 @@ const HabitatFrogasaurus = {}
 			if (!isKeyUpTracked) {
 				isKeyUpTracked = true
 				addEventListener("keyup", (e) => {
-					const func = keyUpFuncs.get(key)
+					const func = keyUpFuncs.get(e.key)
 					if (func === undefined) return
 					func(e)
 				}, {passive: false})
@@ -560,8 +560,42 @@ const HabitatFrogasaurus = {}
 		
 			return mouse
 		}
+		
+		let isMouseDownTracked = false
+		const mouseDownFuncs = new Map()
+		const onMouseDown = (buttonName, func) => {
+			const button = buttonNames.indexOf(buttonName)
+			if (button === -1) throw new Error(`[Habitat] I don't recognise mouse button '${buttonName}'`)
+			if (!isMouseDownTracked) {
+				isMouseDownTracked = true
+				addEventListener("mousedown", (e) => {
+					const func = mouseDownFuncs.get(e.button)
+					if (func === undefined) return
+					func(e)
+				}, {passive: false})
+			}
+			mouseDownFuncs.set(button, func)
+		}
+		
+		let isMouseUpTracked = false
+		const mouseUpFuncs = new Map()
+		const onMouseUp = (buttonName, func) => {
+			const button = buttonNames.indexOf(buttonName)
+			if (button === -1) throw new Error(`[Habitat] I don't recognise mouse button '${buttonName}'`)
+			if (!isMouseUpTracked) {
+				isMouseUpTracked = true
+				addEventListener("mouseup", (e) => {
+					const func = mouseUpFuncs.get(e.button)
+					if (func === undefined) return
+					func(e)
+				}, {passive: false})
+			}
+			mouseUpFuncs.set(button, func)
+		}
 
 		HabitatFrogasaurus["./mouse.js"].getMouse = getMouse
+		HabitatFrogasaurus["./mouse.js"].onMouseDown = onMouseDown
+		HabitatFrogasaurus["./mouse.js"].onMouseUp = onMouseUp
 	}
 
 	//====== ./number.js ======
@@ -704,7 +738,7 @@ export const { _ } = HabitatFrogasaurus["./json.js"]
 export const { getKeyboard, onKeyDown, onKeyUp } = HabitatFrogasaurus["./keyboard.js"]
 export const { LinkedList } = HabitatFrogasaurus["./linked-list.js"]
 export const { memo } = HabitatFrogasaurus["./memo.js"]
-export const { getMouse } = HabitatFrogasaurus["./mouse.js"]
+export const { getMouse, onMouseDown, onMouseUp } = HabitatFrogasaurus["./mouse.js"]
 export const { clamp, wrap, getDigits, gcd, simplifyRatio, numbersBetween } = HabitatFrogasaurus["./number.js"]
 export const { getPointer } = HabitatFrogasaurus["./pointer.js"]
 export const { defineGetter } = HabitatFrogasaurus["./property.js"]
@@ -754,6 +788,8 @@ export const Habitat = {
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
 	memo: HabitatFrogasaurus["./memo.js"].memo,
 	getMouse: HabitatFrogasaurus["./mouse.js"].getMouse,
+	onMouseDown: HabitatFrogasaurus["./mouse.js"].onMouseDown,
+	onMouseUp: HabitatFrogasaurus["./mouse.js"].onMouseUp,
 	clamp: HabitatFrogasaurus["./number.js"].clamp,
 	wrap: HabitatFrogasaurus["./number.js"].wrap,
 	getDigits: HabitatFrogasaurus["./number.js"].getDigits,
