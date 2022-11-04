@@ -495,6 +495,14 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./number.js"].numbersBetween = numbersBetween
 	}
 
+	//====== ./pointer.js ======
+	{
+		HabitatFrogasaurus["./pointer.js"] = {}
+		
+
+
+	}
+
 	//====== ./property.js ======
 	{
 		HabitatFrogasaurus["./property.js"] = {}
@@ -537,6 +545,7 @@ export const { getKeyboard } = HabitatFrogasaurus["./keyboard.js"]
 export const { LinkedList } = HabitatFrogasaurus["./linked-list.js"]
 export const { memo } = HabitatFrogasaurus["./memo.js"]
 export const { clamp, wrap, getDigits, gcd, simplifyRatio, numbersBetween } = HabitatFrogasaurus["./number.js"]
+export const {  } = HabitatFrogasaurus["./pointer.js"]
 export const { defineGetter } = HabitatFrogasaurus["./property.js"]
 
 export const Habitat = {

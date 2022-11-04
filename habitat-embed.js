@@ -495,6 +495,14 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./number.js"].numbersBetween = numbersBetween
 	}
 
+	//====== ./pointer.js ======
+	{
+		HabitatFrogasaurus["./pointer.js"] = {}
+		
+
+
+	}
+
 	//====== ./property.js ======
 	{
 		HabitatFrogasaurus["./property.js"] = {}
