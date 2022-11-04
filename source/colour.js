@@ -60,14 +60,14 @@ export const SILVER = new Splash(556)
 export const WHITE = new Splash(999)
 
 export const GREEN = new Splash(293)
-export const RED = new Splash(911)
-export const BLUE = new Splash(239)
-export const YELLOW = new Splash(991)
-export const ORANGE = new Splash(931)
-export const PINK = new Splash(937)
 export const CYAN = new Splash(269)
+export const BLUE = new Splash(239)
 export const PURPLE = new Splash(418)
+export const PINK = new Splash(937)
 export const CORAL = new Splash(933)
+export const RED = new Splash(911)
+export const ORANGE = new Splash(931)
+export const YELLOW = new Splash(991)
 
 export const HUES = [
 	GREEN, CYAN, BLUE, PURPLE, PINK, CORAL, RED, ORANGE, YELLOW,

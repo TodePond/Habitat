@@ -158,14 +158,14 @@ const HabitatFrogasaurus = {}
 		const WHITE = new Splash(999)
 		
 		const GREEN = new Splash(293)
-		const RED = new Splash(911)
-		const BLUE = new Splash(239)
-		const YELLOW = new Splash(991)
-		const ORANGE = new Splash(931)
-		const PINK = new Splash(937)
 		const CYAN = new Splash(269)
+		const BLUE = new Splash(239)
 		const PURPLE = new Splash(418)
+		const PINK = new Splash(937)
 		const CORAL = new Splash(933)
+		const RED = new Splash(911)
+		const ORANGE = new Splash(931)
+		const YELLOW = new Splash(991)
 		
 		const HUES = [
 			GREEN, CYAN, BLUE, PURPLE, PINK, CORAL, RED, ORANGE, YELLOW,
@@ -190,14 +190,14 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./colour.js"].SILVER = SILVER
 		HabitatFrogasaurus["./colour.js"].WHITE = WHITE
 		HabitatFrogasaurus["./colour.js"].GREEN = GREEN
-		HabitatFrogasaurus["./colour.js"].RED = RED
-		HabitatFrogasaurus["./colour.js"].BLUE = BLUE
-		HabitatFrogasaurus["./colour.js"].YELLOW = YELLOW
-		HabitatFrogasaurus["./colour.js"].ORANGE = ORANGE
-		HabitatFrogasaurus["./colour.js"].PINK = PINK
 		HabitatFrogasaurus["./colour.js"].CYAN = CYAN
+		HabitatFrogasaurus["./colour.js"].BLUE = BLUE
 		HabitatFrogasaurus["./colour.js"].PURPLE = PURPLE
+		HabitatFrogasaurus["./colour.js"].PINK = PINK
 		HabitatFrogasaurus["./colour.js"].CORAL = CORAL
+		HabitatFrogasaurus["./colour.js"].RED = RED
+		HabitatFrogasaurus["./colour.js"].ORANGE = ORANGE
+		HabitatFrogasaurus["./colour.js"].YELLOW = YELLOW
 		HabitatFrogasaurus["./colour.js"].HUES = HUES
 		HabitatFrogasaurus["./colour.js"].SHADES = SHADES
 		HabitatFrogasaurus["./colour.js"].COLOURS = COLOURS
@@ -496,7 +496,7 @@ const HabitatFrogasaurus = {}
 //=========//
 export const { shuffleArray, trimArray, repeatArray } = HabitatFrogasaurus["./array.js"]
 export const { sleep } = HabitatFrogasaurus["./async.js"]
-export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, RED, BLUE, YELLOW, ORANGE, PINK, CYAN, PURPLE, CORAL, HUES, SHADES, COLOURS } = HabitatFrogasaurus["./colour.js"]
+export const { Colour, Splash, showColour, VOID, BLACK, GREY, SILVER, WHITE, GREEN, CYAN, BLUE, PURPLE, PINK, CORAL, RED, ORANGE, YELLOW, HUES, SHADES, COLOURS } = HabitatFrogasaurus["./colour.js"]
 export const { print, print9, registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 export const { $, $$ } = HabitatFrogasaurus["./document.js"]
 export const { fireEvent } = HabitatFrogasaurus["./event.js"]
@@ -521,14 +521,14 @@ export const Habitat = {
 	SILVER: HabitatFrogasaurus["./colour.js"].SILVER,
 	WHITE: HabitatFrogasaurus["./colour.js"].WHITE,
 	GREEN: HabitatFrogasaurus["./colour.js"].GREEN,
-	RED: HabitatFrogasaurus["./colour.js"].RED,
-	BLUE: HabitatFrogasaurus["./colour.js"].BLUE,
-	YELLOW: HabitatFrogasaurus["./colour.js"].YELLOW,
-	ORANGE: HabitatFrogasaurus["./colour.js"].ORANGE,
-	PINK: HabitatFrogasaurus["./colour.js"].PINK,
 	CYAN: HabitatFrogasaurus["./colour.js"].CYAN,
+	BLUE: HabitatFrogasaurus["./colour.js"].BLUE,
 	PURPLE: HabitatFrogasaurus["./colour.js"].PURPLE,
+	PINK: HabitatFrogasaurus["./colour.js"].PINK,
 	CORAL: HabitatFrogasaurus["./colour.js"].CORAL,
+	RED: HabitatFrogasaurus["./colour.js"].RED,
+	ORANGE: HabitatFrogasaurus["./colour.js"].ORANGE,
+	YELLOW: HabitatFrogasaurus["./colour.js"].YELLOW,
 	HUES: HabitatFrogasaurus["./colour.js"].HUES,
 	SHADES: HabitatFrogasaurus["./colour.js"].SHADES,
 	COLOURS: HabitatFrogasaurus["./colour.js"].COLOURS,
