@@ -4,7 +4,7 @@
 
 # Habitat
 Habitat is a collection of JavaScript helpers that I use in my hobby projects.<br>
-A list of its functions is in the [documentation](documentation/README.md).
+A list of its functions is in the [documentation](https://todepond.gitbook.io/habitat).
 
 ## How to use it
 You can embed it, like this:

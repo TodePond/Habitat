@@ -20,13 +20,13 @@ Register the following methods.
 registerDebugMethods(window)
 ```
 
-### `Object.prototype.d`
+#### `Object.prototype.d`
 Print the `Object` to the console. Return the value of the object. Useful for quick debugging.
 ```js
 "Hello world!".d
 ```
 
-### `Object.prototype.d9`
+#### `Object.prototype.d9`
 Print the `Object` to the console. Return the value of the object. Only works the first 9 times you run it. Useful when you want to debug something in a loop, but not clog up the console.
 ```js
 for (let i = 0; i < 100; i++) {
