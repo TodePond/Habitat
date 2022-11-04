@@ -1,17 +1,29 @@
-let isCursorTracked = false
-const buttonNames = ["Left", "Middle", "Right", "Back", "Forward"]
-const cursor = {
+let isPointerTracked = false
+const pointer = {
 	position: [undefined, undefined],
 	down: undefined,
-	buttons: {},
 }
 
-export const getCursor = () => {
-	if (isCursorTracked) return cursor
+export const getPointer = () => {
+	if (isPointerTracked) return pointer
+	isPointerTracked = true
 	
 	addEventListener("pointermove", (e) => {
-		
+		pointer.position[0] = e.clientX
+		pointer.position[1] = e.clientY
 	})
 
-	return cursor
+	addEventListener("pointerdown", (e) => {
+		pointer.position[0] = e.clientX
+		pointer.position[1] = e.clientY
+		pointer.down = true
+	})
+	
+	addEventListener("pointerup", (e) => {
+		pointer.position[0] = e.clientX
+		pointer.position[1] = e.clientY
+		pointer.down = false
+	})
+
+	return pointer
 }

@@ -15,5 +15,7 @@
 * [Keyboard](keyboard.md)
 * [Linked List](linked-list.md)
 * [Memo](memo.md)
+* [Mouse](mouse.md)
 * [Number](number.md)
+* [Pointer](pointer.md)
 * [Property](property.md)

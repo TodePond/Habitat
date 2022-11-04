@@ -11,7 +11,5 @@ Get an object that tracks the state of every key.
 
 ```javascript
 const keyboard = getKeyboard()
-on("click", () => {
-	if (keyboard["Enter"]) print("The enter key is pressed down")
-})
+if (keyboard["Enter"]) print("The enter key is pressed down")
 ```

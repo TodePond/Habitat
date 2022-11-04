@@ -283,11 +283,18 @@ const HabitatFrogasaurus = {}
 		const fireEvent = (name, options = {}) => {
 			const {target = window, bubbles = true, cancelable = true, ...data} = options
 			const event = new Event(name, {bubbles, cancelable})
-			Object.assign(event, data)
+			for (const key in data) {
+				event[key] = data[key]
+			}
 			target.dispatchEvent(event)
+		}
+		
+		const on = (event, func, options) => {
+			return addEventListener(event, func, options)
 		}
 
 		HabitatFrogasaurus["./event.js"].fireEvent = fireEvent
+		HabitatFrogasaurus["./event.js"].on = on
 	}
 
 	//====== ./habitat.js ======
@@ -358,6 +365,7 @@ const HabitatFrogasaurus = {}
 		let isKeyboardTracked = false
 		const getKeyboard = () => {
 			if (isKeyboardTracked) return keyboard
+			isKeyboardTracked = true
 			addEventListener("keydown", (e) => {
 				keyboard[e.key] = true
 			})
@@ -488,6 +496,44 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./memo.js"].memo = memo
 	}
 
+	//====== ./mouse.js ======
+	{
+		HabitatFrogasaurus["./mouse.js"] = {}
+		let isMouseTracked = false
+		const buttonNames = ["Left", "Middle", "Right", "Back", "Forward"]
+		const mouse = {
+			position: [undefined, undefined],
+		}
+		
+		const getMouse = () => {
+			if (isMouseTracked) return mouse
+			isMouseTracked = true
+			
+			addEventListener("mousemove", (e) => {
+				mouse.position[0] = e.clientX
+				mouse.position[1] = e.clientY
+			})
+		
+			addEventListener("mousedown", (e) => {
+				mouse.position[0] = e.clientX
+				mouse.position[1] = e.clientY
+				const buttonName = buttonNames[e.button]
+				mouse[buttonName] = true
+			})
+			
+			addEventListener("mouseup", (e) => {
+				mouse.position[0] = e.clientX
+				mouse.position[1] = e.clientY
+				const buttonName = buttonNames[e.button]
+				mouse[buttonName] = false
+			})
+		
+			return mouse
+		}
+
+		HabitatFrogasaurus["./mouse.js"].getMouse = getMouse
+	}
+
 	//====== ./number.js ======
 	{
 		HabitatFrogasaurus["./number.js"] = {}
@@ -551,25 +597,37 @@ const HabitatFrogasaurus = {}
 	//====== ./pointer.js ======
 	{
 		HabitatFrogasaurus["./pointer.js"] = {}
-		let isCursorTracked = false
-		const buttonNames = ["Left", "Middle", "Right", "Back", "Forward"]
-		const cursor = {
+		let isPointerTracked = false
+		const pointer = {
 			position: [undefined, undefined],
 			down: undefined,
-			buttons: {},
 		}
 		
-		const getCursor = () => {
-			if (isCursorTracked) return cursor
+		const getPointer = () => {
+			if (isPointerTracked) return pointer
+			isPointerTracked = true
 			
 			addEventListener("pointermove", (e) => {
-				
+				pointer.position[0] = e.clientX
+				pointer.position[1] = e.clientY
 			})
 		
-			return cursor
+			addEventListener("pointerdown", (e) => {
+				pointer.position[0] = e.clientX
+				pointer.position[1] = e.clientY
+				pointer.down = true
+			})
+			
+			addEventListener("pointerup", (e) => {
+				pointer.position[0] = e.clientX
+				pointer.position[1] = e.clientY
+				pointer.down = false
+			})
+		
+			return pointer
 		}
 
-		HabitatFrogasaurus["./pointer.js"].getCursor = getCursor
+		HabitatFrogasaurus["./pointer.js"].getPointer = getPointer
 	}
 
 	//====== ./property.js ======
@@ -635,6 +693,7 @@ const Habitat = {
 	$: HabitatFrogasaurus["./document.js"].$,
 	$$: HabitatFrogasaurus["./document.js"].$$,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
+	on: HabitatFrogasaurus["./event.js"].on,
 	registerMethods: HabitatFrogasaurus["./habitat.js"].registerMethods,
 	registerGlobals: HabitatFrogasaurus["./habitat.js"].registerGlobals,
 	registerEverything: HabitatFrogasaurus["./habitat.js"].registerEverything,
@@ -644,12 +703,13 @@ const Habitat = {
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
 	memo: HabitatFrogasaurus["./memo.js"].memo,
+	getMouse: HabitatFrogasaurus["./mouse.js"].getMouse,
 	clamp: HabitatFrogasaurus["./number.js"].clamp,
 	wrap: HabitatFrogasaurus["./number.js"].wrap,
 	getDigits: HabitatFrogasaurus["./number.js"].getDigits,
 	gcd: HabitatFrogasaurus["./number.js"].gcd,
 	simplifyRatio: HabitatFrogasaurus["./number.js"].simplifyRatio,
 	numbersBetween: HabitatFrogasaurus["./number.js"].numbersBetween,
-	getCursor: HabitatFrogasaurus["./pointer.js"].getCursor,
+	getPointer: HabitatFrogasaurus["./pointer.js"].getPointer,
 	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
 }
