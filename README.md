@@ -3,7 +3,7 @@
 <img align="right" height="100" src="http://todepond.com/IMG/Habitat@0.25x.png">
 
 # Habitat
-Habitat is a collection of JavaScript tools and libraries that I have built up for my personal use. The full documentation for it is here: [todepond.gitbook.io/habitat](https://todepond.gitbook.io/habitat/)
+Habitat is a collection of JavaScript tools and libraries that I have built up for my personal use. The full documentation for it is here: [todepond.gitbook.io/habitat](https://todepond.gitbook.io/habitat-legacy/)
 
 ## How to use it
 You can embed it, like this:
