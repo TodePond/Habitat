@@ -1,15 +1,15 @@
-import { fireEvent } from "./event.js"
+import { fireEvent, on } from "./event.js"
 
 const keyboard = {}
 let isKeyboardTracked = false
 export const getKeyboard = () => {
 	if (isKeyboardTracked) return keyboard
 	isKeyboardTracked = true
-	addEventListener("keydown", (e) => {
+	on("keydown", (e) => {
 		keyboard[e.key] = true
 	})
 	
-	addEventListener("keyup", (e) => {
+	on("keyup", (e) => {
 		keyboard[e.key] = false
 	})
 
@@ -20,7 +20,7 @@ let isKeyDownTracked = false
 export const keyDown = (key) => {
 	if (!isKeyDownTracked) {
 		isKeyDownTracked = true
-		addEventListener("keydown", (e) => fireEvent(`keyDown("${e.key}")`), {passive: false})
+		on("keydown", (e) => fireEvent(`keyDown("${e.key}")`), {passive: false})
 	}
 	return `keyDown("${key}")`
 }
@@ -29,7 +29,7 @@ let isKeyUpTracked = false
 export const keyUp = (key) => {
 	if (!isKeyUpTracked) {
 		isKeyUpTracked = true
-		addEventListener("keyup", (e) => fireEvent(`keyUp("${e.key}")`), {passive: false})
+		on("keyup", (e) => fireEvent(`keyUp("${e.key}")`), {passive: false})
 	}
 	return `keyUp("${key}")`
 }

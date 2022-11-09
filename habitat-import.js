@@ -367,11 +367,11 @@ const HabitatFrogasaurus = {}
 		const getKeyboard = () => {
 			if (isKeyboardTracked) return keyboard
 			isKeyboardTracked = true
-			addEventListener("keydown", (e) => {
+			on("keydown", (e) => {
 				keyboard[e.key] = true
 			})
 			
-			addEventListener("keyup", (e) => {
+			on("keyup", (e) => {
 				keyboard[e.key] = false
 			})
 		
@@ -382,7 +382,7 @@ const HabitatFrogasaurus = {}
 		const keyDown = (key) => {
 			if (!isKeyDownTracked) {
 				isKeyDownTracked = true
-				addEventListener("keydown", (e) => fireEvent(`keyDown("${e.key}")`), {passive: false})
+				on("keydown", (e) => fireEvent(`keyDown("${e.key}")`), {passive: false})
 			}
 			return `keyDown("${key}")`
 		}
@@ -391,7 +391,7 @@ const HabitatFrogasaurus = {}
 		const keyUp = (key) => {
 			if (!isKeyUpTracked) {
 				isKeyUpTracked = true
-				addEventListener("keyup", (e) => fireEvent(`keyUp("${e.key}")`), {passive: false})
+				on("keyup", (e) => fireEvent(`keyUp("${e.key}")`), {passive: false})
 			}
 			return `keyUp("${key}")`
 		}
@@ -520,6 +520,7 @@ const HabitatFrogasaurus = {}
 	//====== ./mouse.js ======
 	{
 		HabitatFrogasaurus["./mouse.js"] = {}
+		
 		let isMouseTracked = false
 		const buttonNames = ["Left", "Middle", "Right", "Back", "Forward"]
 		const mouse = {
@@ -530,19 +531,19 @@ const HabitatFrogasaurus = {}
 			if (isMouseTracked) return mouse
 			isMouseTracked = true
 			
-			addEventListener("mousemove", (e) => {
+			on("mousemove", (e) => {
 				mouse.position[0] = e.clientX
 				mouse.position[1] = e.clientY
 			})
 		
-			addEventListener("mousedown", (e) => {
+			on("mousedown", (e) => {
 				mouse.position[0] = e.clientX
 				mouse.position[1] = e.clientY
 				const buttonName = buttonNames[e.button]
 				mouse[buttonName] = true
 			})
 			
-			addEventListener("mouseup", (e) => {
+			on("mouseup", (e) => {
 				mouse.position[0] = e.clientX
 				mouse.position[1] = e.clientY
 				const buttonName = buttonNames[e.button]
@@ -557,7 +558,7 @@ const HabitatFrogasaurus = {}
 			const button = buttonNames.indexOf(buttonName)
 			if (!isMouseDownTracked) {
 				isMouseDownTracked = true
-				addEventListener("mousedown", (e) => fireEvent(`mouseDown("${e.button}")`), {passive: false})
+				on("mousedown", (e) => fireEvent(`mouseDown("${e.button}")`), {passive: false})
 			}
 			return `mouseDown("${button}")`
 		}
@@ -567,7 +568,7 @@ const HabitatFrogasaurus = {}
 			const button = buttonNames.indexOf(buttonName)
 			if (!isMouseUpTracked) {
 				isMouseUpTracked = true
-				addEventListener("mouseup", (e) => fireEvent(`mouseUp("${e.button}")`), {passive: false})
+				on("mouseup", (e) => fireEvent(`mouseUp("${e.button}")`), {passive: false})
 			}
 			return `mouseUp("${button}")`
 		}
@@ -852,6 +853,54 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./struct.js"].struct = struct
 	}
 
+	//====== ./touch.js ======
+	{
+		HabitatFrogasaurus["./touch.js"] = {}
+		
+		const touches = []
+		
+		let isTouchTracked = false
+		const getTouches = () => {
+			if (!isTouchTracked) {
+				isTouchTracked = true
+		
+				on("touchstart", e => {
+					for (const changedTouch of e.changedTouches) {
+						const id = changedTouch.identifier
+						if (touches[id] === undefined) {
+							touches[id] = {position: [undefined, undefined]}
+						}
+						
+						const touch = touches[id]
+						touch.position[0] = changedTouch.clientX
+						touch.position[1] = changedTouch.clientY
+					}
+				})
+				
+				on("touchmove", e => {
+					for (const changedTouch of e.changedTouches) {
+						const id = changedTouch.identifier
+						const touch = touches[id]
+						touch.position[0] = changedTouch.clientX
+						touch.position[1] = changedTouch.clientY
+					}
+				})
+				
+				on("touchend", e => {
+					for (const changedTouch of e.changedTouches) {
+						const id = changedTouch.identifier
+						touches[id] = undefined
+					}
+				})
+		
+			}
+		
+			return touches
+		}
+
+		HabitatFrogasaurus["./touch.js"].getTouches = getTouches
+	}
+
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
@@ -885,6 +934,7 @@ export const { random, randomFrom, oneIn, maybe } = HabitatFrogasaurus["./random
 export const { Stage } = HabitatFrogasaurus["./stage.js"]
 export const { divideString } = HabitatFrogasaurus["./string.js"]
 export const { struct } = HabitatFrogasaurus["./struct.js"]
+export const { getTouches } = HabitatFrogasaurus["./touch.js"]
 
 export const Habitat = {
 	shuffleArray: HabitatFrogasaurus["./array.js"].shuffleArray,
@@ -948,4 +998,5 @@ export const Habitat = {
 	Stage: HabitatFrogasaurus["./stage.js"].Stage,
 	divideString: HabitatFrogasaurus["./string.js"].divideString,
 	struct: HabitatFrogasaurus["./struct.js"].struct,
+	getTouches: HabitatFrogasaurus["./touch.js"].getTouches,
 }

@@ -1,3 +1,5 @@
+import { on } from "./event.js"
+
 let isMouseTracked = false
 const buttonNames = ["Left", "Middle", "Right", "Back", "Forward"]
 const mouse = {
@@ -8,19 +10,19 @@ export const getMouse = () => {
 	if (isMouseTracked) return mouse
 	isMouseTracked = true
 	
-	addEventListener("mousemove", (e) => {
+	on("mousemove", (e) => {
 		mouse.position[0] = e.clientX
 		mouse.position[1] = e.clientY
 	})
 
-	addEventListener("mousedown", (e) => {
+	on("mousedown", (e) => {
 		mouse.position[0] = e.clientX
 		mouse.position[1] = e.clientY
 		const buttonName = buttonNames[e.button]
 		mouse[buttonName] = true
 	})
 	
-	addEventListener("mouseup", (e) => {
+	on("mouseup", (e) => {
 		mouse.position[0] = e.clientX
 		mouse.position[1] = e.clientY
 		const buttonName = buttonNames[e.button]
@@ -35,7 +37,7 @@ export const mouseDown = (buttonName) => {
 	const button = buttonNames.indexOf(buttonName)
 	if (!isMouseDownTracked) {
 		isMouseDownTracked = true
-		addEventListener("mousedown", (e) => fireEvent(`mouseDown("${e.button}")`), {passive: false})
+		on("mousedown", (e) => fireEvent(`mouseDown("${e.button}")`), {passive: false})
 	}
 	return `mouseDown("${button}")`
 }
@@ -45,7 +47,7 @@ export const mouseUp = (buttonName) => {
 	const button = buttonNames.indexOf(buttonName)
 	if (!isMouseUpTracked) {
 		isMouseUpTracked = true
-		addEventListener("mouseup", (e) => fireEvent(`mouseUp("${e.button}")`), {passive: false})
+		on("mouseup", (e) => fireEvent(`mouseUp("${e.button}")`), {passive: false})
 	}
 	return `mouseUp("${button}")`
 }
