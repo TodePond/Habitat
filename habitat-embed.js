@@ -553,40 +553,28 @@ const HabitatFrogasaurus = {}
 		}
 		
 		let isMouseDownTracked = false
-		const mouseDownFuncs = new Map()
-		const onMouseDown = (buttonName, func) => {
+		const mouseDown = (buttonName) => {
 			const button = buttonNames.indexOf(buttonName)
-			if (button === -1) throw new Error(`[Habitat] I don't recognise mouse button '${buttonName}'`)
 			if (!isMouseDownTracked) {
 				isMouseDownTracked = true
-				addEventListener("mousedown", (e) => {
-					const func = mouseDownFuncs.get(e.button)
-					if (func === undefined) return
-					func(e)
-				}, {passive: false})
+				addEventListener("mousedown", (e) => fireEvent(`mouseDown("${e.button}")`), {passive: false})
 			}
-			mouseDownFuncs.set(button, func)
+			return `mouseDown("${button}")`
 		}
 		
 		let isMouseUpTracked = false
-		const mouseUpFuncs = new Map()
-		const onMouseUp = (buttonName, func) => {
+		const mouseUp = (buttonName) => {
 			const button = buttonNames.indexOf(buttonName)
-			if (button === -1) throw new Error(`[Habitat] I don't recognise mouse button '${buttonName}'`)
 			if (!isMouseUpTracked) {
 				isMouseUpTracked = true
-				addEventListener("mouseup", (e) => {
-					const func = mouseUpFuncs.get(e.button)
-					if (func === undefined) return
-					func(e)
-				}, {passive: false})
+				addEventListener("mouseup", (e) => fireEvent(`mouseUp("${e.button}")`), {passive: false})
 			}
-			mouseUpFuncs.set(button, func)
+			return `mouseUp("${button}")`
 		}
 
 		HabitatFrogasaurus["./mouse.js"].getMouse = getMouse
-		HabitatFrogasaurus["./mouse.js"].onMouseDown = onMouseDown
-		HabitatFrogasaurus["./mouse.js"].onMouseUp = onMouseUp
+		HabitatFrogasaurus["./mouse.js"].mouseDown = mouseDown
+		HabitatFrogasaurus["./mouse.js"].mouseUp = mouseUp
 	}
 
 	//====== ./number.js ======
@@ -908,8 +896,8 @@ const Habitat = {
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
 	memo: HabitatFrogasaurus["./memo.js"].memo,
 	getMouse: HabitatFrogasaurus["./mouse.js"].getMouse,
-	onMouseDown: HabitatFrogasaurus["./mouse.js"].onMouseDown,
-	onMouseUp: HabitatFrogasaurus["./mouse.js"].onMouseUp,
+	mouseDown: HabitatFrogasaurus["./mouse.js"].mouseDown,
+	mouseUp: HabitatFrogasaurus["./mouse.js"].mouseUp,
 	clamp: HabitatFrogasaurus["./number.js"].clamp,
 	wrap: HabitatFrogasaurus["./number.js"].wrap,
 	getDigits: HabitatFrogasaurus["./number.js"].getDigits,

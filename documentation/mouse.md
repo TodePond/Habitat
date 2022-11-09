@@ -21,14 +21,14 @@ const mouse = getMouse()
 const [x, y] = mouse.position
 ```
 
-## `onMouseDown(button, func)`
-Add an event listener for when `button` is pressed down.
+## `mouseDown(button)`
+An event that fires whenever `button` is pressed.
 ```js
-onMouseDown("Middle", () => print("The middle mouse button was pressed down"))
+on(mouseDown("Middle"), () => print("The middle mouse button was pressed"))
 ```
 
-## `onMouseUp(button, func)`
-Add an event listener for when `button` is released.
+## `mouseUp(button)`
+An event that fires whenever `button` is released.
 ```js
-onMouseUp("Middle", () => print("The middle mouse button was released"))
+on(mouseUp("Middle"), () => print("The middle mouse button was released"))
 ```

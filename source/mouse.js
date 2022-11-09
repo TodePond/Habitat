@@ -31,33 +31,21 @@ export const getMouse = () => {
 }
 
 let isMouseDownTracked = false
-const mouseDownFuncs = new Map()
-export const onMouseDown = (buttonName, func) => {
+export const mouseDown = (buttonName) => {
 	const button = buttonNames.indexOf(buttonName)
-	if (button === -1) throw new Error(`[Habitat] I don't recognise mouse button '${buttonName}'`)
 	if (!isMouseDownTracked) {
 		isMouseDownTracked = true
-		addEventListener("mousedown", (e) => {
-			const func = mouseDownFuncs.get(e.button)
-			if (func === undefined) return
-			func(e)
-		}, {passive: false})
+		addEventListener("mousedown", (e) => fireEvent(`mouseDown("${e.button}")`), {passive: false})
 	}
-	mouseDownFuncs.set(button, func)
+	return `mouseDown("${button}")`
 }
 
 let isMouseUpTracked = false
-const mouseUpFuncs = new Map()
-export const onMouseUp = (buttonName, func) => {
+export const mouseUp = (buttonName) => {
 	const button = buttonNames.indexOf(buttonName)
-	if (button === -1) throw new Error(`[Habitat] I don't recognise mouse button '${buttonName}'`)
 	if (!isMouseUpTracked) {
 		isMouseUpTracked = true
-		addEventListener("mouseup", (e) => {
-			const func = mouseUpFuncs.get(e.button)
-			if (func === undefined) return
-			func(e)
-		}, {passive: false})
+		addEventListener("mouseup", (e) => fireEvent(`mouseUp("${e.button}")`), {passive: false})
 	}
-	mouseUpFuncs.set(button, func)
+	return `mouseUp("${button}")`
 }
