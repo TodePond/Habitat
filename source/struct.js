@@ -1,1 +1,3 @@
-export const struct = (parameters) => (args) => ({...parameters, ...args})
+export const struct = (parameters) => function (args) {
+	return {...parameters, ...args}
+}

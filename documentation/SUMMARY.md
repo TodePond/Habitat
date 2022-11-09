@@ -20,3 +20,4 @@
 * [Pointer](pointer.md)
 * [Property](property.md)
 * [Random](random.md)
+* [Struct](struct.md)

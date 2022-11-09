@@ -761,7 +761,9 @@ const HabitatFrogasaurus = {}
 	//====== ./struct.js ======
 	{
 		HabitatFrogasaurus["./struct.js"] = {}
-		const struct = (parameters) => (args) => ({...parameters, ...args})
+		const struct = (parameters) => function (args) {
+			return {...parameters, ...args}
+		}
 
 		HabitatFrogasaurus["./struct.js"].struct = struct
 	}
