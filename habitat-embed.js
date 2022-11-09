@@ -397,12 +397,21 @@ const HabitatFrogasaurus = {}
 			if (!isKeyUpTracked) {
 				isKeyUpTracked = true
 				addEventListener("keyup", (e) => {
-					const func = keyUpFuncs.get(e.key)
-					if (func === undefined) return
-					func(e)
+					const funcs = keyUpFuncs.get(e.key)
+					if (funcs === undefined) return
+					for (const func of funcs) {
+						func(e)
+					}
 				}, {passive: false})
 			}
-			keyUpFuncs.set(key, func)
+		
+			let funcs = keyUpFuncs(key)
+			if (funcs === undefined) {
+				funcs = []
+				keyUpFuncs.set(key, funcs)
+			}
+			
+			funcs.push(func)
 		}
 
 		HabitatFrogasaurus["./keyboard.js"].getKeyboard = getKeyboard
@@ -751,11 +760,103 @@ const HabitatFrogasaurus = {}
 	//====== ./stage.js ======
 	{
 		HabitatFrogasaurus["./stage.js"] = {}
-		const startStage = ({}) => {
+		
+		const Stage = function (properties) {
+		
+			const stage = struct ({
+				context: undefined, 
+				scale: 1.0,
+				aspectRatio: undefined,
+				
+				speed: 1.0,
+				clock: 0.0,
+				paused: true,
+			
+				start: () => {},
+				resize: () => {},
+				tick: () => {},
+				update: () => {},
+		
+			})(properties)
+		
+			if (document.body === null) {
+				addEventListener("load", () => {
+					requestAnimationFrame(() => start(stage))
+				})
+			} else {
+				requestAnimationFrame(() => start(stage))
+			}
+		
+			return stage
+		}
+		
+		const start = (stage) => {
+				
+			// Create a context + canvas if no context was provided
+			if (stage.context === undefined) {
+				const canvas = document.createElement("canvas")
+				canvas.style["background-color"] = "#171d28"
+				canvas.style["image-rendering"] = "pixelated"
+				document.body.style["background-color"] = "#06070a"
+				document.body.style["margin"] = "0px"
+				document.body.style["overflow"] = "hidden"
+				document.body.appendChild(canvas)
+				stage.context = canvas.getContext("2d")
+			}
+		
+			on("resize", () => resize(stage))
+			onKeyDown(" ", () => stage.paused = !stage.paused)
+			
+			stage.start(stage.context)
+			resize(stage)
+			tick(stage)
 		
 		}
+		
+		const resize = (stage) => {
+		
+			let width = innerWidth
+			let height = innerHeight
+			
+			if (stage.aspectRatio !== undefined) {
+				const [x, y] = stage.aspectRatio
+				height = innerWidth * y/x
+				const heightGrowth = height / innerHeight
+				if (heightGrowth > 1.0) {
+					height /= heightGrowth
+					width /= heightGrowth
+				}
+			}
+		
+			const scaledWidth = width * stage.scale
+			const scaledHeight = height * stage.scale
+		
+			const {canvas} = stage.context
+			canvas.width = Math.round(scaledWidth)
+			canvas.height = Math.round(scaledHeight)
+			canvas.style["width"] = canvas.width
+			canvas.style["height"] = canvas.height
+			
+			const marginHorizontal = (innerWidth - scaledWidth)/2
+			const marginVertical = (innerHeight - scaledHeight)/2
+			canvas.style["margin-left"] = marginHorizontal
+			canvas.style["margin-right"] = marginHorizontal
+			canvas.style["margin-top"] = marginVertical
+			canvas.style["margin-bottom"] = marginVertical
+			stage.resize(stage.context)
+		}
+		const tick = (stage) => {
+			stage.clock += stage.speed
+			while (stage.clock > 0) {
+				if (!stage.paused) stage.update(stage.context)
+				stage.tick(stage.context, stage)
+				stage.clock--
+			}
+			
+			requestAnimationFrame(() => tick(stage))
+		}
 
-		HabitatFrogasaurus["./stage.js"].startStage = startStage
+		HabitatFrogasaurus["./stage.js"].Stage = Stage
 	}
 
 	//====== ./struct.js ======
@@ -771,6 +872,9 @@ const HabitatFrogasaurus = {}
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
+	const { struct } = HabitatFrogasaurus["./struct.js"]
+	const { onKeyDown } = HabitatFrogasaurus["./keyboard.js"]
+	const { on } = HabitatFrogasaurus["./event.js"]
 
 }
 
@@ -836,6 +940,6 @@ const Habitat = {
 	randomFrom: HabitatFrogasaurus["./random.js"].randomFrom,
 	oneIn: HabitatFrogasaurus["./random.js"].oneIn,
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
-	startStage: HabitatFrogasaurus["./stage.js"].startStage,
+	Stage: HabitatFrogasaurus["./stage.js"].Stage,
 	struct: HabitatFrogasaurus["./struct.js"].struct,
 }

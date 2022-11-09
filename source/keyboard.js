@@ -34,10 +34,19 @@ export const onKeyUp = (key, func) => {
 	if (!isKeyUpTracked) {
 		isKeyUpTracked = true
 		addEventListener("keyup", (e) => {
-			const func = keyUpFuncs.get(e.key)
-			if (func === undefined) return
-			func(e)
+			const funcs = keyUpFuncs.get(e.key)
+			if (funcs === undefined) return
+			for (const func of funcs) {
+				func(e)
+			}
 		}, {passive: false})
 	}
-	keyUpFuncs.set(key, func)
+
+	let funcs = keyUpFuncs(key)
+	if (funcs === undefined) {
+		funcs = []
+		keyUpFuncs.set(key, funcs)
+	}
+	
+	funcs.push(func)
 }

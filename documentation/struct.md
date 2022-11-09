@@ -1,7 +1,7 @@
 # Struct
 
 ## `struct(properties)`
-Make a simple object class.
+Make a simple class with default `properties`.
 ```javascript
 const Player = struct ({
 	name: "",
