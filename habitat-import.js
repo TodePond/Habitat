@@ -716,6 +716,38 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./property.js"].defineGetter = defineGetter
 	}
 
+	//====== ./random.js ======
+	{
+		HabitatFrogasaurus["./random.js"] = {}
+		const maxRandomNumberIndex = 2 ** 14
+		const randomNumbersBuffer = new Uint32Array(maxRandomNumberIndex)
+		let randomNumberIndex = Infinity
+		
+		const random = () => {
+			if (randomNumberIndex >= maxRandomNumberIndex) {
+				crypto.getRandomValues(randomNumbersBuffer)
+				randomNumberIndex = 0
+			}
+			const result = randomNumbersBuffer[randomNumberIndex]
+			randomNumberIndex++
+			return result
+		}
+		
+		const randomFrom = (array) => {
+			const index = random() % array.length
+			return array[index]
+		}
+		
+		const oneIn = (times) => random() % times < 1
+		const maybe = (chance) => oneIn(1 / chance)
+		
+
+		HabitatFrogasaurus["./random.js"].random = random
+		HabitatFrogasaurus["./random.js"].randomFrom = randomFrom
+		HabitatFrogasaurus["./random.js"].oneIn = oneIn
+		HabitatFrogasaurus["./random.js"].maybe = maybe
+	}
+
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
@@ -742,6 +774,7 @@ export const { getMouse, onMouseDown, onMouseUp } = HabitatFrogasaurus["./mouse.
 export const { clamp, wrap, getDigits, gcd, simplifyRatio, numbersBetween } = HabitatFrogasaurus["./number.js"]
 export const { getPointer } = HabitatFrogasaurus["./pointer.js"]
 export const { defineGetter } = HabitatFrogasaurus["./property.js"]
+export const { random, randomFrom, oneIn, maybe } = HabitatFrogasaurus["./random.js"]
 
 export const Habitat = {
 	shuffleArray: HabitatFrogasaurus["./array.js"].shuffleArray,
@@ -798,4 +831,8 @@ export const Habitat = {
 	numbersBetween: HabitatFrogasaurus["./number.js"].numbersBetween,
 	getPointer: HabitatFrogasaurus["./pointer.js"].getPointer,
 	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
+	random: HabitatFrogasaurus["./random.js"].random,
+	randomFrom: HabitatFrogasaurus["./random.js"].randomFrom,
+	oneIn: HabitatFrogasaurus["./random.js"].oneIn,
+	maybe: HabitatFrogasaurus["./random.js"].maybe,
 }

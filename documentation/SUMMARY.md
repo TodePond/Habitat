@@ -19,3 +19,4 @@
 * [Number](number.md)
 * [Pointer](pointer.md)
 * [Property](property.md)
+* [Random](random.md)
