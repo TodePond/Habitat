@@ -11,6 +11,6 @@ fireEvent("click", {target: $("button")})
 
 ## `on(name, func, options = {})`
 Add an event listener.
-```js
+```javascript
 on("click", () => print("You clicked"))
 ```
