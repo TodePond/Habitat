@@ -20,4 +20,5 @@
 * [Pointer](pointer.md)
 * [Property](property.md)
 * [Random](random.md)
+* [Stage](stage.md)
 * [Struct](struct.md)

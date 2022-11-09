@@ -1,10 +1,10 @@
 import { struct } from "./struct.js"
-import { onKeyDown } from "./keyboard.js"
+import { keyDown } from "./keyboard.js"
 import { on } from "./event.js"
 
 export const Stage = function (properties) {
 
-	const stage = struct ({
+	const template = struct ({
 		context: undefined, 
 		scale: 1.0,
 		aspectRatio: undefined,
@@ -18,7 +18,9 @@ export const Stage = function (properties) {
 		tick: () => {},
 		update: () => {},
 
-	})(properties)
+	})
+
+	const stage = template(properties)
 
 	if (document.body === null) {
 		addEventListener("load", () => {
@@ -46,7 +48,7 @@ const start = (stage) => {
 	}
 
 	on("resize", () => resize(stage))
-	onKeyDown(" ", () => stage.paused = !stage.paused)
+	on(keyDown(" "), () => stage.paused = !stage.paused)
 	
 	stage.start(stage.context)
 	resize(stage)

@@ -733,7 +733,7 @@ const HabitatFrogasaurus = {}
 		
 		const Stage = function (properties) {
 		
-			const stage = struct ({
+			const template = struct ({
 				context: undefined, 
 				scale: 1.0,
 				aspectRatio: undefined,
@@ -747,7 +747,9 @@ const HabitatFrogasaurus = {}
 				tick: () => {},
 				update: () => {},
 		
-			})(properties)
+			})
+		
+			const stage = template(properties)
 		
 			if (document.body === null) {
 				addEventListener("load", () => {
@@ -775,7 +777,7 @@ const HabitatFrogasaurus = {}
 			}
 		
 			on("resize", () => resize(stage))
-			onKeyDown(" ", () => stage.paused = !stage.paused)
+			on(keyDown(" "), () => stage.paused = !stage.paused)
 			
 			stage.start(stage.context)
 			resize(stage)
@@ -844,7 +846,7 @@ const HabitatFrogasaurus = {}
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]
 	const { struct } = HabitatFrogasaurus["./struct.js"]
-	const { onKeyDown } = HabitatFrogasaurus["./keyboard.js"]
+	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
 
 }
 
