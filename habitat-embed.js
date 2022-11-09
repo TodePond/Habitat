@@ -831,6 +831,17 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./stage.js"].Stage = Stage
 	}
 
+	//====== ./string.js ======
+	{
+		HabitatFrogasaurus["./string.js"] = {}
+		const divideString = (string, length) => {
+			const regExp = RegExp(`[^]{1,${length}}`, "g")
+			return string.match(regExp)
+		}
+
+		HabitatFrogasaurus["./string.js"].divideString = divideString
+	}
+
 	//====== ./struct.js ======
 	{
 		HabitatFrogasaurus["./struct.js"] = {}
@@ -913,5 +924,6 @@ const Habitat = {
 	oneIn: HabitatFrogasaurus["./random.js"].oneIn,
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
 	Stage: HabitatFrogasaurus["./stage.js"].Stage,
+	divideString: HabitatFrogasaurus["./string.js"].divideString,
 	struct: HabitatFrogasaurus["./struct.js"].struct,
 }

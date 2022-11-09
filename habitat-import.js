@@ -831,6 +831,17 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./stage.js"].Stage = Stage
 	}
 
+	//====== ./string.js ======
+	{
+		HabitatFrogasaurus["./string.js"] = {}
+		const divideString = (string, length) => {
+			const regExp = RegExp(`[^]{1,${length}}`, "g")
+			return string.match(regExp)
+		}
+
+		HabitatFrogasaurus["./string.js"].divideString = divideString
+	}
+
 	//====== ./struct.js ======
 	{
 		HabitatFrogasaurus["./struct.js"] = {}
@@ -872,6 +883,7 @@ export const { getPointer } = HabitatFrogasaurus["./pointer.js"]
 export const { defineGetter } = HabitatFrogasaurus["./property.js"]
 export const { random, randomFrom, oneIn, maybe } = HabitatFrogasaurus["./random.js"]
 export const { Stage } = HabitatFrogasaurus["./stage.js"]
+export const { divideString } = HabitatFrogasaurus["./string.js"]
 export const { struct } = HabitatFrogasaurus["./struct.js"]
 
 export const Habitat = {
@@ -934,5 +946,6 @@ export const Habitat = {
 	oneIn: HabitatFrogasaurus["./random.js"].oneIn,
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
 	Stage: HabitatFrogasaurus["./stage.js"].Stage,
+	divideString: HabitatFrogasaurus["./string.js"].divideString,
 	struct: HabitatFrogasaurus["./struct.js"].struct,
 }
