@@ -23,12 +23,12 @@ const [x, y] = mouse.position
 
 ## `mouseDown(button)`
 An event that fires whenever `button` is pressed.
-```js
+```javascript
 on(mouseDown("Middle"), () => print("The middle mouse button was pressed"))
 ```
 
 ## `mouseUp(button)`
 An event that fires whenever `button` is released.
-```js
+```javascript
 on(mouseUp("Middle"), () => print("The middle mouse button was released"))
 ```
