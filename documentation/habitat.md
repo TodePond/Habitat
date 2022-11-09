@@ -5,6 +5,11 @@ Register all methods:
 * `registerDebugMethods` from [Console](console.md)
 * `registerColourMethods` from [Colour](colour.md)
 
+```javascript
+Habitat.registerMethods()
+"Hello world!".d
+```
+
 ## `registerGlobals()`
 Register all Habitat exports to the global scope.
 ```javascript
@@ -17,4 +22,5 @@ Register all globals and methods.
 ```javascript
 Habitat.registerEverything()
 print("Hello world!")
+"Hello world!".d
 ```
