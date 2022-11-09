@@ -1,3 +1,5 @@
+import { fireEvent } from "./event.js"
+
 const keyboard = {}
 let isKeyboardTracked = false
 export const getKeyboard = () => {
@@ -15,38 +17,19 @@ export const getKeyboard = () => {
 }
 
 let isKeyDownTracked = false
-const keyDownFuncs = new Map()
-export const onKeyDown = (key, func) => {
+export const keyDown = (key) => {
 	if (!isKeyDownTracked) {
 		isKeyDownTracked = true
-		addEventListener("keydown", (e) => {
-			const func = keyDownFuncs.get(e.key)
-			if (func === undefined) return
-			func(e)
-		}, {passive: false})
+		addEventListener("keydown", (e) => fireEvent(`keyDown("${e.key}")`), {passive: false})
 	}
-	keyDownFuncs.set(key, func)
+	return `keyDown("${key}")`
 }
 
 let isKeyUpTracked = false
-const keyUpFuncs = new Map()
-export const onKeyUp = (key, func) => {
+export const keyUp = (key) => {
 	if (!isKeyUpTracked) {
 		isKeyUpTracked = true
-		addEventListener("keyup", (e) => {
-			const funcs = keyUpFuncs.get(e.key)
-			if (funcs === undefined) return
-			for (const func of funcs) {
-				func(e)
-			}
-		}, {passive: false})
+		addEventListener("keyup", (e) => fireEvent(`keyUp("${e.key}")`), {passive: false})
 	}
-
-	let funcs = keyUpFuncs(key)
-	if (funcs === undefined) {
-		funcs = []
-		keyUpFuncs.set(key, funcs)
-	}
-	
-	funcs.push(func)
+	return `keyUp("${key}")`
 }

@@ -14,14 +14,14 @@ const keyboard = getKeyboard()
 if (keyboard["Enter"]) print("The enter key is pressed down")
 ```
 
-## `onKeyDown(key, func)`
-Add an event listener for when `key` is pressed down.
-```js
-onKeyDown("Enter", () => print("The enter key was pressed down"))
+## `keyDown(key)`
+An event that fires whenever `key` is pressed.
+```javascript
+on(keyDown("Enter"), () => print("The enter key was pressed")
 ```
 
-## `onKeyUp(key, func)`
-Add an event listener for when `key` is released.
-```js
-onKeyUp("Enter", () => print("The enter key was released"))
+## `keyUp(key)`
+An event that fires whenever `key` is released.
+```javascript
+on(keyUp("Enter"), () => print("The enter key was released")
 ```

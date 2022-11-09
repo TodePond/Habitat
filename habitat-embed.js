@@ -361,6 +361,7 @@ const HabitatFrogasaurus = {}
 	//====== ./keyboard.js ======
 	{
 		HabitatFrogasaurus["./keyboard.js"] = {}
+		
 		const keyboard = {}
 		let isKeyboardTracked = false
 		const getKeyboard = () => {
@@ -378,45 +379,26 @@ const HabitatFrogasaurus = {}
 		}
 		
 		let isKeyDownTracked = false
-		const keyDownFuncs = new Map()
-		const onKeyDown = (key, func) => {
+		const keyDown = (key) => {
 			if (!isKeyDownTracked) {
 				isKeyDownTracked = true
-				addEventListener("keydown", (e) => {
-					const func = keyDownFuncs.get(e.key)
-					if (func === undefined) return
-					func(e)
-				}, {passive: false})
+				addEventListener("keydown", (e) => fireEvent(`keyDown("${e.key}")`), {passive: false})
 			}
-			keyDownFuncs.set(key, func)
+			return `keyDown("${key}")`
 		}
 		
 		let isKeyUpTracked = false
-		const keyUpFuncs = new Map()
-		const onKeyUp = (key, func) => {
+		const keyUp = (key) => {
 			if (!isKeyUpTracked) {
 				isKeyUpTracked = true
-				addEventListener("keyup", (e) => {
-					const funcs = keyUpFuncs.get(e.key)
-					if (funcs === undefined) return
-					for (const func of funcs) {
-						func(e)
-					}
-				}, {passive: false})
+				addEventListener("keyup", (e) => fireEvent(`keyUp("${e.key}")`), {passive: false})
 			}
-		
-			let funcs = keyUpFuncs(key)
-			if (funcs === undefined) {
-				funcs = []
-				keyUpFuncs.set(key, funcs)
-			}
-			
-			funcs.push(func)
+			return `keyUp("${key}")`
 		}
 
 		HabitatFrogasaurus["./keyboard.js"].getKeyboard = getKeyboard
-		HabitatFrogasaurus["./keyboard.js"].onKeyDown = onKeyDown
-		HabitatFrogasaurus["./keyboard.js"].onKeyUp = onKeyUp
+		HabitatFrogasaurus["./keyboard.js"].keyDown = keyDown
+		HabitatFrogasaurus["./keyboard.js"].keyUp = keyUp
 	}
 
 	//====== ./linked-list.js ======
@@ -872,9 +854,9 @@ const HabitatFrogasaurus = {}
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
+	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]
 	const { struct } = HabitatFrogasaurus["./struct.js"]
 	const { onKeyDown } = HabitatFrogasaurus["./keyboard.js"]
-	const { on } = HabitatFrogasaurus["./event.js"]
 
 }
 
@@ -921,8 +903,8 @@ const Habitat = {
 	JavaScript: HabitatFrogasaurus["./javascript.js"].JavaScript,
 	_: HabitatFrogasaurus["./json.js"]._,
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
-	onKeyDown: HabitatFrogasaurus["./keyboard.js"].onKeyDown,
-	onKeyUp: HabitatFrogasaurus["./keyboard.js"].onKeyUp,
+	keyDown: HabitatFrogasaurus["./keyboard.js"].keyDown,
+	keyUp: HabitatFrogasaurus["./keyboard.js"].keyUp,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
 	memo: HabitatFrogasaurus["./memo.js"].memo,
 	getMouse: HabitatFrogasaurus["./mouse.js"].getMouse,
