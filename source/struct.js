@@ -1,0 +1,1 @@
+export const struct = (parameters) => (args) => ({...parameters, ...args})

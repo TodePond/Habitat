@@ -748,6 +748,24 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./random.js"].maybe = maybe
 	}
 
+	//====== ./stage.js ======
+	{
+		HabitatFrogasaurus["./stage.js"] = {}
+		const startStage = ({}) => {
+		
+		}
+
+		HabitatFrogasaurus["./stage.js"].startStage = startStage
+	}
+
+	//====== ./struct.js ======
+	{
+		HabitatFrogasaurus["./struct.js"] = {}
+		const struct = (parameters) => (args) => ({...parameters, ...args})
+
+		HabitatFrogasaurus["./struct.js"].struct = struct
+	}
+
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
@@ -816,4 +834,6 @@ const Habitat = {
 	randomFrom: HabitatFrogasaurus["./random.js"].randomFrom,
 	oneIn: HabitatFrogasaurus["./random.js"].oneIn,
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
+	startStage: HabitatFrogasaurus["./stage.js"].startStage,
+	struct: HabitatFrogasaurus["./struct.js"].struct,
 }

@@ -69,8 +69,15 @@ print(pink.green) //128
 ```
 
 #### `Array.prototype.blue`
-Get the second element of an array.
+Get the third element of an array.
 ```javascript
 const pink = new Colour(255, 128, 222)
 print(pink.blue) //222
+```
+
+#### `Array.prototype.alpha`
+Get the fourth element of an array.
+```javascript
+const pink = new Colour(255, 128, 222, 255)
+print(pink.alpha) //255
 ```
