@@ -24,3 +24,4 @@
 * [String](string.md)
 * [Struct](struct.md)
 * [Touch](touch.md)
+* [Vector](vector.md)

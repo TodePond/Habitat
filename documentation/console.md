@@ -17,7 +17,7 @@ for (let i = 0; i < 100; i++) {
 ## `registerDebugMethods(global)`
 Register the following methods.
 ```javascript
-registerDebugMethods(window)
+registerDebugMethods()
 ```
 
 #### `Object.prototype.d`

@@ -940,6 +940,91 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./tween.js"].tween = tween
 	}
 
+	//====== ./vector.js ======
+	{
+		HabitatFrogasaurus["./vector.js"] = {}
+		const Vector = function(x, y, z) {
+			if (z === undefined) {
+				return [x, y]
+			}
+			return [x, y, z]
+		}
+		
+		const scaleVector = (vector, scale) => {
+			return vector.map(v => v * scale)
+		}
+		
+		const addVector = (a, b) => {
+			if (a.length === 2) {
+				const [ax, ay] = a
+				const [bx, by] = b
+				const x = ax + bx
+				const y = ay + by
+				return [x, y]
+			} else {
+				const [ax, ay, az] = a
+				const [bx, by, bz] = b
+				const x = ax + bx
+				const y = ay + by
+				const z = az + bz
+				return [x, y, z]
+			}
+		}
+		
+		const subtractVector = (a, b) => {
+			if (a.length === 2) {
+				const [ax, ay] = a
+				const [bx, by] = b
+				const x = ax - bx
+				const y = ay - by
+				return [x, y]
+			} else {
+				const [ax, ay, az] = a
+				const [bx, by, bz] = b
+				const x = ax - bx
+				const y = ay - by
+				const z = az - bz
+				return [x, y, z]
+			}
+		}
+		
+		const crossProductVector = (a, b) => {
+			if (a.length === 2) {
+				const [ax, ay] = a
+				const [bx, by] = b
+				return ax*by - ay*bx
+			} else {
+				const [ax, ay, az] = a
+				const [bx, by, bz] = b
+				return [ay*bz - az*by, az*bx - ax*bz, ax*by - ay*bx]
+			}
+		}
+		
+		// TODO: 3D
+		const distanceBetweenVectors = (a, b) => {
+			const displacement = subtractVector(a, b)
+			const [dx, dy] = displacement
+			const distance = Math.hypot(dx, dy)
+			return distance
+		}
+		
+		// TODO: 3D
+		const angleBetweenVectors = (a, b) => {
+			const displacement = subtractVector(a, b)
+			const [dx, dy] = displacement
+			const angle = Math.atan2(dy, dx)
+			return angle
+		}
+
+		HabitatFrogasaurus["./vector.js"].Vector = Vector
+		HabitatFrogasaurus["./vector.js"].scaleVector = scaleVector
+		HabitatFrogasaurus["./vector.js"].addVector = addVector
+		HabitatFrogasaurus["./vector.js"].subtractVector = subtractVector
+		HabitatFrogasaurus["./vector.js"].crossProductVector = crossProductVector
+		HabitatFrogasaurus["./vector.js"].distanceBetweenVectors = distanceBetweenVectors
+		HabitatFrogasaurus["./vector.js"].angleBetweenVectors = angleBetweenVectors
+	}
+
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
@@ -1016,4 +1101,11 @@ const Habitat = {
 	struct: HabitatFrogasaurus["./struct.js"].struct,
 	getTouches: HabitatFrogasaurus["./touch.js"].getTouches,
 	tween: HabitatFrogasaurus["./tween.js"].tween,
+	Vector: HabitatFrogasaurus["./vector.js"].Vector,
+	scaleVector: HabitatFrogasaurus["./vector.js"].scaleVector,
+	addVector: HabitatFrogasaurus["./vector.js"].addVector,
+	subtractVector: HabitatFrogasaurus["./vector.js"].subtractVector,
+	crossProductVector: HabitatFrogasaurus["./vector.js"].crossProductVector,
+	distanceBetweenVectors: HabitatFrogasaurus["./vector.js"].distanceBetweenVectors,
+	angleBetweenVectors: HabitatFrogasaurus["./vector.js"].angleBetweenVectors,
 }
