@@ -1,6 +1,6 @@
 # Memo
 
-## `memo(func)`
+## `memo(func, getKey = JSON.stringify)`
 Memoise a `func`tion.
 ```javascript
 const fibonacci = memo ((n) => {
