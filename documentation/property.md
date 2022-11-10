@@ -1,6 +1,6 @@
 # Property
 
-## `defineGetter(object, name, get)`
+## `defineGetter(object, key, get)`
 Define a getter property on an `object`.
 ```javascript
 const player = {number: 1}

@@ -1,0 +1,26 @@
+<script src="../habitat-embed.js"></script>
+<script>
+
+	Habitat.registerEverything()
+
+	const state = {
+		x: 0.1,
+		y: 0.2,
+	}
+
+	const stage = new Stage()
+
+	stage.start = (context) => {
+		tween(state, "y", {to: 0.8, duration: 2000})
+	}
+
+	stage.tick = (context) => {
+		const {canvas} = context
+		const {width, height} = canvas
+		const {x, y} = state
+		context.fillStyle = GREEN
+		context.fillRect(x * width, y * height, 2, 2)
+		state.x += 0.005
+	}
+
+</script>

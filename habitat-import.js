@@ -747,7 +747,6 @@ const HabitatFrogasaurus = {}
 				resize: () => {},
 				tick: () => {},
 				update: () => {},
-		
 			})
 		
 			const stage = template(properties)
@@ -901,6 +900,46 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./touch.js"].getTouches = getTouches
 	}
 
+	//====== ./tween.js ======
+	{
+		HabitatFrogasaurus["./tween.js"] = {}
+		
+		const tween = (object, key, options) => {
+			
+			const value = object[key]
+		
+			const {
+				from = value,
+				to = value,
+				duration = 1000,
+			} = options
+		
+			const startTime = performance.now()
+			const endTime = startTime + duration
+		
+		
+			defineGetter(object, key, () => {
+				const currentTime = performance.now()
+		
+				if (currentTime >= endTime) {
+					Reflect.defineProperty(object, key, {
+						value: to,
+						writable: true,
+						configurable: true,
+						enumerable: true,
+					})
+					return to
+				}
+		
+				return 0.5 //TODO: after lerp!
+		
+			})
+		
+		}
+
+		HabitatFrogasaurus["./tween.js"].tween = tween
+	}
+
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
@@ -935,6 +974,7 @@ export const { Stage } = HabitatFrogasaurus["./stage.js"]
 export const { divideString } = HabitatFrogasaurus["./string.js"]
 export const { struct } = HabitatFrogasaurus["./struct.js"]
 export const { getTouches } = HabitatFrogasaurus["./touch.js"]
+export const { tween } = HabitatFrogasaurus["./tween.js"]
 
 export const Habitat = {
 	shuffleArray: HabitatFrogasaurus["./array.js"].shuffleArray,
@@ -999,4 +1039,5 @@ export const Habitat = {
 	divideString: HabitatFrogasaurus["./string.js"].divideString,
 	struct: HabitatFrogasaurus["./struct.js"].struct,
 	getTouches: HabitatFrogasaurus["./touch.js"].getTouches,
+	tween: HabitatFrogasaurus["./tween.js"].tween,
 }

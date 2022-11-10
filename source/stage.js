@@ -17,7 +17,6 @@ export const Stage = function (properties) {
 		resize: () => {},
 		tick: () => {},
 		update: () => {},
-
 	})
 
 	const stage = template(properties)
