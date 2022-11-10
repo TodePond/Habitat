@@ -500,10 +500,10 @@ const HabitatFrogasaurus = {}
 	//====== ./memo.js ======
 	{
 		HabitatFrogasaurus["./memo.js"] = {}
-		const memo = (func) => {
+		const memo = (func, getKey = JSON.stringify) => {
 			const cache = new Map()
 			return (...args) => {
-				const key = JSON.stringify(args)
+				const key = getKey(args)
 				if (cache.has(key)) {
 					return cache.get(key)
 				}
