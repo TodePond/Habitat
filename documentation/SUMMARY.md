@@ -13,6 +13,7 @@
 * [JavaScript](javascript.md)
 * [JSON](json.md)
 * [Keyboard](keyboard.md)
+* [Lerp](lerp.md)
 * [Linked List](linked-list.md)
 * [Memo](memo.md)
 * [Mouse](mouse.md)

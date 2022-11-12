@@ -402,6 +402,84 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./keyboard.js"].keyUp = keyUp
 	}
 
+	//====== ./lerp.js ======
+	{
+		HabitatFrogasaurus["./lerp.js"] = {}
+		
+		const lerp = (distance, [start, end]) => {
+			if (Array.isArray(start)) {
+				return lerpVector(distance, [start, end])
+			}
+			const range = end - start
+			return start + range * distance
+		}
+		
+		const lerpVector = (distance, [start, end]) => {
+			const range = subtractVector(end, start)
+			const displacement = scaleVector(range, distance)
+			return addVector(start, displacement)
+		}
+		
+		const bilerp = (displacement, quadrilateral) => {
+			const [dx, dy] = displacement
+			const [a, b, c, d] = quadrilateral
+		
+			const la = lerp(dx, [a, b])
+			const lb = lerp(dx, [d, c])
+			const line = [la, lb]
+		
+			const point = lerp(dy, line)
+			return point
+		}
+		
+		// based on https://iquilezles.org/articles/ibilinear
+		// adapted by Magnogen https://magnogen.net
+		const ibilerp = (point, quadrilateral) => {
+		
+			const p = point
+			const [a, b, c, d] = quadrilateral
+		
+			const e = subtractVector(b, a)
+			const f = subtractVector(d, a)
+			const g = addVector(subtractVector(a, b), subtractVector(c, d))
+			const h = subtractVector(p, a)
+		
+			const [ex] = e
+			const [fx] = f
+			const [gx] = g
+			const [hx] = h
+		
+			const k2 = crossProductVector(g, f)
+			const k1 = crossProductVector(e, f) + crossProductVector(h, g)
+			const k0 = crossProductVector(h, e)
+			
+			if (Math.abs(k2) < 0.0001) {
+				const x = (hx*k1 + fx*k0) / (ex*k1 - gx*k0)
+				const y = -k0/k1
+				return [x, y]
+			}
+		
+			let w = k1*k1 - 4*k0*k2
+			w = Math.sqrt(w)
+		
+			const ik2 = 0.5/k2
+			let v = (-k1 - w)*ik2
+			let u = (hx - fx*v) / (ex + gx*v)
+		
+			if (u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0) {
+				v = (-k1 + w)*ik2
+				u = (hx - fx*v) / (ex + gx*v)
+			}
+		
+			return [u, v]
+		}
+
+		HabitatFrogasaurus["./lerp.js"].lerp = lerp
+		HabitatFrogasaurus["./lerp.js"].lerpVector = lerpVector
+		HabitatFrogasaurus["./lerp.js"].bilerp = bilerp
+		HabitatFrogasaurus["./lerp.js"].ibilerp = ibilerp
+	}
+
 	//====== ./linked-list.js ======
 	{
 		HabitatFrogasaurus["./linked-list.js"] = {}
@@ -945,11 +1023,16 @@ const HabitatFrogasaurus = {}
 	{
 		HabitatFrogasaurus["./vector.js"] = {}
 		
-		const scaleVector = (vector, scale) => {
+		const scale = (value, scale) => {
+			if (typeof value === "number") return value * scale
 			return vector.map(v => v * scale)
 		}
 		
-		const addVector = (a, b) => {
+		const add = (a, b) => {
+			if (typeof a === "number") {
+				return a + b
+			}
+			
 			if (a.length === 2) {
 				const [ax, ay] = a
 				const [bx, by] = b
@@ -966,7 +1049,11 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		const subtractVector = (a, b) => {
+		const subtract = (a, b) => {
+			if (typeof a === "number") {
+				return a - b
+			}
+		
 			if (a.length === 2) {
 				const [ax, ay] = a
 				const [bx, by] = b
@@ -983,7 +1070,7 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		const crossProductVector = (a, b) => {
+		const crossProduct = (a, b) => {
 			if (a.length === 2) {
 				const [ax, ay] = a
 				const [bx, by] = b
@@ -995,14 +1082,18 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		const distanceBetweenVectors = (a, b) => {
+		const distanceBetween = (a, b) => {
+			if (typeof a === "number") {
+				return Math.abs(a - b)
+			}
+		
 			const displacement = subtractVector(a, b)
 			const [dx, dy, dz = 0] = displacement
 			const distance = Math.hypot(dx, dy, dz)
 			return distance
 		}
 		
-		const angleBetweenVectors = (a, b) => {
+		const angleBetween = (a, b) => {
 			if (a.length !== 2) {
 				throw new Error('[Habitat] Sorry, only 2D vectors are supported at the moment. Please bug @todepond to support other lengths :)')
 			}
@@ -1026,19 +1117,19 @@ const HabitatFrogasaurus = {}
 			})
 		}
 
-		HabitatFrogasaurus["./vector.js"].scaleVector = scaleVector
-		HabitatFrogasaurus["./vector.js"].addVector = addVector
-		HabitatFrogasaurus["./vector.js"].subtractVector = subtractVector
-		HabitatFrogasaurus["./vector.js"].crossProductVector = crossProductVector
-		HabitatFrogasaurus["./vector.js"].distanceBetweenVectors = distanceBetweenVectors
-		HabitatFrogasaurus["./vector.js"].angleBetweenVectors = angleBetweenVectors
+		HabitatFrogasaurus["./vector.js"].scale = scale
+		HabitatFrogasaurus["./vector.js"].add = add
+		HabitatFrogasaurus["./vector.js"].subtract = subtract
+		HabitatFrogasaurus["./vector.js"].crossProduct = crossProduct
+		HabitatFrogasaurus["./vector.js"].distanceBetween = distanceBetween
+		HabitatFrogasaurus["./vector.js"].angleBetween = angleBetween
 		HabitatFrogasaurus["./vector.js"].registerVectorMethods = registerVectorMethods
 	}
 
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
-	const { registerVectorMethods } = HabitatFrogasaurus["./vector.js"]
+	const { registerVectorMethods, addVector, scaleVector, subtractVector } = HabitatFrogasaurus["./vector.js"]
 	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]
 	const { struct } = HabitatFrogasaurus["./struct.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
@@ -1059,6 +1150,7 @@ export const { HTML } = HabitatFrogasaurus["./html.js"]
 export const { JavaScript } = HabitatFrogasaurus["./javascript.js"]
 export const { _ } = HabitatFrogasaurus["./json.js"]
 export const { getKeyboard, keyDown, keyUp } = HabitatFrogasaurus["./keyboard.js"]
+export const { lerp, lerpVector, bilerp, ibilerp } = HabitatFrogasaurus["./lerp.js"]
 export const { LinkedList } = HabitatFrogasaurus["./linked-list.js"]
 export const { memo } = HabitatFrogasaurus["./memo.js"]
 export const { getMouse, mouseDown, mouseUp } = HabitatFrogasaurus["./mouse.js"]
@@ -1071,7 +1163,7 @@ export const { divideString } = HabitatFrogasaurus["./string.js"]
 export const { struct } = HabitatFrogasaurus["./struct.js"]
 export const { getTouches } = HabitatFrogasaurus["./touch.js"]
 export const { tween } = HabitatFrogasaurus["./tween.js"]
-export const { scaleVector, addVector, subtractVector, crossProductVector, distanceBetweenVectors, angleBetweenVectors, registerVectorMethods } = HabitatFrogasaurus["./vector.js"]
+export const { scale, add, subtract, crossProduct, distanceBetween, angleBetween, registerVectorMethods } = HabitatFrogasaurus["./vector.js"]
 
 export const Habitat = {
 	shuffleArray: HabitatFrogasaurus["./array.js"].shuffleArray,
@@ -1115,6 +1207,10 @@ export const Habitat = {
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
 	keyDown: HabitatFrogasaurus["./keyboard.js"].keyDown,
 	keyUp: HabitatFrogasaurus["./keyboard.js"].keyUp,
+	lerp: HabitatFrogasaurus["./lerp.js"].lerp,
+	lerpVector: HabitatFrogasaurus["./lerp.js"].lerpVector,
+	bilerp: HabitatFrogasaurus["./lerp.js"].bilerp,
+	ibilerp: HabitatFrogasaurus["./lerp.js"].ibilerp,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
 	memo: HabitatFrogasaurus["./memo.js"].memo,
 	getMouse: HabitatFrogasaurus["./mouse.js"].getMouse,
@@ -1137,11 +1233,11 @@ export const Habitat = {
 	struct: HabitatFrogasaurus["./struct.js"].struct,
 	getTouches: HabitatFrogasaurus["./touch.js"].getTouches,
 	tween: HabitatFrogasaurus["./tween.js"].tween,
-	scaleVector: HabitatFrogasaurus["./vector.js"].scaleVector,
-	addVector: HabitatFrogasaurus["./vector.js"].addVector,
-	subtractVector: HabitatFrogasaurus["./vector.js"].subtractVector,
-	crossProductVector: HabitatFrogasaurus["./vector.js"].crossProductVector,
-	distanceBetweenVectors: HabitatFrogasaurus["./vector.js"].distanceBetweenVectors,
-	angleBetweenVectors: HabitatFrogasaurus["./vector.js"].angleBetweenVectors,
+	scale: HabitatFrogasaurus["./vector.js"].scale,
+	add: HabitatFrogasaurus["./vector.js"].add,
+	subtract: HabitatFrogasaurus["./vector.js"].subtract,
+	crossProduct: HabitatFrogasaurus["./vector.js"].crossProduct,
+	distanceBetween: HabitatFrogasaurus["./vector.js"].distanceBetween,
+	angleBetween: HabitatFrogasaurus["./vector.js"].angleBetween,
 	registerVectorMethods: HabitatFrogasaurus["./vector.js"].registerVectorMethods,
 }

@@ -1,43 +1,43 @@
 # Vector
-Vectors can be 2D or 3D.
+These functions can be used on numbers, 2D vectors, and 3D vectors (where applicable).
 
-## `scaleVector(vector, scale)`
-Scale a `vector` by `scale`.
+## `scale(value, scale)`
+Scale a `value` by `scale`.
 ```javascript
-scaleVector([3, 4], 2) //[6, 8]
+scale([3, 4], 2) //[6, 8]
 ```
 
-## `addVector(a, b)`
-Add two vectors together.
+## `add(a, b)`
+Add two values together.
 ```javascript
-addVector([3, 2], [1, 4]) //[4, 6]
+add([3, 2], [1, 4]) //[4, 6]
 ```
 
-## `subtractVector(a, b)`
-Subtract two vectors.
+## `subtract(a, b)`
+Subtract two values.
 ```javascript
-subtractVector([4, 3], [1, 2]) //[3, 1]
+subtract([4, 3], [1, 2]) //[3, 1]
 ```
 
-## `crossProductVector(a, b)`
+## `crossProduct(a, b)`
 Get the cross product of two vectors.
 ```javascript
-crossProductVector([3, 2], [1, 2]) //4
+crossProduct([3, 2], [1, 2]) //4
 ```
 ```javascript
-crossProductVector([3, 2, 1], [1, 2, 3]) //[4, -8, 4]
+crossProduct([3, 2, 1], [1, 2, 3]) //[4, -8, 4]
 ```
 
-## `distanceBetweenVectors(a, b)`
+## `distanceBetween(a, b)`
 Get the distance between two points.
 ```javascript
-distanceBetweenVectors([3, 4], [6, 8]) //5
+distanceBetween([3, 4], [6, 8]) //5
 ```
 
-## `angleBetweenVectors(a, b)`
+## `angleBetween(a, b)`
 Get the angle between two vectors.
 ```javascript
-angleBetweenVectors([3, 2], [4, 2]) //3.14...
+angleBetween([3, 2], [4, 2]) //3.14...
 ```
 
 ## `registerVectorMethods()`

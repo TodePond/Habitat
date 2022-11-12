@@ -1,10 +1,15 @@
 import { defineGetter } from "./property.js"
 
-export const scaleVector = (vector, scale) => {
+export const scale = (value, scale) => {
+	if (typeof value === "number") return value * scale
 	return vector.map(v => v * scale)
 }
 
-export const addVector = (a, b) => {
+export const add = (a, b) => {
+	if (typeof a === "number") {
+		return a + b
+	}
+	
 	if (a.length === 2) {
 		const [ax, ay] = a
 		const [bx, by] = b
@@ -21,7 +26,11 @@ export const addVector = (a, b) => {
 	}
 }
 
-export const subtractVector = (a, b) => {
+export const subtract = (a, b) => {
+	if (typeof a === "number") {
+		return a - b
+	}
+
 	if (a.length === 2) {
 		const [ax, ay] = a
 		const [bx, by] = b
@@ -38,7 +47,7 @@ export const subtractVector = (a, b) => {
 	}
 }
 
-export const crossProductVector = (a, b) => {
+export const crossProduct = (a, b) => {
 	if (a.length === 2) {
 		const [ax, ay] = a
 		const [bx, by] = b
@@ -50,14 +59,18 @@ export const crossProductVector = (a, b) => {
 	}
 }
 
-export const distanceBetweenVectors = (a, b) => {
+export const distanceBetween = (a, b) => {
+	if (typeof a === "number") {
+		return Math.abs(a - b)
+	}
+
 	const displacement = subtractVector(a, b)
 	const [dx, dy, dz = 0] = displacement
 	const distance = Math.hypot(dx, dy, dz)
 	return distance
 }
 
-export const angleBetweenVectors = (a, b) => {
+export const angleBetween = (a, b) => {
 	if (a.length !== 2) {
 		throw new Error('[Habitat] Sorry, only 2D vectors are supported at the moment. Please bug @todepond to support other lengths :)')
 	}
