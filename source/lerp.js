@@ -1,29 +1,18 @@
-import { addVector, scaleVector, subtractVector } from "./vector.js"
+import { add, scale, subtract } from "./vector.js"
 
-export const lerp = (distance, [start, end]) => {
-	if (Array.isArray(start)) {
-		return lerpVector(distance, [start, end])
-	}
-	const range = end - start
-	return start + range * distance
+export const lerp = ([a, b], distance) => {
+	const range = subtract(b, a)
+	const displacement = scale(range, distance)
+	return add(a, displacement)
 }
 
-export const lerpVector = (distance, [start, end]) => {
-	const range = subtractVector(end, start)
-	const displacement = scaleVector(range, distance)
-	return addVector(start, displacement)
-}
-
-export const bilerp = (displacement, quadrilateral) => {
+export const bilerp = ([a, b, c, d], displacement) => {
 	const [dx, dy] = displacement
-	const [a, b, c, d] = quadrilateral
+	const la = lerp([a, b], dx)
+	const lb = lerp([d, c], dx)
 
-	const la = lerp(dx, [a, b])
-	const lb = lerp(dx, [d, c])
 	const line = [la, lb]
-
-	const point = lerp(dy, line)
-	return point
+	return lerp(line, dy)
 }
 
 // based on https://iquilezles.org/articles/ibilinear

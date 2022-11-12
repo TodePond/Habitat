@@ -406,30 +406,19 @@ const HabitatFrogasaurus = {}
 	{
 		HabitatFrogasaurus["./lerp.js"] = {}
 		
-		const lerp = (distance, [start, end]) => {
-			if (Array.isArray(start)) {
-				return lerpVector(distance, [start, end])
-			}
-			const range = end - start
-			return start + range * distance
+		const lerp = ([a, b], distance) => {
+			const range = subtract(b, a)
+			const displacement = scale(range, distance)
+			return add(a, displacement)
 		}
 		
-		const lerpVector = (distance, [start, end]) => {
-			const range = subtractVector(end, start)
-			const displacement = scaleVector(range, distance)
-			return addVector(start, displacement)
-		}
-		
-		const bilerp = (displacement, quadrilateral) => {
+		const bilerp = ([a, b, c, d], displacement) => {
 			const [dx, dy] = displacement
-			const [a, b, c, d] = quadrilateral
+			const la = lerp([a, b], dx)
+			const lb = lerp([d, c], dx)
 		
-			const la = lerp(dx, [a, b])
-			const lb = lerp(dx, [d, c])
 			const line = [la, lb]
-		
-			const point = lerp(dy, line)
-			return point
+			return lerp(line, dy)
 		}
 		
 		// based on https://iquilezles.org/articles/ibilinear
@@ -475,7 +464,6 @@ const HabitatFrogasaurus = {}
 		}
 
 		HabitatFrogasaurus["./lerp.js"].lerp = lerp
-		HabitatFrogasaurus["./lerp.js"].lerpVector = lerpVector
 		HabitatFrogasaurus["./lerp.js"].bilerp = bilerp
 		HabitatFrogasaurus["./lerp.js"].ibilerp = ibilerp
 	}
@@ -1025,7 +1013,7 @@ const HabitatFrogasaurus = {}
 		
 		const scale = (value, scale) => {
 			if (typeof value === "number") return value * scale
-			return vector.map(v => v * scale)
+			return value.map(v => v * scale)
 		}
 		
 		const add = (a, b) => {
@@ -1129,7 +1117,7 @@ const HabitatFrogasaurus = {}
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
-	const { registerVectorMethods, addVector, scaleVector, subtractVector } = HabitatFrogasaurus["./vector.js"]
+	const { registerVectorMethods, add, scale, subtract } = HabitatFrogasaurus["./vector.js"]
 	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]
 	const { struct } = HabitatFrogasaurus["./struct.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
@@ -1182,7 +1170,6 @@ const Habitat = {
 	keyDown: HabitatFrogasaurus["./keyboard.js"].keyDown,
 	keyUp: HabitatFrogasaurus["./keyboard.js"].keyUp,
 	lerp: HabitatFrogasaurus["./lerp.js"].lerp,
-	lerpVector: HabitatFrogasaurus["./lerp.js"].lerpVector,
 	bilerp: HabitatFrogasaurus["./lerp.js"].bilerp,
 	ibilerp: HabitatFrogasaurus["./lerp.js"].ibilerp,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,

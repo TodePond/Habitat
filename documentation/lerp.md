@@ -1,30 +1,36 @@
 ## Lerp
 
-## `lerp(distance, [start, end])`
-Interpolate between two numbers (or vectors).
+## `lerp([a, b], distance)`
+Interpolate along a line.
 ```javascript
-lerp(0.5, [0, 4]) //2
+lerp([0, 4], 0.5) //2
 ```
 ```javascript
-const points = [
+const line = [
 	[0, 0],
-	[4, 2],
+	[2, 4],
 ]
 
-lerp(0.5, points) //[2, 1]
+lerp(line, 0.5) //[1, 2]
 ```
 
-## `bilerp(displacement, line)`
-Interpolate between four points.
+## `bilerp([a, b, c, d], displacement)`
+Interpolate within a quadrilateral.
 ```javascript
-const points = [
+const quadrilateral = [0, 2, 4, 0]
+bilerp(quadrilateral, [0.5, 0.5]) //1.5
+```
+
+```javascript
+const quadrilateral = [
 	[0, 0],
-	[4, 0],
-	[4, 2],
-	[0, 2],
+	[1, 2],
+	[2, 4],
+	[0, 0],
 ]
 
-bilerp([0.5, 0.5], points) //[2, 1]
+bilerp(quadrilateral, [0.5, 0.5]) //[0.75, 1.5]
 ```
 
 ## `ibilerp(point, points)`
+TODO

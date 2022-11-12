@@ -2,7 +2,7 @@ import { defineGetter } from "./property.js"
 
 export const scale = (value, scale) => {
 	if (typeof value === "number") return value * scale
-	return vector.map(v => v * scale)
+	return value.map(v => v * scale)
 }
 
 export const add = (a, b) => {
