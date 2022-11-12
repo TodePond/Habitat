@@ -1,4 +1,4 @@
-import { add, scale, subtract } from "./vector.js"
+import { add, crossProduct, scale, subtract } from "./vector.js"
 
 export const lerp = ([a, b], distance) => {
 	const range = subtract(b, a)
@@ -17,27 +17,23 @@ export const bilerp = ([a, b, c, d], displacement) => {
 
 // based on https://iquilezles.org/articles/ibilinear
 // adapted by Magnogen https://magnogen.net
-export const ibilerp = (point, quadrilateral) => {
+export const ibilerp = ([a, b, c, d], value) => {
 
-	const p = point
-	const [a, b, c, d] = quadrilateral
+	if (typeof value === "number") {
+		throw new Error(`[Habitat] Sorry, 'ibilerp' doesn't support numbers yet - only vectors... Please contact @todepond :)`)
+	}
 
-	const e = subtractVector(b, a)
-	const f = subtractVector(d, a)
-	const g = addVector(subtractVector(a, b), subtractVector(c, d))
-	const h = subtractVector(p, a)
+	const e = subtract(b, a)
+	const f = subtract(d, a)
+	const g = add(subtract(a, b), subtract(c, d))
+	const h = subtract(value, a)
 
-	const [ex] = e
-	const [fx] = f
-	const [gx] = g
-	const [hx] = h
-
-	const k2 = crossProductVector(g, f)
-	const k1 = crossProductVector(e, f) + crossProductVector(h, g)
-	const k0 = crossProductVector(h, e)
+	const k2 = crossProduct(g, f)
+	const k1 = crossProduct(e, f) + crossProduct(h, g)
+	const k0 = crossProduct(h, e)
 	
 	if (Math.abs(k2) < 0.0001) {
-		const x = (hx*k1 + fx*k0) / (ex*k1 - gx*k0)
+		const x = (h[0]*k1 + f[0]*k0) / (e[0]*k1 - g[0]*k0)
 		const y = -k0/k1
 		return [x, y]
 	}
@@ -47,11 +43,11 @@ export const ibilerp = (point, quadrilateral) => {
 
 	const ik2 = 0.5/k2
 	let v = (-k1 - w)*ik2
-	let u = (hx - fx*v) / (ex + gx*v)
+	let u = (h[0] - f[0]*v) / (e[0] + g[0]*v)
 
 	if (u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0) {
 		v = (-k1 + w)*ik2
-		u = (hx - fx*v) / (ex + gx*v)
+		u = (h[0] - f[0]*v) / (e[0] + g[0]*v)
 	}
 
 	return [u, v]

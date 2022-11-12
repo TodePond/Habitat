@@ -32,5 +32,15 @@ const quadrilateral = [
 bilerp(quadrilateral, [0.5, 0.5]) //[0.75, 1.5]
 ```
 
-## `ibilerp(point, points)`
-TODO
+## `ibilerp([a, b, c, d], value)`
+Find the interpolation amount of a `value` within a quadrilateral.
+```javascript
+const quadrilateral = [
+	[0, 0],
+	[1, 0],
+	[1, 2],
+	[0, 2],
+]
+
+ibilerp(quadrilateral, [1.0, 1.0]) //[1, 0.5]
+```
