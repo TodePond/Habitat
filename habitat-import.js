@@ -304,6 +304,7 @@ const HabitatFrogasaurus = {}
 		const registerMethods = () => {
 			registerDebugMethods()
 			registerColourMethods()
+			registerVectorMethods()
 		}
 		
 		const registerGlobals = () => {
@@ -943,12 +944,6 @@ const HabitatFrogasaurus = {}
 	//====== ./vector.js ======
 	{
 		HabitatFrogasaurus["./vector.js"] = {}
-		const Vector = function(x, y, z) {
-			if (z === undefined) {
-				return [x, y]
-			}
-			return [x, y, z]
-		}
 		
 		const scaleVector = (vector, scale) => {
 			return vector.map(v => v * scale)
@@ -1000,34 +995,50 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		// TODO: 3D
 		const distanceBetweenVectors = (a, b) => {
 			const displacement = subtractVector(a, b)
-			const [dx, dy] = displacement
-			const distance = Math.hypot(dx, dy)
+			const [dx, dy, dz = 0] = displacement
+			const distance = Math.hypot(dx, dy, dz)
 			return distance
 		}
 		
-		// TODO: 3D
 		const angleBetweenVectors = (a, b) => {
+			if (a.length !== 2) {
+				throw new Error('[Habitat] Sorry, only 2D vectors are supported at the moment. Please bug @todepond to support other lengths :)')
+			}
 			const displacement = subtractVector(a, b)
 			const [dx, dy] = displacement
 			const angle = Math.atan2(dy, dx)
 			return angle
 		}
+		
+		const registerVectorMethods = () => {
+			defineGetter(Array.prototype, 'x', function() {
+				return this[0]
+			})
+		
+			defineGetter(Array.prototype, 'y', function() {
+				return this[1]
+			})
+		
+			defineGetter(Array.prototype, 'z', function() {
+				return this[2]
+			})
+		}
 
-		HabitatFrogasaurus["./vector.js"].Vector = Vector
 		HabitatFrogasaurus["./vector.js"].scaleVector = scaleVector
 		HabitatFrogasaurus["./vector.js"].addVector = addVector
 		HabitatFrogasaurus["./vector.js"].subtractVector = subtractVector
 		HabitatFrogasaurus["./vector.js"].crossProductVector = crossProductVector
 		HabitatFrogasaurus["./vector.js"].distanceBetweenVectors = distanceBetweenVectors
 		HabitatFrogasaurus["./vector.js"].angleBetweenVectors = angleBetweenVectors
+		HabitatFrogasaurus["./vector.js"].registerVectorMethods = registerVectorMethods
 	}
 
 	const { defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
+	const { registerVectorMethods } = HabitatFrogasaurus["./vector.js"]
 	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]
 	const { struct } = HabitatFrogasaurus["./struct.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
@@ -1060,7 +1071,7 @@ export const { divideString } = HabitatFrogasaurus["./string.js"]
 export const { struct } = HabitatFrogasaurus["./struct.js"]
 export const { getTouches } = HabitatFrogasaurus["./touch.js"]
 export const { tween } = HabitatFrogasaurus["./tween.js"]
-export const { Vector, scaleVector, addVector, subtractVector, crossProductVector, distanceBetweenVectors, angleBetweenVectors } = HabitatFrogasaurus["./vector.js"]
+export const { scaleVector, addVector, subtractVector, crossProductVector, distanceBetweenVectors, angleBetweenVectors, registerVectorMethods } = HabitatFrogasaurus["./vector.js"]
 
 export const Habitat = {
 	shuffleArray: HabitatFrogasaurus["./array.js"].shuffleArray,
@@ -1126,11 +1137,11 @@ export const Habitat = {
 	struct: HabitatFrogasaurus["./struct.js"].struct,
 	getTouches: HabitatFrogasaurus["./touch.js"].getTouches,
 	tween: HabitatFrogasaurus["./tween.js"].tween,
-	Vector: HabitatFrogasaurus["./vector.js"].Vector,
 	scaleVector: HabitatFrogasaurus["./vector.js"].scaleVector,
 	addVector: HabitatFrogasaurus["./vector.js"].addVector,
 	subtractVector: HabitatFrogasaurus["./vector.js"].subtractVector,
 	crossProductVector: HabitatFrogasaurus["./vector.js"].crossProductVector,
 	distanceBetweenVectors: HabitatFrogasaurus["./vector.js"].distanceBetweenVectors,
 	angleBetweenVectors: HabitatFrogasaurus["./vector.js"].angleBetweenVectors,
+	registerVectorMethods: HabitatFrogasaurus["./vector.js"].registerVectorMethods,
 }

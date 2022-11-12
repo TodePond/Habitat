@@ -1,9 +1,11 @@
 import { registerColourMethods } from "./colour.js"
 import { registerDebugMethods } from "./console.js"
+import { registerVectorMethods } from "./vector.js"
 
 export const registerMethods = () => {
 	registerDebugMethods()
 	registerColourMethods()
+	registerVectorMethods()
 }
 
 export const registerGlobals = () => {
