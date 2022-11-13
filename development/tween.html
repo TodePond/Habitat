@@ -4,23 +4,29 @@
 	Habitat.registerEverything()
 
 	const state = {
-		x: 0.1,
+		x: 0.0,
 		y: 0.2,
 	}
 
 	const stage = new Stage()
 
 	stage.start = (context) => {
-		tween(state, "y", {to: 0.8, duration: 2000})
+		setTimeout(() => tween(state, "y", {
+			to: 0.8,
+			duration: 4000,
+			easeIn: 1.0,
+			easeOut: 3.0,
+			ratio: 0.75,
+		}), 400)
 	}
 
-	stage.tick = (context) => {
+	stage.update = (context) => {
 		const {canvas} = context
 		const {width, height} = canvas
 		const {x, y} = state
 		context.fillStyle = GREEN
 		context.fillRect(x * width, y * height, 2, 2)
-		state.x += 0.005
+		state.x += 0.0025
 	}
 
 </script>

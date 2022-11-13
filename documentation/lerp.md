@@ -1,6 +1,6 @@
 ## Lerp
 
-## `lerp([a, b], distance)`
+## `lerp([a, b], interpolation)`
 Interpolate along a line.
 ```javascript
 lerp([0, 4], 0.5) //2
@@ -14,7 +14,7 @@ const line = [
 lerp(line, 0.5) //[1, 2]
 ```
 
-## `bilerp([a, b, c, d], displacement)`
+## `bilerp([a, b, c, d], interpolation)`
 Interpolate within a quadrilateral.
 ```javascript
 const quadrilateral = [0, 2, 4, 0]

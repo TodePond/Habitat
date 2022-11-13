@@ -11,7 +11,7 @@ export const Stage = function (properties) {
 		
 		speed: 1.0,
 		clock: 0.0,
-		paused: true,
+		paused: false,
 	
 		start: () => {},
 		resize: () => {},
