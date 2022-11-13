@@ -10,6 +10,7 @@ Animate an `object`'s `property` over time.
 | `easeIn` | How much to smooth the start of the animation  | `0.0`                        |
 | `easeOut`  | How much to smooth the end of the animation | `0.0`                        |
 | `ratio` | How far along the animation to center any smoothing | `0.5` |
+
 ```javascript
 const plant = {height: 3}
 plant.tween("height", {start: 5})
