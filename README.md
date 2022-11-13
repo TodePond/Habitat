@@ -1,5 +1,3 @@
-# This branch is a work-in-progress rewrite
-
 <img align="right" height="100" src="http://todepond.com/IMG/Habitat@0.25x.png">
 
 # Habitat
