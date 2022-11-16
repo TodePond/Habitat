@@ -5,9 +5,9 @@ Get an object that tracks the state of the mouse.
 
 | Value       | Meaning                      |
 | ----------- | ---------------------------- |
-| `true`      | Key is down                  |
-| `false`     | Key is up                    |
-| `undefined` | Key has not been pressed yet |
+| `true`      | Button is down                  |
+| `false`     | Button is up                    |
+| `undefined` | Button has not been pressed yet |
 
 ```javascript
 const mouse = getMouse()

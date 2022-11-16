@@ -13,9 +13,9 @@ Whether the pointer is down or up.
 
 | Value       | Meaning                      |
 | ----------- | ---------------------------- |
-| `true`      | Key is down                  |
-| `false`     | Key is up                    |
-| `undefined` | Key has not been pressed yet |
+| `true`      | Pointer is down                  |
+| `false`     | Pointer is up                    |
+| `undefined` | Pointer has not been pressed yet |
 
 ```javascript
 const pointer = getPointer()
