@@ -1,4 +1,4 @@
-## Lerp
+# Lerp
 
 ## `lerp([a, b], interpolation)`
 Interpolate along a line.

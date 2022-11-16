@@ -4,6 +4,7 @@
 Register all methods:
 * `registerDebugMethods` from [Console](console.md)
 * `registerColourMethods` from [Colour](colour.md)
+* `registerVectorMethods` from [Vector](vector.md)
 
 ```javascript
 Habitat.registerMethods()

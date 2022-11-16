@@ -25,7 +25,7 @@ for (const score of scores) {
 ## `.toString()`
 Convert the linked list to a string.
 ```javascript
-const scores = new LinkedList([3, 2, 5)
+const scores = new LinkedList([3, 2, 5])
 print(scores) //"3,2,5"
 ```
 
@@ -40,7 +40,7 @@ scores.push(2) //3, 2
 ## `.pop()`
 Remove a value from the end of the linked list.
 ```javascript
-const scores = new LinkedList([3, 2, 5)
+const scores = new LinkedList([3, 2, 5])
 scores.pop() //3, 2
 scores.pop() //3
 ```
@@ -48,7 +48,7 @@ scores.pop() //3
 ## `.shift()`
 Remove a value from the front of the linked list.
 ```javascript
-const scores = new LinkedList([3, 2, 5)
+const scores = new LinkedList([3, 2, 5])
 scores.shift() //2, 5
 scores.shift() //5
 ```
@@ -56,7 +56,7 @@ scores.shift() //5
 ## `.clear()`
 Remove all values from the linked list.
 ```javascript
-const scores = new LinkedList([3, 2, 5)
+const scores = new LinkedList([3, 2, 5])
 scores.clear()
 ```
 
