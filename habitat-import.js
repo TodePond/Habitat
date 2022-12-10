@@ -976,7 +976,7 @@ const HabitatFrogasaurus = {}
 	//====== ./json.js ======
 	{
 		HabitatFrogasaurus["./json.js"] = {}
-		const _ = (...value) => {
+		const _ = (value) => {
 			return JSON.stringify(value)
 		}
 
