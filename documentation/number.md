@@ -34,10 +34,10 @@ Find the greatest common divisor of some `numbers`.
 gcd(10, 15, 35) //5
 ```
 
-## `numbersBetween(start, end)`
+## `range(start, end)`
 Iterate between `start` and `end` (inclusive).
 ```javascript
-for (const i of numbersBetween(10, 0)) {
+for (const i of range(10, 0)) {
     print(i)
 }
 

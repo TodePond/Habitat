@@ -36,7 +36,7 @@ export const simplifyRatio = (...numbers) => {
 	return numbers.map(n => n / divisor)
 }
 
-export const numbersBetween = function* (start, end) {
+export const range = function* (start, end) {
 	let i = start
 	if (i <= end) do {
 		yield i

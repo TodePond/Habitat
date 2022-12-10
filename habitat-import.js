@@ -88,7 +88,7 @@ const HabitatFrogasaurus = {}
 			return numbers.map(n => n / divisor)
 		}
 		
-		const numbersBetween = function* (start, end) {
+		const range = function* (start, end) {
 			let i = start
 			if (i <= end) do {
 				yield i
@@ -104,7 +104,7 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./number.js"].getDigits = getDigits
 		HabitatFrogasaurus["./number.js"].gcd = gcd
 		HabitatFrogasaurus["./number.js"].simplifyRatio = simplifyRatio
-		HabitatFrogasaurus["./number.js"].numbersBetween = numbersBetween
+		HabitatFrogasaurus["./number.js"].range = range
 	}
 
 	//====== ./memo.js ======
@@ -1179,7 +1179,7 @@ export const wrap = HabitatFrogasaurus["./number.js"].wrap
 export const getDigits = HabitatFrogasaurus["./number.js"].getDigits
 export const gcd = HabitatFrogasaurus["./number.js"].gcd
 export const simplifyRatio = HabitatFrogasaurus["./number.js"].simplifyRatio
-export const numbersBetween = HabitatFrogasaurus["./number.js"].numbersBetween
+export const range = HabitatFrogasaurus["./number.js"].range
 export const memo = HabitatFrogasaurus["./memo.js"].memo
 export const random = HabitatFrogasaurus["./random.js"].random
 export const randomFrom = HabitatFrogasaurus["./random.js"].randomFrom
@@ -1255,7 +1255,7 @@ export const Habitat = {
 	getDigits: HabitatFrogasaurus["./number.js"].getDigits,
 	gcd: HabitatFrogasaurus["./number.js"].gcd,
 	simplifyRatio: HabitatFrogasaurus["./number.js"].simplifyRatio,
-	numbersBetween: HabitatFrogasaurus["./number.js"].numbersBetween,
+	range: HabitatFrogasaurus["./number.js"].range,
 	memo: HabitatFrogasaurus["./memo.js"].memo,
 	random: HabitatFrogasaurus["./random.js"].random,
 	randomFrom: HabitatFrogasaurus["./random.js"].randomFrom,
