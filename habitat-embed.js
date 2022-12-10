@@ -426,17 +426,39 @@ const HabitatFrogasaurus = {}
 		}
 		
 		const registerVectorMethods = () => {
-			defineGetter(Array.prototype, 'x', function() {
-				return this[0]
-			})
+			defineAccessor(
+				Array.prototype,
+				'x',
+				function() {
+					return this[0]
+				},
+				function(value) {
+					this[0] = value
+				},
+			)
 		
-			defineGetter(Array.prototype, 'y', function() {
-				return this[1]
-			})
+			defineAccessor(
+				Array.prototype,
+				'y',
+				function() {
+					return this[1]
+				},
+				function(value) {
+					this[1] = value
+				},
+			)
 		
-			defineGetter(Array.prototype, 'z', function() {
-				return this[2]
-			})
+			defineAccessor(
+				Array.prototype,
+				'z',
+				function() {
+					return this[2]
+				},
+				function(value) {
+					this[2] = value
+				},
+			)
+		
 		}
 
 		HabitatFrogasaurus["./vector.js"].scale = scale
@@ -1137,7 +1159,7 @@ const HabitatFrogasaurus = {}
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { registerVectorMethods, add, crossProduct, scale, subtract } = HabitatFrogasaurus["./vector.js"]
-	const { defineGetter } = HabitatFrogasaurus["./property.js"]
+	const { defineGetter, defineAccessor } = HabitatFrogasaurus["./property.js"]
 	const { struct } = HabitatFrogasaurus["./struct.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
 	const { on, fireEvent } = HabitatFrogasaurus["./event.js"]

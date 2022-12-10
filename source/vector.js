@@ -1,4 +1,4 @@
-import { defineGetter } from "./property.js"
+import { defineAccessor, defineGetter } from "./property.js"
 
 export const scale = (value, scale) => {
 	if (typeof value === "number") return value * scale
@@ -81,15 +81,37 @@ export const angleBetween = (a, b) => {
 }
 
 export const registerVectorMethods = () => {
-	defineGetter(Array.prototype, 'x', function() {
-		return this[0]
-	})
+	defineAccessor(
+		Array.prototype,
+		'x',
+		function() {
+			return this[0]
+		},
+		function(value) {
+			this[0] = value
+		},
+	)
 
-	defineGetter(Array.prototype, 'y', function() {
-		return this[1]
-	})
+	defineAccessor(
+		Array.prototype,
+		'y',
+		function() {
+			return this[1]
+		},
+		function(value) {
+			this[1] = value
+		},
+	)
 
-	defineGetter(Array.prototype, 'z', function() {
-		return this[2]
-	})
+	defineAccessor(
+		Array.prototype,
+		'z',
+		function() {
+			return this[2]
+		},
+		function(value) {
+			this[2] = value
+		},
+	)
+
 }

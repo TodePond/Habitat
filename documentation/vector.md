@@ -51,6 +51,9 @@ Get the first element of an array.
 ```javascript
 const vector = [3, 2, 5]
 print(vector.x) //3
+
+vector.x = 4
+print(vector) //[4, 2, 5]
 ```
 
 #### `Array.prototype.y`
@@ -58,6 +61,9 @@ Get the second element of an array.
 ```javascript
 const vector = [3, 2, 5]
 print(vector.y) //2
+
+vector.y = 4
+print(vector) //[3, 4, 5]
 ```
 
 #### `Array.prototype.z`
@@ -65,4 +71,7 @@ Get the third element of an array.
 ```javascript
 const vector = [3, 2, 5]
 print(vector.z) //3
+
+vector.z = 4
+print(vector) //[3, 2, 4]
 ```
