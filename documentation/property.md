@@ -17,3 +17,26 @@ You can override the getter.
 player.name = "Lu"
 print(player.name) //"Lu"
 ```
+
+## `defineAccessor(object, key, get, set)`
+```javascript
+const player = {firstName: "Luke", lastName: "Wilson"}
+
+defineAccessor(
+	player,
+	"fullName",
+	function() {
+		return `${this.firstName} ${this.lastName}`
+	},
+	function(v) {
+		const [firstName, lastName] = v.split(" ")
+		this.firstName = firstName
+		this.lastName = lastName
+	},
+)
+
+print(player.fullName) //"Luke Wilson"
+
+player.fullName = "Lu Wilson"
+print(player.firstName) //"Lu"
+```

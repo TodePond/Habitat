@@ -13,3 +13,12 @@ export const defineGetter = (object, name, get) => {
 		enumerable: false,
 	})
 }
+
+export const defineAccessor = (object, name, get, set) => {
+	return Reflect.defineProperty(object, name, {
+		get,
+		set,
+		configurable: true,
+		enumerable: false,
+	})
+}
