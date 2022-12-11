@@ -1,4 +1,4 @@
-<img align="right" height="100" src="http://todepond.com/IMG/Habitat@0.25x.png">
+<img align="right" height="100" src="http://img.todepond.com/IMG/Habitat@0.25x.png">
 
 # Habitat
 Habitat is a collection of JavaScript helpers that I use in my hobby projects.<br>
