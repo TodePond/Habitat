@@ -82,9 +82,7 @@ const HabitatFrogasaurus = {}
 	//====== ./async.js ======
 	{
 		HabitatFrogasaurus["./async.js"] = {}
-		const sleep = (duration) => {
-			new Promise((resolve) => setTimeout(resolve, duration))
-		}
+		const sleep = (duration) => new Promise((resolve) => setTimeout(resolve, duration))
 		
 
 		HabitatFrogasaurus["./async.js"].sleep = sleep
