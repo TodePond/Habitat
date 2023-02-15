@@ -28,6 +28,13 @@ Make a colour with a three-digit `number`. The digits represent the red, green a
 const pink = new Splash(937)
 ```
 
+It also stores its `splash` number as a property.
+
+```javascript
+const pink = new Splash(937)
+print(pink.splash) //937
+```
+
 ## Theme Colours
 
 There are some preset colours.
@@ -65,36 +72,40 @@ registerColourMethods()
 
 #### `Array.prototype.red`
 
-Get the first element of an array.
+Get or set the first element of an array.
 
 ```javascript
 const pink = new Colour(255, 128, 222)
 print(pink.red) //255
+pink.red = 128
 ```
 
 #### `Array.prototype.green`
 
-Get the second element of an array.
+Get or set the second element of an array.
 
 ```javascript
 const pink = new Colour(255, 128, 222)
 print(pink.green) //128
+pink.green = 255
 ```
 
 #### `Array.prototype.blue`
 
-Get the third element of an array.
+Get or set the third element of an array.
 
 ```javascript
 const pink = new Colour(255, 128, 222)
 print(pink.blue) //222
+pink.blue = 128
 ```
 
 #### `Array.prototype.alpha`
 
-Get the fourth element of an array.
+Get or set the fourth element of an array.
 
 ```javascript
 const pink = new Colour(255, 128, 222, 255)
 print(pink.alpha) //255
+pink.alpha = 128
 ```

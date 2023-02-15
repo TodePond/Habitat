@@ -7,6 +7,5 @@
 	},
 	"extensions": {
 		"recommendations": ["prettier.prettier-vscode", "deno.vscode-deno"]
-	},
-	"deno.enable": true
+	}
 }

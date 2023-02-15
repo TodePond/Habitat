@@ -137,6 +137,7 @@ const HabitatFrogasaurus = {}
 				const green = GREEN_SPLASH_VALUES[tens]
 				const blue = BLUE_SPLASH_VALUES[ones]
 				super(red, green, blue)
+				Reflect.defineProperty(this, "splash", { value: wrappedNumber, enumerable: false })
 			}
 		}
 		
@@ -151,21 +152,49 @@ const HabitatFrogasaurus = {}
 		// METHODS //
 		//=========//
 		const registerColourMethods = () => {
-			defineGetter(Array.prototype, "red", function () {
-				return this[0]
-			})
+			defineAccessor(
+				Array.prototype,
+				"red",
+				function () {
+					return this[0]
+				},
+				function (value) {
+					this[0] = value
+				},
+			)
 		
-			defineGetter(Array.prototype, "green", function () {
-				return this[1]
-			})
+			defineAccessor(
+				Array.prototype,
+				"green",
+				function () {
+					return this[1]
+				},
+				function (value) {
+					this[1] = value
+				},
+			)
 		
-			defineGetter(Array.prototype, "blue", function () {
-				return this[2]
-			})
+			defineAccessor(
+				Array.prototype,
+				"blue",
+				function () {
+					return this[2]
+				},
+				function (value) {
+					this[2] = value
+				},
+			)
 		
-			defineGetter(Array.prototype, "alpha", function () {
-				return this[3]
-			})
+			defineAccessor(
+				Array.prototype,
+				"alpha",
+				function () {
+					return this[3]
+				},
+				function (value) {
+					this[3] = value
+				},
+			)
 		}
 		
 		//===========//
@@ -1152,7 +1181,7 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./vector.js"].registerVectorMethods = registerVectorMethods
 	}
 
-	const { defineGetter, defineAccessor } = HabitatFrogasaurus["./property.js"]
+	const { defineAccessor, defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { registerVectorMethods, add, crossProduct, scale, subtract } = HabitatFrogasaurus["./vector.js"]
