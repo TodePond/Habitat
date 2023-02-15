@@ -672,16 +672,11 @@ const HabitatFrogasaurus = {}
 	{
 		HabitatFrogasaurus["./number.js"] = {}
 		const clamp = (number, min, max) => {
-			if (number < min) return min
-			if (number > max) return max
-			return number
+			return Math.min(Math.max(number, min), max)
 		}
 		
 		const wrap = (number, min, max) => {
-			const range = max - min + 1
-			while (number < min) number += range
-			while (number > max) number -= range
-			return number
+			return min + ((number - min) % (max - min))
 		}
 		
 		const getDigits = (number) => {
