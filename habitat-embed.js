@@ -1045,6 +1045,63 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./tween.js"].tween = tween
 	}
 
+	//====== ./use.js ======
+	{
+		HabitatFrogasaurus["./use.js"] = {}
+		const Use = class extends Function {
+			constructor() {
+				super("value", "return value === undefined? this._self._pull() : this._self._push(value)")
+				const self = this.bind(this)
+				self._value = undefined
+				this._self = self
+				return self
+			}
+		
+			_pull() {
+				return this._value
+			}
+		
+			_push(value) {
+				this._value = value
+			}
+		
+			*[Symbol.iterator]() {
+				yield this
+				yield this
+			}
+		
+			get value() {
+				return this._pull()
+			}
+		
+			set value(value) {
+				this._push(value)
+			}
+		
+			get() {
+				return this._pull()
+			}
+		
+			set(value) {
+				this._push(value)
+			}
+		}
+		
+		const UseState = class extends Use {
+			constructor(value) {
+				super()
+				this._push(value)
+			}
+		}
+		
+		const _use = () => new Use()
+		const useState = (value) => new UseState(value)
+		
+
+		HabitatFrogasaurus["./use.js"]._use = _use
+		HabitatFrogasaurus["./use.js"].useState = useState
+	}
+
 	//====== ./vector.js ======
 	{
 		HabitatFrogasaurus["./vector.js"] = {}
@@ -1258,6 +1315,8 @@ const Habitat = {
 	struct: HabitatFrogasaurus["./struct.js"].struct,
 	getTouches: HabitatFrogasaurus["./touch.js"].getTouches,
 	tween: HabitatFrogasaurus["./tween.js"].tween,
+	_use: HabitatFrogasaurus["./use.js"]._use,
+	useState: HabitatFrogasaurus["./use.js"].useState,
 	scale: HabitatFrogasaurus["./vector.js"].scale,
 	add: HabitatFrogasaurus["./vector.js"].add,
 	subtract: HabitatFrogasaurus["./vector.js"].subtract,
