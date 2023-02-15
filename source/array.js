@@ -1,18 +1,14 @@
 export const shuffleArray = (array) => {
-
 	// Go backwards through the array
 	for (let i = array.length - 1; i > 0; i--) {
-
 		// Swap each value with a random value before it (which might include itself)
-		const j = Math.floor(Math.random() * (i+1))
+		const j = Math.floor(Math.random() * (i + 1))
 		;[array[i], array[j]] = [array[j], array[i]]
-
 	}
 	return array
 }
 
 export const trimArray = (array) => {
-
 	// If the array is empty just return it
 	if (array.length == 0) return array
 
@@ -44,7 +40,6 @@ export const trimArray = (array) => {
 }
 
 export const repeatArray = (array, count) => {
-
 	// If count is zero, empty the array
 	if (count === 0) {
 		array.splice(0)
@@ -59,7 +54,7 @@ export const repeatArray = (array, count) => {
 
 	// Otherwise repeat the array
 	const clone = [...array]
-	for (let i = 0; i < count-1; i++) {
+	for (let i = 0; i < count - 1; i++) {
 		array.push(...clone)
 	}
 
