@@ -1048,58 +1048,81 @@ const HabitatFrogasaurus = {}
 	//====== ./use.js ======
 	{
 		HabitatFrogasaurus["./use.js"] = {}
-		const Use = class extends Function {
-			constructor() {
-				super("value", "return value === undefined? this._self._pull() : this._self._push(value)")
-				const self = this.bind(this)
-				self._value = undefined
-				this._self = self
-				return self
-			}
+		// get()
+		// set(value)
+		// _value
+		// _update()
+		// _updateTargets()
+		//
+		// _get()
 		
-			_pull() {
-				return this._value
-			}
+		const Source = class {
+			static target = null
 		
-			_push(value) {
+			constructor(value) {
+				this._targets = new Set()
 				this._value = value
 			}
 		
-			*[Symbol.iterator]() {
-				yield this
-				yield this
-			}
-		
-			get value() {
-				return this._pull()
-			}
-		
-			set value(value) {
-				this._push(value)
-			}
-		
 			get() {
-				return this._pull()
+				if (Source.target !== null) {
+					this._targets.add(Source.target)
+					Source.target._sources.add(this)
+				}
+				return this._value
 			}
 		
 			set(value) {
-				this._push(value)
+				this._value = value
+				this._updateTargets()
+			}
+		
+			_update() {
+				throw new Error("Source is write-only")
+			}
+		
+			_updateTargets() {
+				for (const target of this._targets) {
+					target._update()
+				}
 			}
 		}
 		
-		const UseState = class extends Use {
-			constructor(value) {
+		const Target = class extends Source {
+			constructor(get) {
 				super()
-				this._push(value)
+				this._get = get
+				this._sources = new Set()
+				this._update()
+			}
+		
+			set(value) {
+				throw new Error("Target is read-only")
+			}
+		
+			_update() {
+				for (const source of this._sources) {
+					source._targets.delete(this)
+				}
+		
+				this._sources.clear()
+		
+				const oldTarget = Source.target
+		
+				Source.target = this
+				this._value = this._get()
+				Source.target = oldTarget
+		
+				this._updateTargets()
 			}
 		}
 		
-		const _use = () => new Use()
-		const useState = (value) => new UseState(value)
+		const useSource = (value) => new Source(value)
+		const useTarget = (get) => new Target(get)
 		
 
-		HabitatFrogasaurus["./use.js"]._use = _use
-		HabitatFrogasaurus["./use.js"].useState = useState
+		HabitatFrogasaurus["./use.js"].useSource = useSource
+		HabitatFrogasaurus["./use.js"].useTarget = useTarget
 	}
 
 	//====== ./vector.js ======
@@ -1314,8 +1337,8 @@ export const divideString = HabitatFrogasaurus["./string.js"].divideString
 export const struct = HabitatFrogasaurus["./struct.js"].struct
 export const getTouches = HabitatFrogasaurus["./touch.js"].getTouches
 export const tween = HabitatFrogasaurus["./tween.js"].tween
-export const _use = HabitatFrogasaurus["./use.js"]._use
-export const useState = HabitatFrogasaurus["./use.js"].useState
+export const useSource = HabitatFrogasaurus["./use.js"].useSource
+export const useTarget = HabitatFrogasaurus["./use.js"].useTarget
 export const scale = HabitatFrogasaurus["./vector.js"].scale
 export const add = HabitatFrogasaurus["./vector.js"].add
 export const subtract = HabitatFrogasaurus["./vector.js"].subtract
@@ -1392,8 +1415,8 @@ export const Habitat = {
 	struct: HabitatFrogasaurus["./struct.js"].struct,
 	getTouches: HabitatFrogasaurus["./touch.js"].getTouches,
 	tween: HabitatFrogasaurus["./tween.js"].tween,
-	_use: HabitatFrogasaurus["./use.js"]._use,
-	useState: HabitatFrogasaurus["./use.js"].useState,
+	useSource: HabitatFrogasaurus["./use.js"].useSource,
+	useTarget: HabitatFrogasaurus["./use.js"].useTarget,
 	scale: HabitatFrogasaurus["./vector.js"].scale,
 	add: HabitatFrogasaurus["./vector.js"].add,
 	subtract: HabitatFrogasaurus["./vector.js"].subtract,

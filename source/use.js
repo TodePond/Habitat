@@ -1,48 +1,71 @@
-const Use = class extends Function {
-	constructor() {
-		super("value", "return value === undefined? this._self._pull() : this._self._push(value)")
-		const self = this.bind(this)
-		self._value = undefined
-		this._self = self
-		return self
-	}
+// get()
+// set(value)
+// _value
+// _update()
+// _updateTargets()
+//
+// _get()
 
-	_pull() {
-		return this._value
-	}
+const Source = class {
+	static target = null
 
-	_push(value) {
+	constructor(value) {
+		this._targets = new Set()
 		this._value = value
 	}
 
-	*[Symbol.iterator]() {
-		yield this
-		yield this
-	}
-
-	get value() {
-		return this._pull()
-	}
-
-	set value(value) {
-		this._push(value)
-	}
-
 	get() {
-		return this._pull()
+		if (Source.target !== null) {
+			this._targets.add(Source.target)
+			Source.target._sources.add(this)
+		}
+		return this._value
 	}
 
 	set(value) {
-		this._push(value)
+		this._value = value
+		this._updateTargets()
+	}
+
+	_update() {
+		throw new Error("Source is write-only")
+	}
+
+	_updateTargets() {
+		for (const target of this._targets) {
+			target._update()
+		}
 	}
 }
 
-const UseState = class extends Use {
-	constructor(value) {
+const Target = class extends Source {
+	constructor(get) {
 		super()
-		this._push(value)
+		this._get = get
+		this._sources = new Set()
+		this._update()
+	}
+
+	set(value) {
+		throw new Error("Target is read-only")
+	}
+
+	_update() {
+		for (const source of this._sources) {
+			source._targets.delete(this)
+		}
+
+		this._sources.clear()
+
+		const oldTarget = Source.target
+
+		Source.target = this
+		this._value = this._get()
+		Source.target = oldTarget
+
+		this._updateTargets()
 	}
 }
 
-export const _use = () => new Use()
-export const useState = (value) => new UseState(value)
+export const useSource = (value) => new Source(value)
+export const useTarget = (get) => new Target(get)
