@@ -86,10 +86,10 @@ const resize = (stage) => {
 const tick = (stage) => {
 	stage.clock += stage.speed
 	while (stage.clock > 0) {
-		if (!stage.paused) stage.update(stage.context)
-		stage.tick(stage.context, stage)
+		if (!stage.paused) stage.update(stage.context, time)
+		stage.tick(stage.context, time)
 		stage.clock--
 	}
 
-	requestAnimationFrame(() => tick(stage))
+	requestAnimationFrame((time) => tick(stage, time))
 }

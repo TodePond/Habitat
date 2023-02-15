@@ -20,7 +20,7 @@ Here is a simple example:
 
 ```javascript
 const stage = new Stage()
-stage.tick = (context) => {
+stage.tick = (context, time) => {
 	// Clear the screen every frame!
 	context.clearRect(0, 0, context.canvas.width, context.canvas.height)
 
