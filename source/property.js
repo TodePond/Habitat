@@ -6,7 +6,7 @@ export const defineGetter = (object, name, get) => {
 				value,
 				configurable: true,
 				writable: true,
-				enumerable: true
+				enumerable: true,
 			})
 		},
 		configurable: true,

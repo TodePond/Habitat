@@ -21,13 +21,11 @@ Here is a simple example:
 ```javascript
 const stage = new Stage()
 stage.tick = (context) => {
+	// Clear the screen every frame!
+	context.clearRect(0, 0, context.canvas.width, context.canvas.height)
 
-    // Clear the screen every frame!
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height)
-    
-    // Draw whatever you want!
-    context.fillStyle = BLUE
-    context.fillRect(0, 0, 10, 10)
-    
+	// Draw whatever you want!
+	context.fillStyle = BLUE
+	context.fillRect(0, 0, 10, 10)
 }
 ```

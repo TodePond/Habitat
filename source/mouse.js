@@ -9,7 +9,7 @@ const mouse = {
 export const getMouse = () => {
 	if (isMouseTracked) return mouse
 	isMouseTracked = true
-	
+
 	on("mousemove", (e) => {
 		mouse.position[0] = e.clientX
 		mouse.position[1] = e.clientY
@@ -21,7 +21,7 @@ export const getMouse = () => {
 		const buttonName = buttonNames[e.button]
 		mouse[buttonName] = true
 	})
-	
+
 	on("mouseup", (e) => {
 		mouse.position[0] = e.clientX
 		mouse.position[1] = e.clientY
@@ -37,7 +37,7 @@ export const mouseDown = (buttonName) => {
 	const button = buttonNames.indexOf(buttonName)
 	if (!isMouseDownTracked) {
 		isMouseDownTracked = true
-		on("mousedown", (e) => fireEvent(`mouseDown("${e.button}")`), {passive: false})
+		on("mousedown", (e) => fireEvent(`mouseDown("${e.button}")`), { passive: false })
 	}
 	return `mouseDown("${button}")`
 }
@@ -47,7 +47,7 @@ export const mouseUp = (buttonName) => {
 	const button = buttonNames.indexOf(buttonName)
 	if (!isMouseUpTracked) {
 		isMouseUpTracked = true
-		on("mouseup", (e) => fireEvent(`mouseUp("${e.button}")`), {passive: false})
+		on("mouseup", (e) => fireEvent(`mouseUp("${e.button}")`), { passive: false })
 	}
 	return `mouseUp("${button}")`
 }

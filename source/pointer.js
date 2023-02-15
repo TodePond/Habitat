@@ -7,7 +7,7 @@ const pointer = {
 export const getPointer = () => {
 	if (isPointerTracked) return pointer
 	isPointerTracked = true
-	
+
 	addEventListener("pointermove", (e) => {
 		pointer.position[0] = e.clientX
 		pointer.position[1] = e.clientY
@@ -18,7 +18,7 @@ export const getPointer = () => {
 		pointer.position[1] = e.clientY
 		pointer.down = true
 	})
-	
+
 	addEventListener("pointerup", (e) => {
 		pointer.position[0] = e.clientX
 		pointer.position[1] = e.clientY

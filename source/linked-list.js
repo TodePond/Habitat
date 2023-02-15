@@ -8,7 +8,7 @@ export const LinkedList = class {
 			this.push(value)
 		}
 	}
-	
+
 	*[Symbol.iterator]() {
 		let link = this.start
 		while (link !== undefined) {
@@ -78,12 +78,11 @@ export const LinkedList = class {
 		this.start = link
 		link.previous = undefined
 	}
-
 }
 
 const makeLink = (value) => {
 	const previous = undefined
 	const next = undefined
-	const link = {value, previous, next}
+	const link = { value, previous, next }
 	return link
 }

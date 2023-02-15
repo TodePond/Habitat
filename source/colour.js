@@ -11,7 +11,7 @@ const wrapSplashNumber = (number) => {
 
 const getThreeDigits = (number) => {
 	const chars = number.toString().padStart(3, "0").split("")
-	const digits = chars.map(v => parseInt(v))
+	const digits = chars.map((v) => parseInt(v))
 	return digits
 }
 
@@ -28,7 +28,7 @@ export const Colour = class extends Array {
 	}
 
 	toString() {
-		const [red, green, blue, alpha] = this.map(v => v.toString(16).padStart(2, "0"))
+		const [red, green, blue, alpha] = this.map((v) => v.toString(16).padStart(2, "0"))
 		if (this.alpha === 255) {
 			return `#${red}${green}${blue}`
 		}
@@ -59,19 +59,19 @@ export const showColour = (colour) => {
 // METHODS //
 //=========//
 export const registerColourMethods = () => {
-	defineGetter(Array.prototype, "red", function() {
+	defineGetter(Array.prototype, "red", function () {
 		return this[0]
 	})
 
-	defineGetter(Array.prototype, "green", function() {
+	defineGetter(Array.prototype, "green", function () {
 		return this[1]
 	})
 
-	defineGetter(Array.prototype, "blue", function() {
+	defineGetter(Array.prototype, "blue", function () {
 		return this[2]
 	})
 
-	defineGetter(Array.prototype, "alpha", function() {
+	defineGetter(Array.prototype, "alpha", function () {
 		return this[3]
 	})
 }
@@ -79,9 +79,9 @@ export const registerColourMethods = () => {
 //===========//
 // CONSTANTS //
 //===========//
-const RED_SPLASH_VALUES   = [23, 55, 70,  98, 128, 159, 174, 204, 242, 255]
+const RED_SPLASH_VALUES = [23, 55, 70, 98, 128, 159, 174, 204, 242, 255]
 const GREEN_SPLASH_VALUES = [29, 67, 98, 128, 159, 174, 204, 222, 245, 255]
-const BLUE_SPLASH_VALUES  = [40, 70, 98, 128, 159, 174, 204, 222, 247, 255]
+const BLUE_SPLASH_VALUES = [40, 70, 98, 128, 159, 174, 204, 222, 247, 255]
 
 export const VOID = new Colour(6, 7, 10)
 export const BLACK = new Splash(0)
@@ -99,15 +99,8 @@ export const RED = new Splash(911)
 export const ORANGE = new Splash(931)
 export const YELLOW = new Splash(991)
 
-export const HUES = [
-	GREEN, CYAN, BLUE, PURPLE, PINK, CORAL, RED, ORANGE, YELLOW,
-]
+export const HUES = [GREEN, CYAN, BLUE, PURPLE, PINK, CORAL, RED, ORANGE, YELLOW]
 
-export const SHADES = [
-	VOID, BLACK, GREY, SILVER, WHITE,
-]
+export const SHADES = [VOID, BLACK, GREY, SILVER, WHITE]
 
-export const COLOURS = [
-	...SHADES,
-	...HUES,
-]
+export const COLOURS = [...SHADES, ...HUES]

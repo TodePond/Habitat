@@ -1,6 +1,5 @@
 <script src="../habitat-embed.js"></script>
 <script>
-
 	Habitat.registerEverything()
 
 	const state = {
@@ -11,22 +10,25 @@
 	const stage = new Stage()
 
 	stage.start = (context) => {
-		setTimeout(() => tween(state, "y", {
-			end: 0.8,
-			duration: 4000,
-			easeIn: 1.0,
-			easeOut: 3.0,
-			ratio: 0.75,
-		}), 400)
+		setTimeout(
+			() =>
+				tween(state, "y", {
+					end: 0.8,
+					duration: 4000,
+					easeIn: 1.0,
+					easeOut: 3.0,
+					ratio: 0.75,
+				}),
+			400,
+		)
 	}
 
 	stage.update = (context) => {
-		const {canvas} = context
-		const {width, height} = canvas
-		const {x, y} = state
+		const { canvas } = context
+		const { width, height } = canvas
+		const { x, y } = state
 		context.fillStyle = GREEN
 		context.fillRect(x * width, y * height, 2, 2)
 		state.x += 0.0025
 	}
-
 </script>
