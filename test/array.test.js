@@ -1,4 +1,4 @@
-import { repeatArray, shuffleArray, trimArray } from "../habitat-import.js"
+import { repeatArray, shuffleArray, trimArray } from "../source/array.js"
 import { assertEquals, assertNotEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Array", () => {

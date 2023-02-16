@@ -1,4 +1,4 @@
-import { sleep } from "../habitat-import.js"
+import { sleep } from "../source/async.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Async", () => {

@@ -1,69 +1,48 @@
-// get()
-// set(value)
-// _value
-// _update()
-// _updateTargets()
-//
-// _get()
+import { LinkedList } from "./linked-list.js"
+
+const stack = new LinkedList()
 
 const Source = class {
-	static target = null
-
 	constructor(value) {
-		this._targets = new Set()
-		this._value = value
+		this.value = value
+		this.targets = new Set()
 	}
 
 	get() {
-		if (Source.target !== null) {
-			this._targets.add(Source.target)
-			Source.target._sources.add(this)
+		const { end } = stack
+		if (end !== undefined) {
+			const target = end.value
+			this.targets.add(target)
+			target.sources.add(this)
 		}
-		return this._value
+		return this.value
 	}
 
 	set(value) {
-		this._value = value
-		this._updateTargets()
-	}
-
-	_update() {
-		throw new Error("Source is write-only")
-	}
-
-	_updateTargets() {
-		for (const target of this._targets) {
-			target._update()
+		this.value = value
+		const targets = [...this.targets]
+		this.targets.clear()
+		for (const target of targets) {
+			target.evaluate()
 		}
 	}
 }
 
 const Target = class extends Source {
-	constructor(get) {
+	constructor(evaluator) {
 		super()
-		this._get = get
-		this._sources = new Set()
-		this._update()
+		this.sources = new Set()
+		this.evaluator = evaluator
+		this.evaluate()
 	}
 
-	set(value) {
-		throw new Error("Target is read-only")
-	}
+	evaluate() {
+		this.sources.clear()
+		stack.push(this)
+		const value = this.evaluator()
+		stack.pop()
 
-	_update() {
-		for (const source of this._sources) {
-			source._targets.delete(this)
-		}
-
-		this._sources.clear()
-
-		const oldTarget = Source.target
-
-		Source.target = this
-		this._value = this._get()
-		Source.target = oldTarget
-
-		this._updateTargets()
+		this.set(value)
 	}
 }
 

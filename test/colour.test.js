@@ -1,4 +1,4 @@
-import { Colour, Splash } from "../habitat-import.js"
+import { Colour, Splash } from "../source/colour.js"
 import { assertArrayIncludes, assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Colour", () => {
