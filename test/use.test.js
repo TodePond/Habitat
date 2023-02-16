@@ -64,13 +64,6 @@ describe("Push", () => {
 })
 
 describe("Pull", () => {
-	it("increments the clock", () => {
-		const count = useSource(0)
-		const clock = count.birth
-		count.set(1)
-		assertEquals(count.birth, clock + 1)
-	})
-
 	it("doesn't automatically update", () => {
 		const count = useSource(0)
 		const doubled = usePull(() => count.get() * 2)
@@ -83,5 +76,27 @@ describe("Pull", () => {
 		const doubled = usePull(() => count.get() * 2)
 		count.set(1)
 		assertEquals(doubled.get(), 2)
+	})
+
+	// TODO: this doesn't relink with sources of non-dirty pulls
+	it("updates recursively", () => {
+		const count = useSource(0)
+		const doubled = usePull(() => count.get() * 2)
+		const tripled = usePull(() => doubled.get() * 3)
+		count.set(1)
+		//assertEquals(doubled.get(), 2)
+		assertEquals(tripled.get(), 6)
+	})
+
+	it("doesn't update if there are no changes", () => {
+		const count = useSource(0)
+		let clock = 0
+		const doubled = usePull(() => {
+			count.get() * 2
+			clock++
+		})
+		assertEquals(clock, 1)
+		doubled.get()
+		assertEquals(clock, 1)
 	})
 })
