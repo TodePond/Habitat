@@ -1,4 +1,4 @@
-import { useSource, useTarget } from "../source/use.js"
+import { usePull, usePush, useSource } from "../source/use.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Source", () => {
@@ -19,31 +19,69 @@ describe("Source", () => {
 	})
 })
 
-describe("Target", () => {
+describe("Push", () => {
 	it("has a value property", () => {
 		const count = useSource(0)
-		const doubled = useTarget(() => count.get() * 2)
+		const doubled = usePush(() => count.get() * 2)
 		assertEquals(doubled.value, 0)
 	})
 
 	it("has a get method", () => {
 		const count = useSource(0)
-		const doubled = useTarget(() => count.get() * 2)
+		const doubled = usePush(() => count.get() * 2)
 		assertEquals(doubled.get(), 0)
 	})
 
 	it("updates when its source changes", () => {
 		const count = useSource(0)
-		const doubled = useTarget(() => count.get() * 2)
+		const doubled = usePush(() => count.get() * 2)
 		count.set(1)
 		assertEquals(doubled.get(), 2)
 	})
 
 	it("updates recursively", () => {
 		const count = useSource(0)
-		const doubled = useTarget(() => count.get() * 2)
-		const tripled = useTarget(() => doubled.get() * 3)
+		const doubled = usePush(() => count.get() * 2)
+		const tripled = usePush(() => doubled.get() * 3)
 		count.set(1)
 		assertEquals(tripled.get(), 6)
+	})
+
+	it("updates with multiple sources", () => {
+		const time = useSource(15)
+		const day = useSource("Sunday")
+		const isOpen = usePush(() => day.get() !== "Sunday" && time.get() >= 10 && time.get() < 18)
+		assertEquals(isOpen.get(), false)
+		day.set("Monday")
+		assertEquals(isOpen.get(), true)
+		time.set(20)
+		assertEquals(isOpen.get(), false)
+		time.set(15)
+		assertEquals(isOpen.get(), true)
+		day.set("Sunday")
+		assertEquals(isOpen.get(), false)
+	})
+})
+
+describe("Pull", () => {
+	it("increments the clock", () => {
+		const count = useSource(0)
+		const clock = count.birth
+		count.set(1)
+		assertEquals(count.birth, clock + 1)
+	})
+
+	it("doesn't automatically update", () => {
+		const count = useSource(0)
+		const doubled = usePull(() => count.get() * 2)
+		count.set(1)
+		assertEquals(doubled.value, 0)
+	})
+
+	it("updates when its get method is called", () => {
+		const count = useSource(0)
+		const doubled = usePull(() => count.get() * 2)
+		count.set(1)
+		assertEquals(doubled.get(), 2)
 	})
 })
