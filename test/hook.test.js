@@ -97,14 +97,14 @@ describe("Pull", () => {
 			return doubled.get() * 3
 		})
 
-		tripled.get()
-		tripled.get()
+		doubled.get()
+		doubled.get()
 		assertEquals(doubleClock, 1)
-		assertEquals(tripleClock, 1)
+		assertEquals(tripleClock, 0)
 
 		count.set(1)
-		doubled.get()
-		doubled.get()
+		tripled.get()
+		tripled.get()
 		assertEquals(doubleClock, 2)
 		assertEquals(tripleClock, 1)
 	})
