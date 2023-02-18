@@ -31,12 +31,12 @@ print(count()) //1
 ```javascript
 const [getCount, setCount] = useSignal(0)
 setCount(1)
-print(getCount())
+print(getCount()) //1
 ```
 
 ## `usePush(get)`
 
-Make a signal that is based on other signals.<br>
+Make a signal that's based on other signals.<br>
 It updates whenever one of those signals changes (but only if it has to).
 
 ```javascript
@@ -49,7 +49,7 @@ print(double.get()) //2
 
 ## `usePull(get)`
 
-Make a signal that is based on other signals.<br>
+Make a signal that's based on other signals.<br>
 It updates whenever you read from it (but only if it has to).
 
 ```javascript
