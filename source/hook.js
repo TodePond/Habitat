@@ -1,34 +1,73 @@
 const shared = {
 	clock: 0,
-	pulls: [],
+	current: null,
+	pull: null,
+	push: null,
 }
 
-const State = class {
+const Signal = class {
 	constructor(value) {
 		this.value = value
 		this.birth = shared.clock++
+		this.pushes = new Set()
 	}
 
 	set(value) {
 		this.birth = shared.clock++
 		this.value = value
+
+		for (const push of this.pushes) {
+			push.update()
+		}
 	}
 
 	get() {
-		for (const pull of shared.pulls) {
-			pull.addSource(this)
+		const { current } = shared
+		if (current !== null) {
+			current.addSource(this)
+
+			if (current instanceof Push) {
+				this.addPush(current)
+			}
 		}
 		return this.value
 	}
+
+	addPush(push) {
+		this.pushes.add(push)
+	}
 }
 
-const Pull = class extends State {
+const Target = class extends Signal {
+	constructor(evaluator) {
+		super()
+		this.birth = -Infinity
+		this.evaluator = evaluator
+		this.sources = new Set()
+	}
+
+	addSource(source) {
+		this.sources.add(source)
+	}
+
+	update() {
+		this.sources.clear()
+
+		const previous = shared.current
+		shared.current = this
+		const value = this.evaluator()
+		shared.current = previous
+
+		super.set(value)
+	}
+}
+
+const Pull = class extends Target {
 	constructor(evaluator) {
 		super()
 		this.evaluator = evaluator
 		this.sources = new Set()
 		this.birth = -Infinity
-		this.stack = shared.pulls
 	}
 
 	addSource(source) {
@@ -37,20 +76,6 @@ const Pull = class extends State {
 		for (const sourceSource of source.sources) {
 			this.addSource(sourceSource)
 		}
-	}
-
-	update() {
-		this.sources.clear()
-
-		this.stack.push(this)
-		const value = this.evaluator()
-		const popped = this.stack.pop()
-
-		if (popped !== this) {
-			throw new Error("Puller stack is corrupted")
-		}
-
-		super.set(value)
 	}
 
 	get() {
@@ -67,5 +92,17 @@ const Pull = class extends State {
 	}
 }
 
-export const useState = (value) => new State(value)
+const Push = class extends Target {
+	constructor(evaluator) {
+		super(evaluator)
+		this.update()
+	}
+
+	set() {
+		throw new Error("Pushes are read-only")
+	}
+}
+
+export const useSignal = (value) => new Signal(value)
 export const usePull = (evaluator) => new Pull(evaluator)
+export const usePush = (evaluator) => new Push(evaluator)

@@ -166,35 +166,74 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./hook.js"] = {}
 		const shared = {
 			clock: 0,
-			pulls: [],
+			current: null,
+			pull: null,
+			push: null,
 		}
 		
-		const State = class {
+		const Signal = class {
 			constructor(value) {
 				this.value = value
 				this.birth = shared.clock++
+				this.pushes = new Set()
 			}
 		
 			set(value) {
 				this.birth = shared.clock++
 				this.value = value
+		
+				for (const push of this.pushes) {
+					push.update()
+				}
 			}
 		
 			get() {
-				for (const pull of shared.pulls) {
-					pull.addSource(this)
+				const { current } = shared
+				if (current !== null) {
+					current.addSource(this)
+		
+					if (current instanceof Push) {
+						this.addPush(current)
+					}
 				}
 				return this.value
 			}
+		
+			addPush(push) {
+				this.pushes.add(push)
+			}
 		}
 		
-		const Pull = class extends State {
+		const Target = class extends Signal {
+			constructor(evaluator) {
+				super()
+				this.birth = -Infinity
+				this.evaluator = evaluator
+				this.sources = new Set()
+			}
+		
+			addSource(source) {
+				this.sources.add(source)
+			}
+		
+			update() {
+				this.sources.clear()
+		
+				const previous = shared.current
+				shared.current = this
+				const value = this.evaluator()
+				shared.current = previous
+		
+				super.set(value)
+			}
+		}
+		
+		const Pull = class extends Target {
 			constructor(evaluator) {
 				super()
 				this.evaluator = evaluator
 				this.sources = new Set()
 				this.birth = -Infinity
-				this.stack = shared.pulls
 			}
 		
 			addSource(source) {
@@ -203,20 +242,6 @@ const HabitatFrogasaurus = {}
 				for (const sourceSource of source.sources) {
 					this.addSource(sourceSource)
 				}
-			}
-		
-			update() {
-				this.sources.clear()
-		
-				this.stack.push(this)
-				const value = this.evaluator()
-				const popped = this.stack.pop()
-		
-				if (popped !== this) {
-					throw new Error("Puller stack is corrupted")
-				}
-		
-				super.set(value)
 			}
 		
 			get() {
@@ -233,12 +258,25 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		const useState = (value) => new State(value)
+		const Push = class extends Target {
+			constructor(evaluator) {
+				super(evaluator)
+				this.update()
+			}
+		
+			set() {
+				throw new Error("Pushes are read-only")
+			}
+		}
+		
+		const useSignal = (value) => new Signal(value)
 		const usePull = (evaluator) => new Pull(evaluator)
+		const usePush = (evaluator) => new Push(evaluator)
 		
 
-		HabitatFrogasaurus["./hook.js"].useState = useState
+		HabitatFrogasaurus["./hook.js"].useSignal = useSignal
 		HabitatFrogasaurus["./hook.js"].usePull = usePull
+		HabitatFrogasaurus["./hook.js"].usePush = usePush
 	}
 
 	//====== ./event.js ======
@@ -1285,8 +1323,9 @@ export const random = HabitatFrogasaurus["./random.js"].random
 export const randomFrom = HabitatFrogasaurus["./random.js"].randomFrom
 export const oneIn = HabitatFrogasaurus["./random.js"].oneIn
 export const maybe = HabitatFrogasaurus["./random.js"].maybe
-export const useState = HabitatFrogasaurus["./hook.js"].useState
+export const useSignal = HabitatFrogasaurus["./hook.js"].useSignal
 export const usePull = HabitatFrogasaurus["./hook.js"].usePull
+export const usePush = HabitatFrogasaurus["./hook.js"].usePush
 export const fireEvent = HabitatFrogasaurus["./event.js"].fireEvent
 export const on = HabitatFrogasaurus["./event.js"].on
 export const print = HabitatFrogasaurus["./console.js"].print
@@ -1363,8 +1402,9 @@ export const Habitat = {
 	randomFrom: HabitatFrogasaurus["./random.js"].randomFrom,
 	oneIn: HabitatFrogasaurus["./random.js"].oneIn,
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
-	useState: HabitatFrogasaurus["./hook.js"].useState,
+	useSignal: HabitatFrogasaurus["./hook.js"].useSignal,
 	usePull: HabitatFrogasaurus["./hook.js"].usePull,
+	usePush: HabitatFrogasaurus["./hook.js"].usePush,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
 	on: HabitatFrogasaurus["./event.js"].on,
 	print: HabitatFrogasaurus["./console.js"].print,
