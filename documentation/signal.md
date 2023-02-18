@@ -59,3 +59,15 @@ const double = usePush(() => count.get() * 2)
 count.set(1)
 print(double.get()) //2
 ```
+
+## `useEffect(signals, callback)`
+
+Make a signal with no value.<br>
+It updates whenever one of its `signals` updates.
+
+```javascript
+const count = useSignal(0)
+useEffect([count], () => {
+  print("Count was changed")
+})
+```
