@@ -16,7 +16,7 @@ const State = class {
 
 	get() {
 		for (const pull of shared.pulls) {
-			pull.sources.add(this)
+			pull.addSource(this)
 		}
 		return this.value
 	}
@@ -28,14 +28,23 @@ const Pull = class extends State {
 		this.evaluator = evaluator
 		this.sources = new Set()
 		this.birth = -Infinity
+		this.stack = shared.pulls
+	}
+
+	addSource(source) {
+		this.sources.add(source)
+		if (source.sources === undefined) return
+		for (const sourceSource of source.sources) {
+			this.addSource(sourceSource)
+		}
 	}
 
 	update() {
 		this.sources.clear()
 
-		shared.pulls.push(this)
+		this.stack.push(this)
 		const value = this.evaluator()
-		const popped = shared.pulls.pop()
+		const popped = this.stack.pop()
 
 		if (popped !== this) {
 			throw new Error("Puller stack is corrupted")
