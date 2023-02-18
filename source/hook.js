@@ -7,14 +7,14 @@ const shared = {
 
 const Signal = class {
 	constructor(value) {
-		this.value = value
+		this._value = value
 		this.birth = shared.clock++
 		this.pushes = new Set()
 	}
 
 	set(value) {
 		this.birth = shared.clock++
-		this.value = value
+		this._value = value
 
 		for (const push of this.pushes) {
 			push.update()
@@ -30,7 +30,7 @@ const Signal = class {
 				this.addPush(current)
 			}
 		}
-		return this.value
+		return this._value
 	}
 
 	addPush(push) {

@@ -33,14 +33,14 @@ describe("Pull", () => {
 	it("doesn't initialise its value", () => {
 		const count = useSignal(0)
 		const doubled = usePull(() => count.get() * 2)
-		assertEquals(doubled.value, undefined)
+		assertEquals(doubled._value, undefined)
 	})
 
 	it("updates its value", () => {
 		const count = useSignal(0)
 		const doubled = usePull(() => count.get() * 2)
 		doubled.update()
-		assertEquals(doubled.value, 0)
+		assertEquals(doubled._value, 0)
 	})
 
 	it("updates its value when it has to", () => {
@@ -77,8 +77,8 @@ describe("Pull", () => {
 		assertEquals(doubled.get(), 0)
 		assertEquals(tripled.get(), 0)
 		count.set(1)
-		assertEquals(tripled.value, 0)
-		assertEquals(doubled.value, 0)
+		assertEquals(tripled._value, 0)
+		assertEquals(doubled._value, 0)
 		assertEquals(tripled.get(), 6)
 		assertEquals(doubled.get(), 2)
 	})
@@ -118,14 +118,14 @@ describe("Push", () => {
 
 	it("initialises its value", () => {
 		const count = usePush(() => 0)
-		assertEquals(count.value, 0)
+		assertEquals(count._value, 0)
 	})
 
 	it("gets its value updated", () => {
 		const count = useSignal(0)
 		const doubled = usePush(() => count.get() * 2)
 		count.set(1)
-		assertEquals(doubled.value, 2)
+		assertEquals(doubled._value, 2)
 	})
 
 	it("doesn't update its value when it doesn't have to", () => {
