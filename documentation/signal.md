@@ -37,7 +37,7 @@ print(getCount()) //1
 ## `usePush(get)`
 
 Make a signal that's based on other signals.<br>
-It updates whenever one of those signals changes (but only if it has to).
+It updates whenever one of those signals updates.
 
 ```javascript
 const count = useSignal(0)
