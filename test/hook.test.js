@@ -4,7 +4,7 @@ import { assertEquals, assertThrows, describe, it } from "./libraries/deno-test.
 describe("Signal", () => {
 	it("stores its value", () => {
 		const count = useSignal(0)
-		assertEquals(count.get(), 0)
+		assertEquals(count._value, 0)
 	})
 
 	it("gets its value", () => {
