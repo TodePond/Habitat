@@ -142,3 +142,74 @@ describe("Push", () => {
 		assertEquals(clock, 1)
 	})
 })
+
+describe("Sugar", () => {
+	it("can be got with .value", () => {
+		const count = useSignal(0)
+		const doubled = usePush(() => count.get() * 2)
+		const tripled = usePull(() => doubled.get() * 3)
+		assertEquals(count.value, 0)
+		assertEquals(doubled.value, 0)
+		assertEquals(tripled.value, 0)
+
+		count.set(1)
+		assertEquals(tripled.value, 6)
+		assertEquals(doubled.value, 2)
+		assertEquals(count.value, 1)
+	})
+
+	it("can be set with .value", () => {
+		const count = useSignal(0)
+		const doubled = usePush(() => count.get() * 2)
+		const tripled = usePull(() => doubled.get() * 3)
+
+		count.value = 1
+		assertEquals(tripled.value, 6)
+		assertEquals(doubled.value, 2)
+		assertEquals(count.value, 1)
+	})
+
+	it("can be got with .()", () => {
+		const count = useSignal(0)
+		const doubled = usePush(() => count.get() * 2)
+		const tripled = usePull(() => doubled.get() * 3)
+		assertEquals(count(), 0)
+		assertEquals(doubled(), 0)
+		assertEquals(tripled(), 0)
+
+		count.set(1)
+		assertEquals(tripled(), 6)
+		assertEquals(doubled(), 2)
+		assertEquals(count(), 1)
+	})
+
+	it("can be set with .(value)", () => {
+		const count = useSignal(0)
+		const doubled = usePush(() => count.get() * 2)
+		const tripled = usePull(() => doubled.get() * 3)
+
+		count(1)
+		assertEquals(tripled(), 6)
+		assertEquals(doubled(), 2)
+		assertEquals(count(), 1)
+	})
+
+	it("can be iterated over", () => {
+		const count = useSignal(0)
+		const doubled = usePush(() => count.get() * 2)
+		const tripled = usePull(() => doubled.get() * 3)
+
+		const [getCount, setCount] = count
+		const [getDoubled] = doubled
+		const [getTripled] = tripled
+
+		assertEquals(getCount(), 0)
+		assertEquals(getDoubled(), 0)
+		assertEquals(getTripled(), 0)
+
+		setCount(1)
+		assertEquals(getTripled(), 6)
+		assertEquals(getDoubled(), 2)
+		assertEquals(getCount(), 1)
+	})
+})

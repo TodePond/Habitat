@@ -5,11 +5,18 @@ const shared = {
 	push: null,
 }
 
-const Signal = class {
+const Signal = class extends Function {
 	constructor(value) {
-		this._value = value
-		this.birth = shared.clock++
-		this.pushes = new Set()
+		//==== Sugar ====//
+		super("value", "return value === undefined? this.self.get() : this.self.set(value)")
+		const self = this.bind(this)
+		this.self = self
+		//===============//
+
+		self._value = value
+		self.birth = shared.clock++
+		self.pushes = new Set()
+		return self
 	}
 
 	set(value) {
@@ -36,6 +43,21 @@ const Signal = class {
 	addPush(push) {
 		this.pushes.add(push)
 	}
+
+	//==== Sugar ====//
+	get value() {
+		return this.get()
+	}
+
+	set value(value) {
+		this.set(value)
+	}
+
+	*[Symbol.iterator]() {
+		yield this
+		yield this
+	}
+	//===============//
 }
 
 const Target = class extends Signal {
