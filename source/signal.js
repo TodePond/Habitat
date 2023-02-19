@@ -6,14 +6,22 @@ const shared = {
 const Signal = class extends Function {
 	constructor(value) {
 		//==== Sugar ====//
-		super("value", "return value === undefined? this.self.get() : this.self.set(value)")
+		super("value", "return this.self.func(value)")
 		const self = this.bind(this)
 		this.self = self
+		self.func = (value) => {
+			if (value === undefined) {
+				return self.get()
+			} else {
+				self.set(value)
+			}
+		}
 		//===============//
 
 		self._value = value
 		self.birth = shared.clock++
 		self.pushes = new Set()
+		self.events = new Set()
 		return self
 	}
 
@@ -24,6 +32,11 @@ const Signal = class extends Function {
 		const pushes = [...this.pushes]
 		for (const push of pushes) {
 			push.update()
+		}
+
+		const events = [...this.events]
+		for (const event of events) {
+			event.update()
 		}
 	}
 
@@ -41,6 +54,10 @@ const Signal = class extends Function {
 
 	addPush(push) {
 		this.pushes.add(push)
+	}
+
+	addEvent(event) {
+		this.events.add(event)
 	}
 
 	//==== Sugar ====//
@@ -138,7 +155,6 @@ const Effect = class extends Push {
 		for (const source of this.sources) {
 			source.pushes.delete(this)
 		}
-		this.sources.clear()
 	}
 
 	set() {
@@ -146,26 +162,38 @@ const Effect = class extends Push {
 	}
 
 	get() {
-		throw new Error("Effects don't have a value")
+		return this.update()
 	}
 }
 
-// const Event = class extends Signal {
-// 	constructor(sources, callback) {
-// 		super()
-// 	}
+const Event = class extends Signal {
+	constructor(sources, callback) {
+		super()
+		this.sources = new Set(sources)
+		this.update = callback
 
-// 	set() {
-// 		throw new Error("Events don't have a value")
-// 	}
+		for (const source of this.sources) {
+			source.addEvent(this)
+		}
+	}
 
-// 	get() {
-// 		throw new Error("Events don't have a value")
-// 	}
-//}
+	dispose() {
+		for (const source of this.sources) {
+			source.events.delete(this)
+		}
+	}
+
+	set() {
+		throw new Error("Events don't have a value")
+	}
+
+	get() {
+		return this.update()
+	}
+}
 
 export const useSignal = (value) => new Signal(value)
 export const usePull = (evaluate) => new Pull(evaluate)
 export const usePush = (evaluate) => new Push(evaluate)
 export const useEffect = (callback) => new Effect(callback)
-//export const useEvent = (sources, callback) => new Event(sources, callback)
+export const useEvent = (sources, callback) => new Event(sources, callback)

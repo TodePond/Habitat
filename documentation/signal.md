@@ -63,7 +63,7 @@ print(double.get()) //2
 ## `useEffect(callback)`
 
 Make a signal with no value.<br>
-It updates whenever one of its signals updates.
+It updates immediately, and whenever one of its signals updates.<br>
 
 ```javascript
 const count = useSignal(0)

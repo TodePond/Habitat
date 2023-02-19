@@ -1,4 +1,4 @@
-import { useEffect, usePull, usePush, useSignal } from "../source/signal.js"
+import { useEffect, useEvent, usePull, usePush, useSignal } from "../source/signal.js"
 import { assertEquals, assertThrows, describe, it } from "./libraries/deno-test.js"
 
 describe("Signal", () => {
@@ -244,11 +244,6 @@ describe("Effect", () => {
 		assertThrows(() => effect.set(0), "Effects don't have a value")
 	})
 
-	it("can't be got", () => {
-		const effect = useEffect(() => {})
-		assertThrows(() => effect.get(), "Effects don't have a value")
-	})
-
 	it("fires when it's created", () => {
 		let clock = 0
 		useEffect(() => clock++)
@@ -299,5 +294,98 @@ describe("Effect", () => {
 		effect.dispose()
 		count.set(2)
 		assertEquals(history, [0, 1])
+	})
+
+	it("can be fired manually", () => {
+		const history = []
+		const count = useSignal(0)
+		const effect = useEffect(() => history.push(count.get()))
+		assertEquals(history, [0])
+		count.set(1)
+		assertEquals(history, [0, 1])
+		effect()
+		assertEquals(history, [0, 1, 1])
+	})
+})
+
+describe("Event", () => {
+	it("can't be set", () => {
+		const event = useEvent([], () => {})
+		assertThrows(() => event.set(0), "Events don't have a value")
+	})
+
+	it("doesn't fire when it's created", () => {
+		let clock = 0
+		useEvent([], () => clock++)
+		assertEquals(clock, 0)
+	})
+
+	it("fires when its sources change", () => {
+		let clock = 0
+		const count = useSignal(0)
+		useEvent([count], () => clock++)
+		assertEquals(clock, 0)
+		count.set(1)
+		assertEquals(clock, 1)
+	})
+
+	it("recursively fires when its sources change", () => {
+		let doubleClock = 0
+		let tripleClock = 0
+
+		const count = useSignal(0)
+		const doubled = usePush(() => count.get() * 2)
+		const tripled = usePull(() => doubled.get() * 3)
+
+		useEvent([doubled], () => doubleClock++)
+		useEvent([tripled], () => tripleClock++)
+
+		assertEquals(doubleClock, 0)
+		assertEquals(tripleClock, 0)
+
+		count.set(1)
+
+		assertEquals(doubleClock, 1)
+		assertEquals(tripleClock, 0)
+
+		tripled.get()
+
+		assertEquals(doubleClock, 1)
+		assertEquals(tripleClock, 1)
+	})
+
+	it("can be disposed", () => {
+		let clock = 0
+		const count = useSignal(0)
+		const event = useEvent([count], () => clock++)
+		assertEquals(clock, 0)
+		count.set(1)
+		assertEquals(clock, 1)
+		event.dispose()
+		count.set(2)
+		assertEquals(clock, 1)
+	})
+
+	it("can have multiple sources", () => {
+		let clock = 0
+		const count = useSignal(0)
+		const score = useSignal(0)
+		useEvent([count, score], () => clock++)
+		assertEquals(clock, 0)
+		count.set(1)
+		assertEquals(clock, 1)
+		score.set(1)
+		assertEquals(clock, 2)
+	})
+
+	it("can be fired manually", () => {
+		let clock = 0
+		const count = useSignal(0)
+		const event = useEvent([count], () => clock++)
+		assertEquals(clock, 0)
+		count.set(1)
+		assertEquals(clock, 1)
+		event()
+		assertEquals(clock, 2)
 	})
 })

@@ -355,14 +355,22 @@ const HabitatFrogasaurus = {}
 		const Signal = class extends Function {
 			constructor(value) {
 				//==== Sugar ====//
-				super("value", "return value === undefined? this.self.get() : this.self.set(value)")
+				super("value", "return this.self.func(value)")
 				const self = this.bind(this)
 				this.self = self
+				self.func = (value) => {
+					if (value === undefined) {
+						return self.get()
+					} else {
+						self.set(value)
+					}
+				}
 				//===============//
 		
 				self._value = value
 				self.birth = shared.clock++
 				self.pushes = new Set()
+				self.events = new Set()
 				return self
 			}
 		
@@ -373,6 +381,11 @@ const HabitatFrogasaurus = {}
 				const pushes = [...this.pushes]
 				for (const push of pushes) {
 					push.update()
+				}
+		
+				const events = [...this.events]
+				for (const event of events) {
+					event.update()
 				}
 			}
 		
@@ -390,6 +403,10 @@ const HabitatFrogasaurus = {}
 		
 			addPush(push) {
 				this.pushes.add(push)
+			}
+		
+			addEvent(event) {
+				this.events.add(event)
 			}
 		
 			//==== Sugar ====//
@@ -487,7 +504,6 @@ const HabitatFrogasaurus = {}
 				for (const source of this.sources) {
 					source.pushes.delete(this)
 				}
-				this.sources.clear()
 			}
 		
 			set() {
@@ -495,35 +511,48 @@ const HabitatFrogasaurus = {}
 			}
 		
 			get() {
-				throw new Error("Effects don't have a value")
+				return this.update()
 			}
 		}
 		
-		// const Event = class extends Signal {
-		// 	constructor(sources, callback) {
-		// 		super()
-		// 	}
+		const Event = class extends Signal {
+			constructor(sources, callback) {
+				super()
+				this.sources = new Set(sources)
+				this.update = callback
 		
-		// 	set() {
-		// 		throw new Error("Events don't have a value")
-		// 	}
+				for (const source of this.sources) {
+					source.addEvent(this)
+				}
+			}
 		
-		// 	get() {
-		// 		throw new Error("Events don't have a value")
-		// 	}
-		//}
+			dispose() {
+				for (const source of this.sources) {
+					source.events.delete(this)
+				}
+			}
+		
+			set() {
+				throw new Error("Events don't have a value")
+			}
+		
+			get() {
+				return this.update()
+			}
+		}
 		
 		const useSignal = (value) => new Signal(value)
 		const usePull = (evaluate) => new Pull(evaluate)
 		const usePush = (evaluate) => new Push(evaluate)
 		const useEffect = (callback) => new Effect(callback)
-		//export const useEvent = (sources, callback) => new Event(sources, callback)
+		const useEvent = (sources, callback) => new Event(sources, callback)
 		
 
 		HabitatFrogasaurus["./signal.js"].useSignal = useSignal
 		HabitatFrogasaurus["./signal.js"].usePull = usePull
 		HabitatFrogasaurus["./signal.js"].usePush = usePush
 		HabitatFrogasaurus["./signal.js"].useEffect = useEffect
+		HabitatFrogasaurus["./signal.js"].useEvent = useEvent
 	}
 
 	//====== ./vector.js ======
@@ -1399,6 +1428,7 @@ export const useSignal = HabitatFrogasaurus["./signal.js"].useSignal
 export const usePull = HabitatFrogasaurus["./signal.js"].usePull
 export const usePush = HabitatFrogasaurus["./signal.js"].usePush
 export const useEffect = HabitatFrogasaurus["./signal.js"].useEffect
+export const useEvent = HabitatFrogasaurus["./signal.js"].useEvent
 export const scale = HabitatFrogasaurus["./vector.js"].scale
 export const add = HabitatFrogasaurus["./vector.js"].add
 export const subtract = HabitatFrogasaurus["./vector.js"].subtract
@@ -1479,6 +1509,7 @@ export const Habitat = {
 	usePull: HabitatFrogasaurus["./signal.js"].usePull,
 	usePush: HabitatFrogasaurus["./signal.js"].usePush,
 	useEffect: HabitatFrogasaurus["./signal.js"].useEffect,
+	useEvent: HabitatFrogasaurus["./signal.js"].useEvent,
 	scale: HabitatFrogasaurus["./vector.js"].scale,
 	add: HabitatFrogasaurus["./vector.js"].add,
 	subtract: HabitatFrogasaurus["./vector.js"].subtract,
