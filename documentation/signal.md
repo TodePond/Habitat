@@ -79,5 +79,5 @@ It updates whenever one of its `signals` updates.
 
 ```javascript
 const count = useSignal(0)
-useEffect([count], () => print("Count changed!"))
+useEvent([count], () => print("Count changed!"))
 ```
