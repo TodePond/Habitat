@@ -5,8 +5,11 @@
 <script>
 	const stage = new Stage()
 
-	stage.tick = (context) => {
+	let t = 0
+	stage.update = ([context]) => {
 		context.fillStyle = GREEN
-		context.fillRect(0, 0, 2, 2)
+		context.fillRect(t, t, 10, 10)
+
+		t += 1
 	}
 </script>
