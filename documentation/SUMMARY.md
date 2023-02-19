@@ -26,7 +26,6 @@
 -   [Signal](signal.md)
 -   [Stage](stage.md)
 -   [String](string.md)
--   [Struct](struct.md)
 -   [Touch](touch.md)
 -   [Tween](tween.md)
 -   [Vector](vector.md)

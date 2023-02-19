@@ -1040,13 +1040,9 @@ const HabitatFrogasaurus = {}
 	//====== ./struct.js ======
 	{
 		HabitatFrogasaurus["./struct.js"] = {}
-		const struct = (parameters) =>
-			function (args) {
-				return { ...parameters, ...args }
-			}
 		
 
-		HabitatFrogasaurus["./struct.js"].struct = struct
+
 	}
 
 	//====== ./colour.js ======
@@ -1450,7 +1446,6 @@ export const getPointer = HabitatFrogasaurus["./pointer.js"].getPointer
 export const getKeyboard = HabitatFrogasaurus["./keyboard.js"].getKeyboard
 export const keyDown = HabitatFrogasaurus["./keyboard.js"].keyDown
 export const keyUp = HabitatFrogasaurus["./keyboard.js"].keyUp
-export const struct = HabitatFrogasaurus["./struct.js"].struct
 export const Colour = HabitatFrogasaurus["./colour.js"].Colour
 export const Splash = HabitatFrogasaurus["./colour.js"].Splash
 export const showColour = HabitatFrogasaurus["./colour.js"].showColour
@@ -1531,7 +1526,6 @@ export const Habitat = {
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
 	keyDown: HabitatFrogasaurus["./keyboard.js"].keyDown,
 	keyUp: HabitatFrogasaurus["./keyboard.js"].keyUp,
-	struct: HabitatFrogasaurus["./struct.js"].struct,
 	Colour: HabitatFrogasaurus["./colour.js"].Colour,
 	Splash: HabitatFrogasaurus["./colour.js"].Splash,
 	showColour: HabitatFrogasaurus["./colour.js"].showColour,
