@@ -161,146 +161,6 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./random.js"].maybe = maybe
 	}
 
-	//====== ./hook.js ======
-	{
-		HabitatFrogasaurus["./hook.js"] = {}
-		const shared = {
-			clock: 0,
-			current: null,
-			pull: null,
-			push: null,
-		}
-		
-		const Signal = class extends Function {
-			constructor(value) {
-				//==== Sugar ====//
-				super("value", "return value === undefined? this.self.get() : this.self.set(value)")
-				const self = this.bind(this)
-				this.self = self
-				//===============//
-		
-				self._value = value
-				self.birth = shared.clock++
-				self.pushes = new Set()
-				return self
-			}
-		
-			set(value) {
-				this.birth = shared.clock++
-				this._value = value
-		
-				for (const push of this.pushes) {
-					push.update()
-				}
-			}
-		
-			get() {
-				const { current } = shared
-				if (current !== null) {
-					current.addSource(this)
-		
-					if (current instanceof Push) {
-						this.addPush(current)
-					}
-				}
-				return this._value
-			}
-		
-			addPush(push) {
-				this.pushes.add(push)
-			}
-		
-			//==== Sugar ====//
-			get value() {
-				return this.get()
-			}
-		
-			set value(value) {
-				this.set(value)
-			}
-		
-			*[Symbol.iterator]() {
-				yield this
-				yield this
-			}
-			//===============//
-		}
-		
-		const Target = class extends Signal {
-			constructor(evaluator) {
-				super()
-				this.birth = -Infinity
-				this.evaluator = evaluator
-				this.sources = new Set()
-			}
-		
-			addSource(source) {
-				this.sources.add(source)
-			}
-		
-			update() {
-				this.sources.clear()
-		
-				const previous = shared.current
-				shared.current = this
-				const value = this.evaluator()
-				shared.current = previous
-		
-				super.set(value)
-			}
-		}
-		
-		const Pull = class extends Target {
-			constructor(evaluator) {
-				super()
-				this.evaluator = evaluator
-				this.sources = new Set()
-				this.birth = -Infinity
-			}
-		
-			addSource(source) {
-				this.sources.add(source)
-				if (source.sources === undefined) return
-				for (const sourceSource of source.sources) {
-					this.addSource(sourceSource)
-				}
-			}
-		
-			get() {
-				const sources = [...this.sources]
-				if (this.birth < 0 || sources.some((source) => source.birth > this.birth)) {
-					this.update()
-				}
-		
-				return super.get()
-			}
-		
-			set() {
-				throw new Error("Pulls are read-only")
-			}
-		}
-		
-		const Push = class extends Target {
-			constructor(evaluator) {
-				super(evaluator)
-				this.update()
-			}
-		
-			set() {
-				throw new Error("Pushes are read-only")
-			}
-		}
-		
-		const useSignal = (value) => new Signal(value)
-		const usePull = (evaluator) => new Pull(evaluator)
-		const usePush = (evaluator) => new Push(evaluator)
-		
-
-		HabitatFrogasaurus["./hook.js"].useSignal = useSignal
-		HabitatFrogasaurus["./hook.js"].usePull = usePull
-		HabitatFrogasaurus["./hook.js"].usePush = usePush
-	}
-
 	//====== ./event.js ======
 	{
 		HabitatFrogasaurus["./event.js"] = {}
@@ -482,6 +342,171 @@ const HabitatFrogasaurus = {}
 		
 
 		HabitatFrogasaurus["./linked-list.js"].LinkedList = LinkedList
+	}
+
+	//====== ./signal.js ======
+	{
+		HabitatFrogasaurus["./signal.js"] = {}
+		const shared = {
+			clock: 0,
+			current: null,
+		}
+		
+		const Signal = class extends Function {
+			constructor(value) {
+				//==== Sugar ====//
+				super("value", "return value === undefined? this.self.get() : this.self.set(value)")
+				const self = this.bind(this)
+				this.self = self
+				//===============//
+		
+				self._value = value
+				self.birth = shared.clock++
+				self.pushes = new Set()
+				return self
+			}
+		
+			set(value) {
+				this.birth = shared.clock++
+				this._value = value
+		
+				for (const push of this.pushes) {
+					push.update()
+				}
+			}
+		
+			get() {
+				const { current } = shared
+				if (current !== null) {
+					current.addSource(this)
+		
+					if (current instanceof Push) {
+						this.addPush(current)
+					}
+				}
+				return this._value
+			}
+		
+			addPush(push) {
+				this.pushes.add(push)
+			}
+		
+			//==== Sugar ====//
+			get value() {
+				return this.get()
+			}
+		
+			set value(value) {
+				this.set(value)
+			}
+		
+			*[Symbol.iterator]() {
+				yield this
+				yield this
+			}
+			//===============//
+		}
+		
+		const Target = class extends Signal {
+			constructor(evaluate) {
+				super()
+				this.birth = -Infinity
+				this.evaluate = evaluate
+				this.sources = new Set()
+			}
+		
+			addSource(source) {
+				this.sources.add(source)
+			}
+		
+			update() {
+				this.sources.clear()
+		
+				const previous = shared.current
+				shared.current = this
+				const value = this.evaluate()
+				shared.current = previous
+		
+				super.set(value)
+			}
+		}
+		
+		const Pull = class extends Target {
+			constructor(evaluate) {
+				super()
+				this.evaluate = evaluate
+				this.sources = new Set()
+				this.birth = -Infinity
+			}
+		
+			addSource(source) {
+				this.sources.add(source)
+				if (source.sources === undefined) return
+				for (const sourceSource of source.sources) {
+					this.addSource(sourceSource)
+				}
+			}
+		
+			get() {
+				const sources = [...this.sources]
+				if (this.birth < 0 || sources.some((source) => source.birth > this.birth)) {
+					this.update()
+				}
+		
+				return super.get()
+			}
+		
+			set() {
+				throw new Error("Pulls are read-only")
+			}
+		}
+		
+		const Push = class extends Target {
+			constructor(evaluate) {
+				super(evaluate)
+				this.update()
+			}
+		
+			set() {
+				throw new Error("Pushes are read-only")
+			}
+		}
+		
+		const Effect = class extends Push {
+			constructor(callback) {
+				super(callback)
+			}
+		
+			stop() {
+				for (const source of this.sources) {
+					source.pushes.delete(this)
+				}
+				this.sources.clear()
+			}
+		
+			start() {
+				this.update()
+			}
+		
+			set() {
+				throw new Error("Effects don't have a value")
+			}
+		
+			get() {
+				throw new Error("Effects don't have a value")
+			}
+		}
+		
+		const useSignal = (value) => new Signal(value)
+		const usePull = (evaluate) => new Pull(evaluate)
+		const usePush = (evaluate) => new Push(evaluate)
+		const useEffect = (callback) => new Effect(callback)
+		
+
+		HabitatFrogasaurus["./signal.js"].useSignal = useSignal
+		HabitatFrogasaurus["./signal.js"].usePull = usePull
+		HabitatFrogasaurus["./signal.js"].usePush = usePush
+		HabitatFrogasaurus["./signal.js"].useEffect = useEffect
 	}
 
 	//====== ./vector.js ======
@@ -1346,9 +1371,6 @@ const Habitat = {
 	randomFrom: HabitatFrogasaurus["./random.js"].randomFrom,
 	oneIn: HabitatFrogasaurus["./random.js"].oneIn,
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
-	useSignal: HabitatFrogasaurus["./hook.js"].useSignal,
-	usePull: HabitatFrogasaurus["./hook.js"].usePull,
-	usePush: HabitatFrogasaurus["./hook.js"].usePush,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
 	on: HabitatFrogasaurus["./event.js"].on,
 	print: HabitatFrogasaurus["./console.js"].print,
@@ -1357,6 +1379,10 @@ const Habitat = {
 	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
 	defineAccessor: HabitatFrogasaurus["./property.js"].defineAccessor,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
+	useSignal: HabitatFrogasaurus["./signal.js"].useSignal,
+	usePull: HabitatFrogasaurus["./signal.js"].usePull,
+	usePush: HabitatFrogasaurus["./signal.js"].usePush,
+	useEffect: HabitatFrogasaurus["./signal.js"].useEffect,
 	scale: HabitatFrogasaurus["./vector.js"].scale,
 	add: HabitatFrogasaurus["./vector.js"].add,
 	subtract: HabitatFrogasaurus["./vector.js"].subtract,

@@ -1,4 +1,4 @@
-import { usePull, usePush, useSignal } from "../source/hook.js"
+import { useEffect, usePull, usePush, useSignal } from "../source/signal.js"
 import { assertEquals, assertThrows, describe, it } from "./libraries/deno-test.js"
 
 describe("Signal", () => {
@@ -22,7 +22,7 @@ describe("Signal", () => {
 describe("Pull", () => {
 	it("stores its evaluator", () => {
 		const count = usePull(() => 0)
-		assertEquals(count.evaluator(), 0)
+		assertEquals(count.evaluate(), 0)
 	})
 
 	it("is read-only", () => {
@@ -141,6 +141,14 @@ describe("Push", () => {
 		doubled.get()
 		assertEquals(clock, 1)
 	})
+
+	it("recursively updates its value", () => {
+		const count = useSignal(0)
+		const doubled = usePush(() => count.get() * 2)
+		const tripled = usePush(() => doubled.get() * 3)
+		count.set(1)
+		assertEquals(tripled._value, 6)
+	})
 })
 
 describe("Sugar", () => {
@@ -211,5 +219,57 @@ describe("Sugar", () => {
 		assertEquals(getTripled(), 6)
 		assertEquals(getDoubled(), 2)
 		assertEquals(getCount(), 1)
+	})
+})
+
+describe("Effect", () => {
+	it("can't be set", () => {
+		const effect = useEffect(() => {})
+		assertThrows(() => effect.set(0), "Effects don't have a value")
+	})
+
+	it("can't be got", () => {
+		const effect = useEffect(() => {})
+		assertThrows(() => effect.get(), "Effects don't have a value")
+	})
+
+	it("fires when it's created", () => {
+		let clock = 0
+		useEffect(() => clock++)
+		assertEquals(clock, 1)
+	})
+
+	it("fires when its sources change", () => {
+		const history = []
+		const count = useSignal(0)
+		useEffect(() => history.push(count.get()))
+		assertEquals(history, [0])
+		count.set(1)
+		assertEquals(history, [0, 1])
+	})
+
+	it("recursively fires when its sources change", () => {
+		const doubleHistory = []
+		const tripleHistory = []
+
+		const count = useSignal(0)
+		const doubled = usePush(() => count.get() * 2)
+		const tripled = usePull(() => doubled.get() * 3)
+
+		useEffect(() => doubleHistory.push(doubled.get()))
+		useEffect(() => tripleHistory.push(tripled.get()))
+
+		assertEquals(doubleHistory, [0])
+		assertEquals(tripleHistory, [0])
+
+		count.set(1)
+
+		assertEquals(doubleHistory, [0, 2])
+		assertEquals(tripleHistory, [0])
+
+		tripled.get()
+
+		assertEquals(doubleHistory, [0, 2])
+		assertEquals(tripleHistory, [0, 6])
 	})
 })

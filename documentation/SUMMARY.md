@@ -23,6 +23,7 @@
 -   [Pointer](pointer.md)
 -   [Property](property.md)
 -   [Random](random.md)
+-   [Signal](signal.md)
 -   [Stage](stage.md)
 -   [String](string.md)
 -   [Struct](struct.md)

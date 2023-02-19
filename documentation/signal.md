@@ -60,14 +60,14 @@ count.set(1)
 print(double.get()) //2
 ```
 
-## `useEffect(signals, callback)`
+## `useEffect(callback)`
 
 Make a signal with no value.<br>
-It updates whenever one of its `signals` updates.
+It updates whenever one of its signals updates.
 
 ```javascript
 const count = useSignal(0)
-useEffect([count], () => {
-  print("Count was changed")
-})
+
+const history = []
+useEffect(() => history.push(count.value))
 ```

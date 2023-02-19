@@ -1,8 +1,6 @@
 const shared = {
 	clock: 0,
 	current: null,
-	pull: null,
-	push: null,
 }
 
 const Signal = class extends Function {
@@ -61,10 +59,10 @@ const Signal = class extends Function {
 }
 
 const Target = class extends Signal {
-	constructor(evaluator) {
+	constructor(evaluate) {
 		super()
 		this.birth = -Infinity
-		this.evaluator = evaluator
+		this.evaluate = evaluate
 		this.sources = new Set()
 	}
 
@@ -77,7 +75,7 @@ const Target = class extends Signal {
 
 		const previous = shared.current
 		shared.current = this
-		const value = this.evaluator()
+		const value = this.evaluate()
 		shared.current = previous
 
 		super.set(value)
@@ -85,9 +83,9 @@ const Target = class extends Signal {
 }
 
 const Pull = class extends Target {
-	constructor(evaluator) {
+	constructor(evaluate) {
 		super()
-		this.evaluator = evaluator
+		this.evaluate = evaluate
 		this.sources = new Set()
 		this.birth = -Infinity
 	}
@@ -115,8 +113,8 @@ const Pull = class extends Target {
 }
 
 const Push = class extends Target {
-	constructor(evaluator) {
-		super(evaluator)
+	constructor(evaluate) {
+		super(evaluate)
 		this.update()
 	}
 
@@ -125,6 +123,32 @@ const Push = class extends Target {
 	}
 }
 
+const Effect = class extends Push {
+	constructor(callback) {
+		super(callback)
+	}
+
+	stop() {
+		for (const source of this.sources) {
+			source.pushes.delete(this)
+		}
+		this.sources.clear()
+	}
+
+	start() {
+		this.update()
+	}
+
+	set() {
+		throw new Error("Effects don't have a value")
+	}
+
+	get() {
+		throw new Error("Effects don't have a value")
+	}
+}
+
 export const useSignal = (value) => new Signal(value)
-export const usePull = (evaluator) => new Pull(evaluator)
-export const usePush = (evaluator) => new Push(evaluator)
+export const usePull = (evaluate) => new Pull(evaluate)
+export const usePush = (evaluate) => new Push(evaluate)
+export const useEffect = (callback) => new Effect(callback)
