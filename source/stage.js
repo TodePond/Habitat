@@ -38,8 +38,12 @@ export const Stage = class {
 	getContexts = () => this.layers.map((v) => v.context)
 
 	fireStart = () => {
+		document.body.style["background-color"] = "#06070a"
+		document.body.style["margin"] = "0px"
+		document.body.style["overflow"] = "hidden"
+
 		for (const layer of this.layers) {
-			layer.start(layer.context)
+			layer.context = layer.start()
 		}
 
 		on("resize", () => this.fireResize())
@@ -70,20 +74,16 @@ export const Stage = class {
 	}
 }
 
-const CanvasLayer = class {
-	constructor() {
-		this.type = "2d"
-		this.context = null
-	}
+const LayerTemplate = class {
+	start() {}
+	resize() {}
+}
 
+const CanvasLayer = class extends LayerTemplate {
 	start() {
 		const canvas = document.createElement("canvas")
-		canvas.style["background-color"] = "#171d28"
-		document.body.style["background-color"] = "#06070a"
-		document.body.style["margin"] = "0px"
-		document.body.style["overflow"] = "hidden"
 		document.body.appendChild(canvas)
-		this.context = canvas.getContext("2d")
+		return canvas.getContext("2d")
 	}
 
 	resize(context) {
@@ -95,16 +95,31 @@ const CanvasLayer = class {
 	}
 }
 
+const HTMLLayer = class extends LayerTemplate {
+	start() {
+		const div = document.createElement("div")
+		div.style["position"] = "absolute"
+		div.style["top"] = "0px"
+		div.style["left"] = "0px"
+		div.style["width"] = "100%"
+		div.style["height"] = "100%"
+		div.style["pointer-events"] = "none"
+		document.body.appendChild(div)
+		return div
+	}
+}
+
 const Layer = class {
 	static types = {
 		"2d": CanvasLayer,
+		"html": HTMLLayer,
 	}
 
 	constructor(type) {
 		const Constructor = Layer.types[type]
-		return new Constructor()
+		const layer = new Constructor()
+		layer.type = type
+		layer.context = null
+		return layer
 	}
-
-	start() {}
-	resize() {}
 }

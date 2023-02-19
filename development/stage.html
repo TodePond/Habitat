@@ -3,13 +3,28 @@
 	Habitat.registerEverything()
 </script>
 <script>
-	const stage = new Stage()
+	const stage = new Stage({ layers: ["2d", "html"] })
+
+	stage.start = ([d2, html]) => {
+		d2.canvas.addEventListener("click", (e) => {
+			const message = HTML("<div>Hello World!</div>")
+			message.style["background-color"] = BLUE
+			message.style["color"] = VOID
+			message.style["font"] = "20px Arial"
+			message.style["display"] = "inline-block"
+			message.style["position"] = "absolute"
+			message.setAttribute("contenteditable", "true")
+			message.style["left"] = e.clientX + "px"
+			message.style["top"] = e.clientY + "px"
+			message.style["pointer-events"] = "auto"
+			html.appendChild(message)
+		})
+	}
 
 	let t = 0
-	stage.update = ([context]) => {
+	stage.update = ([context, html]) => {
 		context.fillStyle = GREEN
 		context.fillRect(t, t, 10, 10)
-
 		t += 1
 	}
 </script>
