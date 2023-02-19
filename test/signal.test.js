@@ -149,6 +149,22 @@ describe("Push", () => {
 		count.set(1)
 		assertEquals(tripled._value, 6)
 	})
+
+	it("unbinds its source when it isn't used", () => {
+		const day = useSignal("monday")
+		const time = useSignal("day")
+		const isOpen = usePush(() => day.get() !== "sunday" && time.get() !== "night")
+
+		assertEquals([...isOpen.sources], [day, time])
+		assertEquals([...day.pushes], [isOpen])
+		assertEquals([...time.pushes], [isOpen])
+
+		day.set("sunday")
+
+		assertEquals([...isOpen.sources], [day])
+		assertEquals([...day.pushes], [isOpen])
+		assertEquals([...time.pushes], [])
+	})
 })
 
 describe("Sugar", () => {
@@ -271,5 +287,17 @@ describe("Effect", () => {
 
 		assertEquals(doubleHistory, [0, 2])
 		assertEquals(tripleHistory, [0, 6])
+	})
+
+	it("can be disposed", () => {
+		const history = []
+		const count = useSignal(0)
+		const effect = useEffect(() => history.push(count.get()))
+		assertEquals(history, [0])
+		count.set(1)
+		assertEquals(history, [0, 1])
+		effect.dispose()
+		count.set(2)
+		assertEquals(history, [0, 1])
 	})
 })

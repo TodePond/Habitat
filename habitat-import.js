@@ -370,7 +370,8 @@ const HabitatFrogasaurus = {}
 				this.birth = shared.clock++
 				this._value = value
 		
-				for (const push of this.pushes) {
+				const pushes = [...this.pushes]
+				for (const push of pushes) {
 					push.update()
 				}
 			}
@@ -420,6 +421,11 @@ const HabitatFrogasaurus = {}
 			}
 		
 			update() {
+				const sources = [...this.sources]
+				for (const source of sources) {
+					source.pushes.delete(this)
+				}
+		
 				this.sources.clear()
 		
 				const previous = shared.current
@@ -477,15 +483,11 @@ const HabitatFrogasaurus = {}
 				super(callback)
 			}
 		
-			stop() {
+			dispose() {
 				for (const source of this.sources) {
 					source.pushes.delete(this)
 				}
 				this.sources.clear()
-			}
-		
-			start() {
-				this.update()
 			}
 		
 			set() {
@@ -497,10 +499,25 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
+		// const Event = class extends Signal {
+		// 	constructor(sources, callback) {
+		// 		super()
+		// 	}
+		
+		// 	set() {
+		// 		throw new Error("Events don't have a value")
+		// 	}
+		
+		// 	get() {
+		// 		throw new Error("Events don't have a value")
+		// 	}
+		//}
+		
 		const useSignal = (value) => new Signal(value)
 		const usePull = (evaluate) => new Pull(evaluate)
 		const usePush = (evaluate) => new Push(evaluate)
 		const useEffect = (callback) => new Effect(callback)
+		//export const useEvent = (sources, callback) => new Event(sources, callback)
 		
 
 		HabitatFrogasaurus["./signal.js"].useSignal = useSignal

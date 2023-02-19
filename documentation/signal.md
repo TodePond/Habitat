@@ -71,3 +71,13 @@ const count = useSignal(0)
 const history = []
 useEffect(() => history.push(count.value))
 ```
+
+## `useEvent([signals], callback)`
+
+Make a signal with no value.<br>
+It updates whenever one of its `signals` updates.
+
+```javascript
+const count = useSignal(0)
+useEffect([count], () => print("Count changed!"))
+```

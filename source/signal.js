@@ -21,7 +21,8 @@ const Signal = class extends Function {
 		this.birth = shared.clock++
 		this._value = value
 
-		for (const push of this.pushes) {
+		const pushes = [...this.pushes]
+		for (const push of pushes) {
 			push.update()
 		}
 	}
@@ -71,6 +72,11 @@ const Target = class extends Signal {
 	}
 
 	update() {
+		const sources = [...this.sources]
+		for (const source of sources) {
+			source.pushes.delete(this)
+		}
+
 		this.sources.clear()
 
 		const previous = shared.current
@@ -128,15 +134,11 @@ const Effect = class extends Push {
 		super(callback)
 	}
 
-	stop() {
+	dispose() {
 		for (const source of this.sources) {
 			source.pushes.delete(this)
 		}
 		this.sources.clear()
-	}
-
-	start() {
-		this.update()
 	}
 
 	set() {
@@ -148,7 +150,22 @@ const Effect = class extends Push {
 	}
 }
 
+// const Event = class extends Signal {
+// 	constructor(sources, callback) {
+// 		super()
+// 	}
+
+// 	set() {
+// 		throw new Error("Events don't have a value")
+// 	}
+
+// 	get() {
+// 		throw new Error("Events don't have a value")
+// 	}
+//}
+
 export const useSignal = (value) => new Signal(value)
 export const usePull = (evaluate) => new Pull(evaluate)
 export const usePush = (evaluate) => new Push(evaluate)
 export const useEffect = (callback) => new Effect(callback)
+//export const useEvent = (sources, callback) => new Event(sources, callback)
