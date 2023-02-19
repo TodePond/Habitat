@@ -4,28 +4,44 @@
 
 Create a simple animated canvas with the following `properties`.
 
-| Property      | Description                                                     | Default                                               |
-| ------------- | --------------------------------------------------------------- | ----------------------------------------------------- |
-| `context`     | 2D drawing context                                              | 2D drawing context of an automatically created canvas |
-| `tick`        | Function that runs every frame                                  | `() => {}`                                            |
-| `update`      | Function that runs every frame (except when `paused`)           | `() => {}`                                            |
-| `start`       | Function that runs after the stage starts                       | `() => {}`                                            |
-| `resize`      | Function that runs after the screen resizes                     | `() => {}`                                            |
-| `paused`      | Whether `update` runs or not (toggled by pressing the spacebar) | `false`                                               |
-| `speed`       | How many `tick` functions should run per frame                  | `1.0`                                                 |
-| `scale`       | How big the default `canvas` is compared to the window          | `1.0`                                                 |
-| `aspectRatio` | The aspect ratio to force the canvas to be (unless `undefined`) | `undefined`                                           |
+| Property | Description                                                     | Default    |
+| -------- | --------------------------------------------------------------- | ---------- |
+| `layers` | Which layers to create                                          | `['2d']`   |
+| `tick`   | Function that runs every frame                                  | `() => {}` |
+| `update` | Function that runs every frame (except when `paused`)           | `() => {}` |
+| `start`  | Function that runs after the stage starts                       | `() => {}` |
+| `resize` | Function that runs after the screen resizes                     | `() => {}` |
+| `paused` | Whether `update` runs or not (toggled by pressing the spacebar) | `false`    |
+| `speed`  | How many `tick` functions should run per frame                  | `1.0`      |
 
 Here is a simple example:
 
 ```javascript
 const stage = new Stage()
-stage.tick = (context, time) => {
+stage.tick = ([context], time) => {
 	// Clear the screen every frame!
 	context.clearRect(0, 0, context.canvas.width, context.canvas.height)
 
 	// Draw whatever you want!
 	context.fillStyle = BLUE
 	context.fillRect(0, 0, 10, 10)
+}
+```
+
+## Layers
+
+You can make different kinds of layers.
+
+| Layer  | Description  |
+| ------ | ------------ |
+| `2d`   | 2D canvas    |
+| `html` | HTML element |
+
+They get passed to your functions.
+
+```javascript
+const stage = new Stage({ layers: ["2d", "html", "2d"] })
+stage.tick = ([background, html, foreground]) => {
+	// ...
 }
 ```
