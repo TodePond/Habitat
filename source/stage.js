@@ -1,9 +1,8 @@
 import { on } from "./event.js"
 import { keyDown } from "./keyboard.js"
-import { struct } from "./struct.js"
 
-export const Stage = function (properties) {
-	const template = struct({
+export const Stage = function (options) {
+	const stage = {
 		context: undefined,
 		scale: 1.0,
 		aspectRatio: undefined,
@@ -16,9 +15,8 @@ export const Stage = function (properties) {
 		resize: () => {},
 		tick: () => {},
 		update: () => {},
-	})
-
-	const stage = template(properties)
+		...options,
+	}
 
 	if (document.body === null) {
 		addEventListener("load", () => {
@@ -36,7 +34,6 @@ const start = (stage) => {
 	if (stage.context === undefined) {
 		const canvas = document.createElement("canvas")
 		canvas.style["background-color"] = "#171d28"
-		canvas.style["image-rendering"] = "pixelated"
 		document.body.style["background-color"] = "#06070a"
 		document.body.style["margin"] = "0px"
 		document.body.style["overflow"] = "hidden"
@@ -83,6 +80,7 @@ const resize = (stage) => {
 	canvas.style["margin-bottom"] = marginVertical
 	stage.resize(stage.context)
 }
+
 const tick = (stage, time) => {
 	stage.clock += stage.speed
 	while (stage.clock > 0) {

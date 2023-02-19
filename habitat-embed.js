@@ -851,8 +851,8 @@ const HabitatFrogasaurus = {}
 	{
 		HabitatFrogasaurus["./stage.js"] = {}
 		
-		const Stage = function (properties) {
-			const template = struct({
+		const Stage = function (options) {
+			const stage = {
 				context: undefined,
 				scale: 1.0,
 				aspectRatio: undefined,
@@ -865,9 +865,8 @@ const HabitatFrogasaurus = {}
 				resize: () => {},
 				tick: () => {},
 				update: () => {},
-			})
-		
-			const stage = template(properties)
+				...options,
+			}
 		
 			if (document.body === null) {
 				addEventListener("load", () => {
@@ -885,7 +884,6 @@ const HabitatFrogasaurus = {}
 			if (stage.context === undefined) {
 				const canvas = document.createElement("canvas")
 				canvas.style["background-color"] = "#171d28"
-				canvas.style["image-rendering"] = "pixelated"
 				document.body.style["background-color"] = "#06070a"
 				document.body.style["margin"] = "0px"
 				document.body.style["overflow"] = "hidden"
@@ -932,6 +930,7 @@ const HabitatFrogasaurus = {}
 			canvas.style["margin-bottom"] = marginVertical
 			stage.resize(stage.context)
 		}
+		
 		const tick = (stage, time) => {
 			stage.clock += stage.speed
 			while (stage.clock > 0) {
@@ -1389,7 +1388,6 @@ const HabitatFrogasaurus = {}
 	const { defineGetter, defineAccessor } = HabitatFrogasaurus["./property.js"]
 	const { on, fireEvent } = HabitatFrogasaurus["./event.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
-	const { struct } = HabitatFrogasaurus["./struct.js"]
 	const { lerp } = HabitatFrogasaurus["./lerp.js"]
 
 }
