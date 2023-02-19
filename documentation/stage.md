@@ -6,7 +6,7 @@ Create a simple animated canvas with the following `properties`.
 
 | Property | Description                                                     | Default    |
 | -------- | --------------------------------------------------------------- | ---------- |
-| `layers` | Which layers to create                                          | `['2d']`   |
+| `layers` | Which layers to create                                          | `["2d"]`   |
 | `tick`   | Function that runs every frame                                  | `() => {}` |
 | `update` | Function that runs every frame (except when `paused`)           | `() => {}` |
 | `start`  | Function that runs after the stage starts                       | `() => {}` |
