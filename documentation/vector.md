@@ -64,7 +64,7 @@ registerVectorMethods()
 
 #### `Array.prototype.x`
 
-Get the first element of an array.
+Get or set the first element of an array.
 
 ```javascript
 const vector = [3, 2, 5]
@@ -76,7 +76,7 @@ print(vector) //[4, 2, 5]
 
 #### `Array.prototype.y`
 
-Get the second element of an array.
+Get or set the second element of an array.
 
 ```javascript
 const vector = [3, 2, 5]
@@ -88,7 +88,7 @@ print(vector) //[3, 4, 5]
 
 #### `Array.prototype.z`
 
-Get the third element of an array.
+Get or set the third element of an array.
 
 ```javascript
 const vector = [3, 2, 5]
@@ -96,4 +96,40 @@ print(vector.z) //3
 
 vector.z = 4
 print(vector) //[3, 2, 4]
+```
+
+#### `Array.prototype.width`
+
+Get or set the first element of an array.
+
+```javascript
+const dimensions = [20, 10, 30]
+print(dimensions.width) //20
+
+dimensions.width = 40
+print(dimensions) //[40, 10, 30]
+```
+
+#### `Array.prototype.height`
+
+Get or set the second element of an array.
+
+```javascript
+const dimensions = [20, 10, 30]
+print(dimensions.height) //10
+
+dimensions.height = 40
+print(dimensions) //[20, 40, 30]
+```
+
+#### `Array.prototype.depth`
+
+Get or set the third element of an array.
+
+```javascript
+const dimensions = [20, 10, 30]
+print(dimensions.depth) //30
+
+dimensions.depth = 40
+print(dimensions) //[20, 10, 40]
 ```

@@ -680,6 +680,39 @@ const HabitatFrogasaurus = {}
 					this[2] = value
 				},
 			)
+		
+			defineAccessor(
+				Array.prototype,
+				"width",
+				function () {
+					return this[0]
+				},
+				function (value) {
+					this[0] = value
+				},
+			)
+		
+			defineAccessor(
+				Array.prototype,
+				"height",
+				function () {
+					return this[1]
+				},
+				function (value) {
+					this[1] = value
+				},
+			)
+		
+			defineAccessor(
+				Array.prototype,
+				"depth",
+				function () {
+					return this[2]
+				},
+				function (value) {
+					this[2] = value
+				},
+			)
 		}
 		
 
