@@ -54,7 +54,7 @@ It updates whenever you read from it (but only if it has to).
 
 ```javascript
 const count = useSignal(0)
-const double = usePush(() => count.get() * 2)
+const double = usePull(() => count.get() * 2)
 
 count.set(1)
 print(double.get()) //2
