@@ -1,0 +1,12 @@
+<script src="../habitat-embed.js"></script>
+<script>
+	Habitat.registerEverything()
+</script>
+<script>
+	const stage = new Stage()
+
+	stage.tick = (context) => {
+		context.fillStyle = GREEN
+		context.fillRect(0, 0, 2, 2)
+	}
+</script>

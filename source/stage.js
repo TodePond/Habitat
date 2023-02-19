@@ -83,7 +83,7 @@ const resize = (stage) => {
 	canvas.style["margin-bottom"] = marginVertical
 	stage.resize(stage.context)
 }
-const tick = (stage) => {
+const tick = (stage, time) => {
 	stage.clock += stage.speed
 	while (stage.clock > 0) {
 		if (!stage.paused) stage.update(stage.context, time)
