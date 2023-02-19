@@ -151,12 +151,18 @@ const HabitatFrogasaurus = {}
 			return array[index]
 		}
 		
+		const randomBetween = (min, max) => {
+			const range = max - min
+			return (random() % range) + min
+		}
+		
 		const oneIn = (times) => random() % times < 1
 		const maybe = (chance) => oneIn(1 / chance)
 		
 
 		HabitatFrogasaurus["./random.js"].random = random
 		HabitatFrogasaurus["./random.js"].randomFrom = randomFrom
+		HabitatFrogasaurus["./random.js"].randomBetween = randomBetween
 		HabitatFrogasaurus["./random.js"].oneIn = oneIn
 		HabitatFrogasaurus["./random.js"].maybe = maybe
 	}
@@ -1441,6 +1447,7 @@ const Habitat = {
 	memo: HabitatFrogasaurus["./memo.js"].memo,
 	random: HabitatFrogasaurus["./random.js"].random,
 	randomFrom: HabitatFrogasaurus["./random.js"].randomFrom,
+	randomBetween: HabitatFrogasaurus["./random.js"].randomBetween,
 	oneIn: HabitatFrogasaurus["./random.js"].oneIn,
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,

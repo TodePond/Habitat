@@ -17,5 +17,10 @@ export const randomFrom = (array) => {
 	return array[index]
 }
 
+export const randomBetween = (min, max) => {
+	const range = max - min
+	return (random() % range) + min
+}
+
 export const oneIn = (times) => random() % times < 1
 export const maybe = (chance) => oneIn(1 / chance)

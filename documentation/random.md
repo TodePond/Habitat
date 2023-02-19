@@ -16,6 +16,14 @@ Get a random value from an `array`.
 randomFrom([3, 2, 5]) //Randomly 3, 2 or 5
 ```
 
+## `randomBetween(min, max)`
+
+Get a random number between `min` and `max`.
+
+```javascript
+randomBetween(0, 10) //Random number between 0 and 10
+```
+
 ## `maybe(chance)`
 
 Randomly returns true or false. `chance` specifies the chance of true returning.
