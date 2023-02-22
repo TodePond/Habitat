@@ -62,6 +62,15 @@ Get the angle between two vectors.
 angleBetween([3, 2], [4, 2]) //3.14...
 ```
 
+## `rotate(vector, angle, origin = [0, 0])`
+
+Rotate a `vector` by an `angle` around an `origin`.
+
+```javascript
+rotate([3, 2], Math.PI / 2) //[-2, 3]
+rotate([3, 2], Math.PI / 2, [1, 1]) //[-1, 2]
+```
+
 ## `registerVectorMethods()`
 
 Register the following methods.

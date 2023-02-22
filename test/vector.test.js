@@ -1,4 +1,13 @@
-import { add, crossProduct, multiply, scale, subtract } from "../source/vector.js"
+import {
+	add,
+	angleBetween,
+	crossProduct,
+	distanceBetween,
+	multiply,
+	rotate,
+	scale,
+	subtract,
+} from "../source/vector.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Scale", () => {
@@ -63,5 +72,36 @@ describe("Cross Product", () => {
 	it("crosses two 3D vectors", () => {
 		const result = crossProduct([2, 3, 4], [2, 3, 4])
 		assertEquals(result, [0, 0, 0])
+	})
+})
+
+describe("Distance Between", () => {
+	it("finds the distance between two points", () => {
+		const result = distanceBetween([2, 3], [2, 3])
+		assertEquals(result, 0)
+	})
+
+	it("finds the distance between two numbers", () => {
+		const result = distanceBetween(2, 3)
+		assertEquals(result, 1)
+	})
+})
+
+describe("Angle Between", () => {
+	it("finds the angle between two points", () => {
+		const result = angleBetween([2, 3], [2, 3])
+		assertEquals(result, 0)
+	})
+})
+
+describe("Rotate", () => {
+	it("rotates a 2D vector", () => {
+		const result = rotate([2, 3], Math.PI / 2)
+		assertEquals(result, [-3, 2])
+	})
+
+	it("rotates a 2D vector around an origin", () => {
+		const result = rotate([2, 3], Math.PI / 2, [1, 1])
+		assertEquals(result, [-1, 2])
 	})
 })

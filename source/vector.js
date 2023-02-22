@@ -82,10 +82,21 @@ export const angleBetween = (a, b) => {
 			"[Habitat] Sorry, only 2D vectors are supported at the moment. Please bug @todepond to support other lengths :)",
 		)
 	}
-	const displacement = subtractVector(a, b)
+	const displacement = subtract(a, b)
 	const [dx, dy] = displacement
 	const angle = Math.atan2(dy, dx)
 	return angle
+}
+
+export const rotate = (vector, angle, origin = [0, 0]) => {
+	const displacement = subtract(vector, origin)
+	const [dx, dy] = displacement
+	const cos = Math.cos(angle)
+	const sin = Math.sin(angle)
+	const x = dx * cos - dy * sin
+	const y = dx * sin + dy * cos
+	const rotated = add([x, y], origin)
+	return rotated
 }
 
 export const registerVectorMethods = () => {
