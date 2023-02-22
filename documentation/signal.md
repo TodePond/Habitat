@@ -34,6 +34,12 @@ setCount(1)
 print(getCount()) //1
 ```
 
+```javascript
+const count = useSignal(0)
+count.value = 1
+print(count.previous) //0
+```
+
 ## `usePush(get)`
 
 Make a signal that's based on other signals.<br>

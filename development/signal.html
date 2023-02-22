@@ -1,0 +1,30 @@
+<script src="../habitat-embed.js"></script>
+<script>
+	Habitat.registerEverything()
+
+	const display = HTML("<div></div>")
+	const score = useSignal(0)
+
+	useEffect(() => {
+		display.textContent = score.value
+
+		const diff = score.value - score.previous
+		if (diff > 0) {
+			console.log("Score increased by", diff)
+		} else if (diff < 0) {
+			console.log("Score decreased by", -diff)
+		}
+	})
+
+	addEventListener("click", () => {
+		score.value++
+	})
+
+	addEventListener("keydown", () => {
+		score.value--
+	})
+
+	addEventListener("load", () => {
+		document.body.appendChild(display)
+	})
+</script>

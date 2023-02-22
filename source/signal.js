@@ -19,6 +19,7 @@ const Signal = class extends Function {
 		//===============//
 
 		self._value = value
+		self.previous = undefined
 		self.birth = shared.clock++
 		self.pushes = new Set()
 		self.events = new Set()
@@ -26,6 +27,7 @@ const Signal = class extends Function {
 	}
 
 	set(value) {
+		this.previous = this._value
 		this.birth = shared.clock++
 		this._value = value
 
@@ -98,7 +100,7 @@ const Target = class extends Signal {
 
 		const previous = shared.current
 		shared.current = this
-		const value = this.evaluate(this._value)
+		const value = this.evaluate()
 		shared.current = previous
 
 		super.set(value)
