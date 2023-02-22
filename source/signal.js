@@ -98,7 +98,7 @@ const Target = class extends Signal {
 
 		const previous = shared.current
 		shared.current = this
-		const value = this.evaluate()
+		const value = this.evaluate(this._value)
 		shared.current = previous
 
 		super.set(value)
@@ -166,7 +166,7 @@ const Effect = class extends Push {
 	}
 }
 
-const Event = class extends Signal {
+const Update = class extends Signal {
 	constructor(sources, callback) {
 		super()
 		this.sources = new Set(sources)
@@ -196,4 +196,4 @@ export const useSignal = (value) => new Signal(value)
 export const usePull = (evaluate) => new Pull(evaluate)
 export const usePush = (evaluate) => new Push(evaluate)
 export const useEffect = (callback) => new Effect(callback)
-export const useEvent = (sources, callback) => new Event(sources, callback)
+export const useUpdate = (sources, callback) => new Update(sources, callback)

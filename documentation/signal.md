@@ -72,12 +72,12 @@ const history = []
 useEffect(() => history.push(count.value))
 ```
 
-## `useEvent([signals], callback)`
+## `useUpdate([signals], callback)`
 
 Make a signal with no value.<br>
-It updates whenever one of its `signals` updates.
+It updates whenever one of its named `signals` updates.
 
 ```javascript
 const count = useSignal(0)
-useEvent([count], () => print("Count changed!"))
+useUpdate([count], () => print("Count updated!"))
 ```

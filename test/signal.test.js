@@ -1,4 +1,4 @@
-import { useEffect, useEvent, usePull, usePush, useSignal } from "../source/signal.js"
+import { useEffect, usePull, usePush, useSignal, useUpdate } from "../source/signal.js"
 import { assertEquals, assertThrows, describe, it } from "./libraries/deno-test.js"
 
 describe("Signal", () => {
@@ -308,22 +308,22 @@ describe("Effect", () => {
 	})
 })
 
-describe("Event", () => {
+describe("Update", () => {
 	it("can't be set", () => {
-		const event = useEvent([], () => {})
+		const event = useUpdate([], () => {})
 		assertThrows(() => event.set(0), "Events don't have a value")
 	})
 
 	it("doesn't fire when it's created", () => {
 		let clock = 0
-		useEvent([], () => clock++)
+		useUpdate([], () => clock++)
 		assertEquals(clock, 0)
 	})
 
 	it("fires when its sources change", () => {
 		let clock = 0
 		const count = useSignal(0)
-		useEvent([count], () => clock++)
+		useUpdate([count], () => clock++)
 		assertEquals(clock, 0)
 		count.set(1)
 		assertEquals(clock, 1)
@@ -337,8 +337,8 @@ describe("Event", () => {
 		const doubled = usePush(() => count.get() * 2)
 		const tripled = usePull(() => doubled.get() * 3)
 
-		useEvent([doubled], () => doubleClock++)
-		useEvent([tripled], () => tripleClock++)
+		useUpdate([doubled], () => doubleClock++)
+		useUpdate([tripled], () => tripleClock++)
 
 		assertEquals(doubleClock, 0)
 		assertEquals(tripleClock, 0)
@@ -357,7 +357,7 @@ describe("Event", () => {
 	it("can be disposed", () => {
 		let clock = 0
 		const count = useSignal(0)
-		const event = useEvent([count], () => clock++)
+		const event = useUpdate([count], () => clock++)
 		assertEquals(clock, 0)
 		count.set(1)
 		assertEquals(clock, 1)
@@ -370,7 +370,7 @@ describe("Event", () => {
 		let clock = 0
 		const count = useSignal(0)
 		const score = useSignal(0)
-		useEvent([count, score], () => clock++)
+		useUpdate([count, score], () => clock++)
 		assertEquals(clock, 0)
 		count.set(1)
 		assertEquals(clock, 1)
@@ -381,7 +381,7 @@ describe("Event", () => {
 	it("can be fired manually", () => {
 		let clock = 0
 		const count = useSignal(0)
-		const event = useEvent([count], () => clock++)
+		const event = useUpdate([count], () => clock++)
 		assertEquals(clock, 0)
 		count.set(1)
 		assertEquals(clock, 1)
