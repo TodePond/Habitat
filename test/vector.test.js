@@ -3,6 +3,7 @@ import {
 	angleBetween,
 	crossProduct,
 	distanceBetween,
+	equals,
 	multiply,
 	rotate,
 	scale,
@@ -103,5 +104,22 @@ describe("Rotate", () => {
 	it("rotates a 2D vector around an origin", () => {
 		const result = rotate([2, 3], Math.PI / 2, [1, 1])
 		assertEquals(result, [-1, 2])
+	})
+})
+
+describe("Equals", () => {
+	it("compares two numbers", () => {
+		const result = equals(2, 3)
+		assertEquals(result, false)
+	})
+
+	it("compares two 2D vectors", () => {
+		const result = equals([2, 3], [2, 3])
+		assertEquals(result, true)
+	})
+
+	it("compares two 3D vectors", () => {
+		const result = equals([2, 3, 4], [2, 3, 4])
+		assertEquals(result, true)
 	})
 })

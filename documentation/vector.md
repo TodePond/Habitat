@@ -2,6 +2,15 @@
 
 These functions can be used on numbers, 2D vectors, and 3D vectors (where applicable).
 
+## `equals(a, b)`
+
+Check if two values are equal.
+
+```javascript
+equals(3, 3) //true
+equals([3, 2], [3, 2]) //true
+```
+
 ## `scale(value, scale)`
 
 Scale a `value` by `scale`.

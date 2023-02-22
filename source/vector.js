@@ -1,5 +1,18 @@
 import { defineAccessor } from "./property.js"
 
+export const equals = (a, b) => {
+	if (typeof a === "number") return a === b
+	if (a.length === 2) {
+		const [ax, ay] = a
+		const [bx, by] = b
+		return ax === bx && ay === by
+	} else {
+		const [ax, ay, az] = a
+		const [bx, by, bz] = b
+		return ax === bx && ay === by && az === bz
+	}
+}
+
 export const scale = (value, scale) => {
 	if (typeof value === "number") return value * scale
 	return value.map((v) => v * scale)
