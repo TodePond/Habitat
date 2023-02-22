@@ -74,8 +74,10 @@ It updates immediately, and whenever one of its signals updates.<br>
 ```javascript
 const count = useSignal(0)
 
-const history = []
-useEffect(() => history.push(count.value))
+const display = HTML("<div></div>")
+useEffect(() => {
+	display.textContent = count.value
+})
 ```
 
 ## `useUpdate([signals], callback)`

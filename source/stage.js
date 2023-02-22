@@ -49,8 +49,8 @@ export const Stage = class {
 		on("resize", () => this.fireResize())
 		on(keyDown(" "), () => (this.paused = !this.paused))
 
-		this.start(this.getContexts())
 		this.fireResize()
+		this.start(this.getContexts())
 		this.fireTick()
 	}
 
@@ -82,6 +82,7 @@ const LayerTemplate = class {
 const CanvasLayer = class extends LayerTemplate {
 	start() {
 		const canvas = document.createElement("canvas")
+		canvas.style["position"] = "absolute"
 		document.body.appendChild(canvas)
 		return canvas.getContext("2d")
 	}
@@ -103,7 +104,6 @@ const HTMLLayer = class extends LayerTemplate {
 		div.style["left"] = "0px"
 		div.style["width"] = "100%"
 		div.style["height"] = "100%"
-		div.style["pointer-events"] = "none"
 		document.body.appendChild(div)
 		return div
 	}
