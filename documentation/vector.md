@@ -80,6 +80,14 @@ rotate([3, 2], Math.PI / 2) //[-2, 3]
 rotate([3, 2], Math.PI / 2, [1, 1]) //[-1, 2]
 ```
 
+## `normalise(vector)`
+
+Normalise a `vector`.
+
+```javascript
+normalise([5, 0]) //[1, 0]
+```
+
 ## `registerVectorMethods()`
 
 Register the following methods.

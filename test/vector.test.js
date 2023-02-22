@@ -5,6 +5,7 @@ import {
 	distanceBetween,
 	equals,
 	multiply,
+	normalise,
 	rotate,
 	scale,
 	subtract,
@@ -121,5 +122,17 @@ describe("Equals", () => {
 	it("compares two 3D vectors", () => {
 		const result = equals([2, 3, 4], [2, 3, 4])
 		assertEquals(result, true)
+	})
+})
+
+describe("Normalise", () => {
+	it("normalises a 2D vector", () => {
+		const result = normalise([2, 0])
+		assertEquals(result, [1, 0])
+	})
+
+	it("normalises a 3D vector", () => {
+		const result = normalise([2, 0, 0])
+		assertEquals(result, [1, 0, 0])
 	})
 })

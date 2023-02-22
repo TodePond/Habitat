@@ -112,6 +112,13 @@ export const rotate = (vector, angle, origin = [0, 0]) => {
 	return rotated
 }
 
+export const normalise = (vector) => {
+	const origin = vector.map(() => 0)
+	const distance = distanceBetween(vector, origin)
+	const normalised = scale(vector, 1 / distance)
+	return normalised
+}
+
 export const registerVectorMethods = () => {
 	defineAccessor(
 		Array.prototype,
