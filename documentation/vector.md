@@ -10,6 +10,14 @@ Scale a `value` by `scale`.
 scale([3, 4], 2) //[6, 8]
 ```
 
+## `multiply(a, b)`
+
+Multiply two values together.
+
+```javascript
+multiply(3, 2) //6
+```
+
 ## `add(a, b)`
 
 Add two values together.

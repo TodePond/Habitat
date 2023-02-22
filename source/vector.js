@@ -5,6 +5,12 @@ export const scale = (value, scale) => {
 	return value.map((v) => v * scale)
 }
 
+export const multiply = (a, b) => {
+	if (typeof b === "number") return scale(a, b)
+	if (typeof a === "number") return scale(b, a)
+	throw new Error("Unimplemented because I can't decide what to do with vectors")
+}
+
 export const add = (a, b) => {
 	if (typeof a === "number") {
 		return a + b
@@ -64,7 +70,7 @@ export const distanceBetween = (a, b) => {
 		return Math.abs(a - b)
 	}
 
-	const displacement = subtractVector(a, b)
+	const displacement = subtract(a, b)
 	const [dx, dy, dz = 0] = displacement
 	const distance = Math.hypot(dx, dy, dz)
 	return distance
