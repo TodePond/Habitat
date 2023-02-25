@@ -4,7 +4,7 @@ import { keyDown } from "./keyboard.js"
 export const Stage = class {
 	constructor(options) {
 		const properties = {
-			layers: ["2d"],
+			context: "2d",
 
 			speed: 1.0,
 			paused: false,
@@ -16,8 +16,16 @@ export const Stage = class {
 			...options,
 		}
 
+		const layered = typeof properties.context !== "string"
+
+		const contextTypes = layered ? properties.context : [properties.context]
+		const layers = contextTypes.map((v) => new Layer(v))
+		const context = layered ? layers.map((v) => v.context) : layers[0].context
+
 		const internal = {
-			layers: properties.layers.map((v) => new Layer(v)),
+			layered,
+			layers,
+			context,
 			clock: 0.0,
 		}
 
@@ -35,8 +43,6 @@ export const Stage = class {
 		}
 	}
 
-	getContexts = () => this.layers.map((v) => v.context)
-
 	fireStart = () => {
 		document.body.style["background-color"] = "#06070a"
 		document.body.style["margin"] = "0px"
@@ -46,11 +52,13 @@ export const Stage = class {
 			layer.context = layer.start()
 		}
 
+		this.context = this.layered ? this.layers.map((v) => v.context) : this.layers[0].context
+
 		on("resize", () => this.fireResize())
 		on(keyDown(" "), () => (this.paused = !this.paused))
 
 		this.fireResize()
-		this.start(this.getContexts())
+		this.start(this.context)
 		this.fireTick()
 	}
 
@@ -59,14 +67,14 @@ export const Stage = class {
 			layer.resize(layer.context)
 		}
 
-		this.resize(this.getContexts())
+		this.resize(this.context)
 	}
 
 	fireTick = (time) => {
 		this.clock += this.speed
 		while (this.clock > 0) {
-			if (!this.paused) this.update(this.getContexts(), time)
-			this.tick(this.getContexts(), time)
+			if (!this.paused) this.update(this.context, time)
+			this.tick(this.context, time)
 			this.clock--
 		}
 

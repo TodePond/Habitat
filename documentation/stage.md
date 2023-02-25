@@ -4,21 +4,21 @@
 
 Create a simple animated canvas with the following `properties`.
 
-| Property | Description                                                     | Default    |
-| -------- | --------------------------------------------------------------- | ---------- |
-| `layers` | Which layers to create                                          | `["2d"]`   |
-| `tick`   | Function that runs every frame                                  | `() => {}` |
-| `update` | Function that runs every frame (except when `paused`)           | `() => {}` |
-| `start`  | Function that runs after the stage starts                       | `() => {}` |
-| `resize` | Function that runs after the screen resizes                     | `() => {}` |
-| `paused` | Whether `update` runs or not (toggled by pressing the spacebar) | `false`    |
-| `speed`  | How many `tick` functions should run per frame                  | `1.0`      |
+| Property  | Description                                                     | Default    |
+| --------- | --------------------------------------------------------------- | ---------- |
+| `context` | What type of stage to create                                    | `"2d"`     |
+| `tick`    | Function that runs every frame                                  | `() => {}` |
+| `update`  | Function that runs every frame (except when `paused`)           | `() => {}` |
+| `start`   | Function that runs after the stage starts                       | `() => {}` |
+| `resize`  | Function that runs after the screen resizes                     | `() => {}` |
+| `paused`  | Whether `update` runs or not (toggled by pressing the spacebar) | `false`    |
+| `speed`   | How many `tick` functions should run per frame                  | `1.0`      |
 
 Here is a simple example:
 
 ```javascript
 const stage = new Stage()
-stage.tick = ([context], time) => {
+stage.tick = (context) => {
 	// Clear the screen every frame!
 	context.clearRect(0, 0, context.canvas.width, context.canvas.height)
 
@@ -28,19 +28,19 @@ stage.tick = ([context], time) => {
 }
 ```
 
-## Layers
+## Contexts
 
-You can make different kinds of layers.
+You can make different kinds of contexts. Here are the types:
 
-| Layer  | Description  |
-| ------ | ------------ |
-| `2d`   | 2D canvas    |
-| `html` | HTML element |
+| Layer  | Description       |
+| ------ | ----------------- |
+| `2d`   | 2D canvas context |
+| `html` | HTML element      |
 
-They get passed to your functions.
+You can also use an array to make multiple layers of contexts.
 
 ```javascript
-const stage = new Stage({ layers: ["2d", "html", "2d"] })
+const stage = new Stage({ context: ["2d", "html", "2d"] })
 
 stage.start = ([background, html, foreground]) => {
 	background.fillStyle = BLUE

@@ -3,11 +3,11 @@
 	Habitat.registerEverything()
 </script>
 <script>
-	const stage = new Stage({ layers: ["2d", "html", "2d"] })
+	const stage = new Stage({ context: ["2d", "html", "2d"] })
 
 	stage.start = ([background, html, foreground]) => {
 		background.fillStyle = BLUE
-		background.fillRect(0, 0, background.canvas.width, background.canvas.height)
+		background.fillRect(0, 0, background.d.canvas.width, background.canvas.height)
 
 		html.innerHTML = "Hello, world!"
 
