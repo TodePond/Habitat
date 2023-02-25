@@ -3,16 +3,19 @@
 	Habitat.registerEverything()
 </script>
 <script>
-	const stage = new Stage({ context: ["2d", "html", "2d"] })
+	const stage = new Stage({ context: ["2d", "html", "2d", "svg"] })
 
-	stage.start = ([background, html, foreground]) => {
+	stage.start = ([background, html, foreground, svg]) => {
 		background.fillStyle = BLUE
-		background.fillRect(0, 0, background.d.canvas.width, background.canvas.height)
+		background.fillRect(0, 0, background.canvas.width, background.canvas.height)
 
 		html.innerHTML = "Hello, world!"
 
 		foreground.fillStyle = RED
 		foreground.fillRect(30, 30, 100, 100)
 		foreground.canvas.style["pointer-events"] = "none"
+
+		const rectangle = SVG(`<rect x="200" y="30" width="100" height="100" fill="${GREEN}" />`)
+		svg.append(rectangle)
 	}
 </script>

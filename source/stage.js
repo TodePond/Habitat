@@ -117,10 +117,24 @@ const HTMLLayer = class extends LayerTemplate {
 	}
 }
 
+const SVGLayer = class extends LayerTemplate {
+	start() {
+		const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+		svg.style["position"] = "absolute"
+		svg.style["top"] = "0px"
+		svg.style["left"] = "0px"
+		svg.style["width"] = "100%"
+		svg.style["height"] = "100%"
+		document.body.appendChild(svg)
+		return svg
+	}
+}
+
 const Layer = class {
 	static types = {
 		"2d": CanvasLayer,
 		"html": HTMLLayer,
+		"svg": SVGLayer,
 	}
 
 	constructor(type) {

@@ -26,6 +26,7 @@
 -   [Signal](signal.md)
 -   [Stage](stage.md)
 -   [String](string.md)
+-   [SVG](svg.md)
 -   [Touch](touch.md)
 -   [Tween](tween.md)
 -   [Vector](vector.md)

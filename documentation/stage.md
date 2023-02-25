@@ -36,6 +36,7 @@ You can make different kinds of contexts. Here are the types:
 | ------ | ----------------- |
 | `2d`   | 2D canvas context |
 | `html` | HTML element      |
+| `svg`  | SVG element       |
 
 You can also use an array to make multiple layers of contexts.
 

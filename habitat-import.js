@@ -1049,10 +1049,24 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
+		const SVGLayer = class extends LayerTemplate {
+			start() {
+				const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+				svg.style["position"] = "absolute"
+				svg.style["top"] = "0px"
+				svg.style["left"] = "0px"
+				svg.style["width"] = "100%"
+				svg.style["height"] = "100%"
+				document.body.appendChild(svg)
+				return svg
+			}
+		}
+		
 		const Layer = class {
 			static types = {
 				"2d": CanvasLayer,
 				"html": HTMLLayer,
+				"svg": SVGLayer,
 			}
 		
 			constructor(type) {
@@ -1339,6 +1353,22 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./json.js"]._ = _
 	}
 
+	//====== ./svg.js ======
+	{
+		HabitatFrogasaurus["./svg.js"] = {}
+		const SVG = (source) => {
+			const group = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+			group.innerHTML = source
+			if (group.childElementCount === 1) {
+				return group.firstChild
+			}
+			return group
+		}
+		
+
+		HabitatFrogasaurus["./svg.js"].SVG = SVG
+	}
+
 	//====== ./mouse.js ======
 	{
 		HabitatFrogasaurus["./mouse.js"] = {}
@@ -1593,6 +1623,7 @@ export const HUES = HabitatFrogasaurus["./colour.js"].HUES
 export const SHADES = HabitatFrogasaurus["./colour.js"].SHADES
 export const COLOURS = HabitatFrogasaurus["./colour.js"].COLOURS
 export const _ = HabitatFrogasaurus["./json.js"]._
+export const SVG = HabitatFrogasaurus["./svg.js"].SVG
 export const getMouse = HabitatFrogasaurus["./mouse.js"].getMouse
 export const mouseDown = HabitatFrogasaurus["./mouse.js"].mouseDown
 export const mouseUp = HabitatFrogasaurus["./mouse.js"].mouseUp
@@ -1678,6 +1709,7 @@ export const Habitat = {
 	SHADES: HabitatFrogasaurus["./colour.js"].SHADES,
 	COLOURS: HabitatFrogasaurus["./colour.js"].COLOURS,
 	_: HabitatFrogasaurus["./json.js"]._,
+	SVG: HabitatFrogasaurus["./svg.js"].SVG,
 	getMouse: HabitatFrogasaurus["./mouse.js"].getMouse,
 	mouseDown: HabitatFrogasaurus["./mouse.js"].mouseDown,
 	mouseUp: HabitatFrogasaurus["./mouse.js"].mouseUp,
