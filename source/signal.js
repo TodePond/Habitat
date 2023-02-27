@@ -55,6 +55,13 @@ const Signal = class extends Function {
 
 	_addParent(parent) {
 		this._parents.add(parent)
+
+		if (this.lazy) {
+			if (parent._parents === undefined) return
+			for (const grandparent of parent._parents) {
+				this._addParent(grandparent)
+			}
+		}
 	}
 
 	set(value) {
@@ -69,6 +76,13 @@ const Signal = class extends Function {
 	}
 
 	get() {
+		if (this.lazy) {
+			const parents = [...this._parents]
+			if (this._birth < 0 || parents.some((parent) => parent._birth > this._birth)) {
+				this.update()
+			}
+		}
+
 		const { active } = shared
 		if (active !== null) {
 			active._addParent(this)
@@ -117,33 +131,7 @@ const Signal = class extends Function {
 	//===============//
 }
 
-const DynamicLazy = class extends Signal {
-	dynamic = true
-	lazy = true
-
-	constructor(evaluate) {
-		super(evaluate, { dynamic: true, lazy: true })
-	}
-
-	_addParent(parent) {
-		this._parents.add(parent)
-		if (parent._parents === undefined) return
-		for (const grandparent of parent._parents) {
-			this._addParent(grandparent)
-		}
-	}
-
-	get() {
-		const parents = [...this._parents]
-		if (this._birth < 0 || parents.some((parent) => parent._birth > this._birth)) {
-			this.update()
-		}
-
-		return super.get()
-	}
-}
-
 export const useSignal = (value) => new Signal(value)
-export const usePull = (evaluate) => new DynamicLazy(evaluate)
+export const usePull = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: true })
 export const usePush = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: false })
 export const useEffect = usePush

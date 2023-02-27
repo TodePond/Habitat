@@ -895,6 +895,13 @@ const HabitatFrogasaurus = {}
 		
 			_addParent(parent) {
 				this._parents.add(parent)
+		
+				if (this.lazy) {
+					if (parent._parents === undefined) return
+					for (const grandparent of parent._parents) {
+						this._addParent(grandparent)
+					}
+				}
 			}
 		
 			set(value) {
@@ -909,6 +916,13 @@ const HabitatFrogasaurus = {}
 			}
 		
 			get() {
+				if (this.lazy) {
+					const parents = [...this._parents]
+					if (this._birth < 0 || parents.some((parent) => parent._birth > this._birth)) {
+						this.update()
+					}
+				}
+		
 				const { active } = shared
 				if (active !== null) {
 					active._addParent(this)
@@ -957,34 +971,8 @@ const HabitatFrogasaurus = {}
 			//===============//
 		}
 		
-		const DynamicLazy = class extends Signal {
-			dynamic = true
-			lazy = true
-		
-			constructor(evaluate) {
-				super(evaluate, { dynamic: true, lazy: true })
-			}
-		
-			_addParent(parent) {
-				this._parents.add(parent)
-				if (parent._parents === undefined) return
-				for (const grandparent of parent._parents) {
-					this._addParent(grandparent)
-				}
-			}
-		
-			get() {
-				const parents = [...this._parents]
-				if (this._birth < 0 || parents.some((parent) => parent._birth > this._birth)) {
-					this.update()
-				}
-		
-				return super.get()
-			}
-		}
-		
 		const useSignal = (value) => new Signal(value)
-		const usePull = (evaluate) => new DynamicLazy(evaluate)
+		const usePull = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: true })
 		const usePush = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: false })
 		const useEffect = usePush
 		
