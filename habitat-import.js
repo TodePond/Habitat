@@ -995,12 +995,26 @@ const HabitatFrogasaurus = {}
 			//===============//
 		}
 		
-		const useSignal = (value) => new Signal(value)
-		const usePull = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: true })
-		const usePush = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: false })
-		const useEffect = usePush
+		const use = (value, options = {}) => {
+			const properties = {
+				dynamic: typeof value === "function",
+				lazy: false,
+				store: Array.isArray(value) || typeof value === "object",
+				...options,
+			}
+		
+			return new Signal(value, properties)
+		}
+		
+		// Legacy
+		const useSignal = use
+		const usePull = (value) => use(value, { lazy: true })
+		const usePush = use
+		const useEffect = use
 		
 
+		HabitatFrogasaurus["./signal.js"].Signal = Signal
+		HabitatFrogasaurus["./signal.js"].use = use
 		HabitatFrogasaurus["./signal.js"].useSignal = useSignal
 		HabitatFrogasaurus["./signal.js"].usePull = usePull
 		HabitatFrogasaurus["./signal.js"].usePush = usePush
@@ -1569,6 +1583,8 @@ export const randomFrom = HabitatFrogasaurus["./random.js"].randomFrom
 export const randomBetween = HabitatFrogasaurus["./random.js"].randomBetween
 export const oneIn = HabitatFrogasaurus["./random.js"].oneIn
 export const maybe = HabitatFrogasaurus["./random.js"].maybe
+export const Signal = HabitatFrogasaurus["./signal.js"].Signal
+export const use = HabitatFrogasaurus["./signal.js"].use
 export const useSignal = HabitatFrogasaurus["./signal.js"].useSignal
 export const usePull = HabitatFrogasaurus["./signal.js"].usePull
 export const usePush = HabitatFrogasaurus["./signal.js"].usePush
@@ -1654,6 +1670,8 @@ export const Habitat = {
 	randomBetween: HabitatFrogasaurus["./random.js"].randomBetween,
 	oneIn: HabitatFrogasaurus["./random.js"].oneIn,
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
+	Signal: HabitatFrogasaurus["./signal.js"].Signal,
+	use: HabitatFrogasaurus["./signal.js"].use,
 	useSignal: HabitatFrogasaurus["./signal.js"].useSignal,
 	usePull: HabitatFrogasaurus["./signal.js"].usePull,
 	usePush: HabitatFrogasaurus["./signal.js"].usePush,

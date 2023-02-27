@@ -3,7 +3,7 @@ const shared = {
 	active: null,
 }
 
-const Signal = class extends Function {
+export const Signal = class extends Function {
 	// How the signal behaves
 	dynamic = false
 	lazy = false
@@ -155,7 +155,19 @@ const Signal = class extends Function {
 	//===============//
 }
 
-export const useSignal = (value) => new Signal(value)
-export const usePull = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: true })
-export const usePush = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: false })
-export const useEffect = usePush
+export const use = (value, options = {}) => {
+	const properties = {
+		dynamic: typeof value === "function",
+		lazy: false,
+		store: Array.isArray(value) || typeof value === "object",
+		...options,
+	}
+
+	return new Signal(value, properties)
+}
+
+// Legacy
+export const useSignal = use
+export const usePull = (value) => use(value, { lazy: true })
+export const usePush = use
+export const useEffect = use
