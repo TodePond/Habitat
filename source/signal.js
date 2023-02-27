@@ -3,16 +3,22 @@ const shared = {
 	active: null,
 }
 
-const Value = class extends Function {
+const Signal = class extends Function {
 	dynamic = false
 	store = false
 
 	_birth = shared.clock++
 	_children = new Set()
+	_parents = new Set()
+
 	_current = undefined
 	_previous = undefined
 
-	constructor(value) {
+	_evaluate = function () {
+		return this._current
+	}
+
+	constructor(value, options = {}) {
 		//==== Sugar ====//
 		super("value", "return this._self._func(value)")
 		const self = this.bind(this)
@@ -27,8 +33,24 @@ const Value = class extends Function {
 		}
 		//===============//
 
-		self._current = value
+		Object.assign(self, {
+			dynamic: false,
+			lazy: false,
+			store: false,
+			...options,
+		})
+
+		if (self.dynamic) {
+			self._evaluate = value
+		} else {
+			self._current = value
+		}
+
 		return self
+	}
+
+	_addParent(parent) {
+		this._parents.add(parent)
 	}
 
 	set(value) {
@@ -55,7 +77,24 @@ const Value = class extends Function {
 	}
 
 	update() {
-		this.set(this._current)
+		if (this.dynamic) {
+			this.set(this._current)
+			return
+		}
+
+		const parents = [...this._parents]
+		for (const parent of parents) {
+			parent._children.delete(this)
+		}
+
+		this._parents.clear()
+
+		const paused = shared.active
+		shared.active = this
+		const value = this._evaluate()
+		shared.active = paused
+
+		this.set(value)
 	}
 
 	//==== Sugar ====//
@@ -74,20 +113,11 @@ const Value = class extends Function {
 	//===============//
 }
 
-const Dynamic = class extends Value {
-	dynamic = true
-
+const Dynamic = class extends Signal {
 	_birth = -Infinity
-	_evaluate = () => {}
-	_parents = new Set()
 
 	constructor(evaluate) {
-		super()
-		this._evaluate = evaluate
-	}
-
-	_addParent(parent) {
-		this._parents.add(parent)
+		super(evaluate, { dynamic: true })
 	}
 
 	update() {
@@ -151,7 +181,7 @@ const DynamicEager = class extends Dynamic {
 	}
 }
 
-export const useSignal = (value) => new Value(value)
+export const useSignal = (value) => new Signal(value)
 export const usePull = (evaluate) => new DynamicLazy(evaluate)
 export const usePush = (evaluate) => new DynamicEager(evaluate)
 export const useEffect = (callback) => new DynamicEager(callback)
