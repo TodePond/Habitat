@@ -46,6 +46,10 @@ const Signal = class extends Function {
 			self.set(value)
 		}
 
+		if (!self.lazy) {
+			self.update()
+		}
+
 		return self
 	}
 
@@ -118,7 +122,7 @@ const DynamicLazy = class extends Signal {
 	lazy = true
 
 	constructor(evaluate) {
-		super(evaluate, { dynamic: true })
+		super(evaluate, { dynamic: true, lazy: true })
 	}
 
 	_addParent(parent) {
@@ -139,17 +143,7 @@ const DynamicLazy = class extends Signal {
 	}
 }
 
-const DynamicEager = class extends Signal {
-	dynamic = true
-	lazy = false
-
-	constructor(evaluate) {
-		super(evaluate, { dynamic: true })
-		this.update()
-	}
-}
-
 export const useSignal = (value) => new Signal(value)
 export const usePull = (evaluate) => new DynamicLazy(evaluate)
-export const usePush = (evaluate) => new DynamicEager(evaluate)
-export const useEffect = (callback) => new DynamicEager(callback)
+export const usePush = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: false })
+export const useEffect = usePush

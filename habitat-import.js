@@ -886,6 +886,10 @@ const HabitatFrogasaurus = {}
 					self.set(value)
 				}
 		
+				if (!self.lazy) {
+					self.update()
+				}
+		
 				return self
 			}
 		
@@ -958,7 +962,7 @@ const HabitatFrogasaurus = {}
 			lazy = true
 		
 			constructor(evaluate) {
-				super(evaluate, { dynamic: true })
+				super(evaluate, { dynamic: true, lazy: true })
 			}
 		
 			_addParent(parent) {
@@ -979,20 +983,10 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		const DynamicEager = class extends Signal {
-			dynamic = true
-			lazy = false
-		
-			constructor(evaluate) {
-				super(evaluate, { dynamic: true })
-				this.update()
-			}
-		}
-		
 		const useSignal = (value) => new Signal(value)
 		const usePull = (evaluate) => new DynamicLazy(evaluate)
-		const usePush = (evaluate) => new DynamicEager(evaluate)
-		const useEffect = (callback) => new DynamicEager(callback)
+		const usePush = (evaluate) => new Signal(evaluate, { dynamic: true, lazy: false })
+		const useEffect = usePush
 		
 
 		HabitatFrogasaurus["./signal.js"].useSignal = useSignal
