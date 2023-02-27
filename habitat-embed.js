@@ -847,7 +847,7 @@ const HabitatFrogasaurus = {}
 			dynamic = false
 			store = false
 		
-			_birth = shared.clock++
+			_birth = -Infinity
 			_children = new Set()
 			_parents = new Set()
 		
@@ -883,7 +883,7 @@ const HabitatFrogasaurus = {}
 				if (self.dynamic) {
 					self._evaluate = value
 				} else {
-					self._current = value
+					self.set(value)
 				}
 		
 				return self
@@ -917,7 +917,7 @@ const HabitatFrogasaurus = {}
 			}
 		
 			update() {
-				if (this.dynamic) {
+				if (!this.dynamic) {
 					this.set(this._current)
 					return
 				}
@@ -953,36 +953,12 @@ const HabitatFrogasaurus = {}
 			//===============//
 		}
 		
-		const Dynamic = class extends Signal {
-			_birth = -Infinity
-		
-			constructor(evaluate) {
-				super(evaluate, { dynamic: true })
-			}
-		
-			update() {
-				const parents = [...this._parents]
-				for (const parent of parents) {
-					parent._children.delete(this)
-				}
-		
-				this._parents.clear()
-		
-				const paused = shared.active
-				shared.active = this
-				const value = this._evaluate()
-				shared.active = paused
-		
-				super.set(value)
-			}
-		}
-		
-		const DynamicLazy = class extends Dynamic {
+		const DynamicLazy = class extends Signal {
 			dynamic = true
 			lazy = true
 		
 			constructor(evaluate) {
-				super(evaluate)
+				super(evaluate, { dynamic: true })
 			}
 		
 			_addParent(parent) {
@@ -1001,23 +977,15 @@ const HabitatFrogasaurus = {}
 		
 				return super.get()
 			}
-		
-			set() {
-				throw new Error("Pulls are read-only")
-			}
 		}
 		
-		const DynamicEager = class extends Dynamic {
+		const DynamicEager = class extends Signal {
 			dynamic = true
 			lazy = false
 		
 			constructor(evaluate) {
-				super(evaluate)
+				super(evaluate, { dynamic: true })
 				this.update()
-			}
-		
-			set() {
-				throw new Error("Pushes are read-only")
 			}
 		}
 		

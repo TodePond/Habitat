@@ -1,5 +1,5 @@
 import { useEffect, usePull, usePush, useSignal } from "../source/signal.js"
-import { assertEquals, assertThrows, describe, it } from "./libraries/deno-test.js"
+import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Signal", () => {
 	it("stores its value", () => {
@@ -23,11 +23,6 @@ describe("Pull", () => {
 	it("stores its evaluator", () => {
 		const count = usePull(() => 0)
 		assertEquals(count._evaluate(), 0)
-	})
-
-	it("is read-only", () => {
-		const count = usePull(() => 0)
-		assertThrows(() => count.set(1), "Pulls are read-only")
 	})
 
 	it("doesn't initialise its value", () => {
@@ -111,11 +106,6 @@ describe("Pull", () => {
 })
 
 describe("Push", () => {
-	it("is read-only", () => {
-		const count = usePush(() => 0)
-		assertThrows(() => count.set(1), "Pushes are read-only")
-	})
-
 	it("initialises its value", () => {
 		const count = usePush(() => 0)
 		assertEquals(count._current, 0)
@@ -239,11 +229,6 @@ describe("Sugar", () => {
 })
 
 describe("Effect", () => {
-	it("can't be set", () => {
-		const effect = useEffect(() => {})
-		assertThrows(() => effect.set(0), "Effects don't have a value")
-	})
-
 	it("fires when it's created", () => {
 		let clock = 0
 		useEffect(() => clock++)
