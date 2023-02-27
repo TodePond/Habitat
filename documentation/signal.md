@@ -1,91 +1,79 @@
 # Signal
 
-## `useSignal(value)`
+## `use(value, options?)`
 
-Make a signal that stores a `value`.
+Make a signal.
+
+## Value
+
+You can store a value.
 
 ```javascript
-const count = useSignal(0)
+const count = use(0)
 ```
 
-You can get and set the signal in various ways.
+You can get and set the value in various ways.
 
 ```javascript
-const count = useSignal(0)
+const count = use(0)
 count.set(1)
 print(count.get()) //1
 ```
 
 ```javascript
-const count = useSignal(0)
+const count = use(0)
 count.value = 1
 print(count.value) //1
 ```
 
 ```javascript
-const count = useSignal(0)
+const count = use(0)
 count(1)
 print(count()) //1
 ```
 
 ```javascript
-const [getCount, setCount] = useSignal(0)
+const [getCount, setCount] = use(0)
 setCount(1)
 print(getCount()) //1
 ```
 
 ```javascript
-const count = useSignal(0)
+const count = use(0)
 count.value = 1
 print(count.previous) //0
 ```
 
-## `usePush(get)`
+## Dynamic
 
-Make a signal that's based on other signals.<br>
-It updates whenever one of those signals updates.
+You can make a dynamic signal by passing a function.<br>
+It updates whenever one of its used signals updates.
 
 ```javascript
-const count = useSignal(0)
-const double = usePush(() => count.get() * 2)
+const count = use(0)
+const double = use(() => count.get() * 2)
 
 count.set(1)
 print(double.get()) //2
 ```
 
-## `usePull(get)`
-
-Make a signal that's based on other signals.<br>
-It updates whenever you read from it (but only if it has to).
-
 ```javascript
-const count = useSignal(0)
-const double = usePull(() => count.get() * 2)
-
-count.set(1)
-print(double.get()) //2
-```
-
-## `useEffect(callback)`
-
-Make a signal with no value.<br>
-It updates immediately, and whenever one of its signals updates.<br>
-
-```javascript
-const count = useSignal(0)
-
+const count = use(0)
 const display = HTML("<div></div>")
-useEffect(() => {
+use(() => {
 	display.textContent = count.value
 })
 ```
 
-## `useUpdate([signals], callback)`
+## Lazy
 
-Make a signal with no value.<br>
-It updates whenever one of its named `signals` updates.
+You can make a `lazy` dynamic signal.<br>
+It updates whenever you read from it (but only if it has to).
 
 ```javascript
-const count = useSignal(0)
-useUpdate([count], () => print("Count updated!"))
+const count = use(0)
+const double = use(() => count.get() * 2, { lazy: true })
+
+count.set(1)
+print(double.get()) //2
 ```
