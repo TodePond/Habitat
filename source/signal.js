@@ -1,15 +1,24 @@
 const shared = {
 	clock: 0,
-	current: null,
+	active: null,
 }
 
-const Signal = class extends Function {
+const Value = class extends Function {
+	dynamic = false
+	store = false
+
+	_birth = shared.clock++
+	_children = new Set()
+	_current = undefined
+	_previous = undefined
+
 	constructor(value) {
 		//==== Sugar ====//
-		super("value", "return this.self.func(value)")
+		super("value", "return this._self._func(value)")
 		const self = this.bind(this)
-		this.self = self
-		self.func = (value) => {
+		this._self = self
+		Object.assign(self, this)
+		self._func = (value) => {
 			if (value === undefined) {
 				return self.get()
 			} else {
@@ -18,48 +27,35 @@ const Signal = class extends Function {
 		}
 		//===============//
 
-		self._value = value
-		self.previous = undefined
-		self.birth = shared.clock++
-		self.pushes = new Set()
-		self.events = new Set()
+		self._current = value
 		return self
 	}
 
 	set(value) {
-		this.previous = this._value
-		this.birth = shared.clock++
-		this._value = value
+		this._previous = this._current
+		this._birth = shared.clock++
+		this._current = value
 
-		const pushes = [...this.pushes]
-		for (const push of pushes) {
-			push.update()
-		}
-
-		const events = [...this.events]
-		for (const event of events) {
-			event.update()
+		const children = [...this._children]
+		for (const child of children) {
+			child.update()
 		}
 	}
 
 	get() {
-		const { current } = shared
-		if (current !== null) {
-			current.addSource(this)
+		const { active } = shared
+		if (active !== null) {
+			active._addParent(this)
 
-			if (current instanceof Push) {
-				this.addPush(current)
+			if (!active.lazy) {
+				this._children.add(active)
 			}
 		}
-		return this._value
+		return this._current
 	}
 
-	addPush(push) {
-		this.pushes.add(push)
-	}
-
-	addEvent(event) {
-		this.events.add(event)
+	update() {
+		this.set(this._current)
 	}
 
 	//==== Sugar ====//
@@ -78,54 +74,58 @@ const Signal = class extends Function {
 	//===============//
 }
 
-const Target = class extends Signal {
+const Dynamic = class extends Value {
+	dynamic = true
+
+	_birth = -Infinity
+	_evaluate = () => {}
+	_parents = new Set()
+
 	constructor(evaluate) {
 		super()
-		this.birth = -Infinity
-		this.evaluate = evaluate
-		this.sources = new Set()
+		this._evaluate = evaluate
 	}
 
-	addSource(source) {
-		this.sources.add(source)
+	_addParent(parent) {
+		this._parents.add(parent)
 	}
 
 	update() {
-		const sources = [...this.sources]
-		for (const source of sources) {
-			source.pushes.delete(this)
+		const parents = [...this._parents]
+		for (const parent of parents) {
+			parent._children.delete(this)
 		}
 
-		this.sources.clear()
+		this._parents.clear()
 
-		const previous = shared.current
-		shared.current = this
-		const value = this.evaluate()
-		shared.current = previous
+		const paused = shared.active
+		shared.active = this
+		const value = this._evaluate()
+		shared.active = paused
 
 		super.set(value)
 	}
 }
 
-const Pull = class extends Target {
+const DynamicLazy = class extends Dynamic {
+	dynamic = true
+	lazy = true
+
 	constructor(evaluate) {
-		super()
-		this.evaluate = evaluate
-		this.sources = new Set()
-		this.birth = -Infinity
+		super(evaluate)
 	}
 
-	addSource(source) {
-		this.sources.add(source)
-		if (source.sources === undefined) return
-		for (const sourceSource of source.sources) {
-			this.addSource(sourceSource)
+	_addParent(parent) {
+		this._parents.add(parent)
+		if (parent._parents === undefined) return
+		for (const grandparent of parent._parents) {
+			this._addParent(grandparent)
 		}
 	}
 
 	get() {
-		const sources = [...this.sources]
-		if (this.birth < 0 || sources.some((source) => source.birth > this.birth)) {
+		const parents = [...this._parents]
+		if (this._birth < 0 || parents.some((parent) => parent._birth > this._birth)) {
 			this.update()
 		}
 
@@ -137,7 +137,10 @@ const Pull = class extends Target {
 	}
 }
 
-const Push = class extends Target {
+const DynamicEager = class extends Dynamic {
+	dynamic = true
+	lazy = false
+
 	constructor(evaluate) {
 		super(evaluate)
 		this.update()
@@ -148,54 +151,7 @@ const Push = class extends Target {
 	}
 }
 
-const Effect = class extends Push {
-	constructor(callback) {
-		super(callback)
-	}
-
-	dispose() {
-		for (const source of this.sources) {
-			source.pushes.delete(this)
-		}
-	}
-
-	set() {
-		throw new Error("Effects don't have a value")
-	}
-
-	get() {
-		return this.update()
-	}
-}
-
-const Update = class extends Signal {
-	constructor(sources, callback) {
-		super()
-		this.sources = new Set(sources)
-		this.update = callback
-
-		for (const source of this.sources) {
-			source.addEvent(this)
-		}
-	}
-
-	dispose() {
-		for (const source of this.sources) {
-			source.events.delete(this)
-		}
-	}
-
-	set() {
-		throw new Error("Events don't have a value")
-	}
-
-	get() {
-		return this.update()
-	}
-}
-
-export const useSignal = (value) => new Signal(value)
-export const usePull = (evaluate) => new Pull(evaluate)
-export const usePush = (evaluate) => new Push(evaluate)
-export const useEffect = (callback) => new Effect(callback)
-export const useUpdate = (sources, callback) => new Update(sources, callback)
+export const useSignal = (value) => new Value(value)
+export const usePull = (evaluate) => new DynamicLazy(evaluate)
+export const usePush = (evaluate) => new DynamicEager(evaluate)
+export const useEffect = (callback) => new DynamicEager(callback)

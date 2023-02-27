@@ -1,10 +1,10 @@
-import { useEffect, usePull, usePush, useSignal, useUpdate } from "../source/signal.js"
+import { useEffect, usePull, usePush, useSignal } from "../source/signal.js"
 import { assertEquals, assertThrows, describe, it } from "./libraries/deno-test.js"
 
 describe("Signal", () => {
 	it("stores its value", () => {
 		const count = useSignal(0)
-		assertEquals(count._value, 0)
+		assertEquals(count._current, 0)
 	})
 
 	it("gets its value", () => {
@@ -22,7 +22,7 @@ describe("Signal", () => {
 describe("Pull", () => {
 	it("stores its evaluator", () => {
 		const count = usePull(() => 0)
-		assertEquals(count.evaluate(), 0)
+		assertEquals(count._evaluate(), 0)
 	})
 
 	it("is read-only", () => {
@@ -33,14 +33,14 @@ describe("Pull", () => {
 	it("doesn't initialise its value", () => {
 		const count = useSignal(0)
 		const doubled = usePull(() => count.get() * 2)
-		assertEquals(doubled._value, undefined)
+		assertEquals(doubled._current, undefined)
 	})
 
 	it("updates its value", () => {
 		const count = useSignal(0)
 		const doubled = usePull(() => count.get() * 2)
 		doubled.update()
-		assertEquals(doubled._value, 0)
+		assertEquals(doubled._current, 0)
 	})
 
 	it("updates its value when it has to", () => {
@@ -77,8 +77,8 @@ describe("Pull", () => {
 		assertEquals(doubled.get(), 0)
 		assertEquals(tripled.get(), 0)
 		count.set(1)
-		assertEquals(tripled._value, 0)
-		assertEquals(doubled._value, 0)
+		assertEquals(tripled._current, 0)
+		assertEquals(doubled._current, 0)
 		assertEquals(tripled.get(), 6)
 		assertEquals(doubled.get(), 2)
 	})
@@ -118,14 +118,14 @@ describe("Push", () => {
 
 	it("initialises its value", () => {
 		const count = usePush(() => 0)
-		assertEquals(count._value, 0)
+		assertEquals(count._current, 0)
 	})
 
 	it("gets its value updated", () => {
 		const count = useSignal(0)
 		const doubled = usePush(() => count.get() * 2)
 		count.set(1)
-		assertEquals(doubled._value, 2)
+		assertEquals(doubled._current, 2)
 	})
 
 	it("doesn't update its value when it doesn't have to", () => {
@@ -147,7 +147,7 @@ describe("Push", () => {
 		const doubled = usePush(() => count.get() * 2)
 		const tripled = usePush(() => doubled.get() * 3)
 		count.set(1)
-		assertEquals(tripled._value, 6)
+		assertEquals(tripled._current, 6)
 	})
 
 	it("unbinds its source when it isn't used", () => {
@@ -155,15 +155,15 @@ describe("Push", () => {
 		const time = useSignal("day")
 		const isOpen = usePush(() => day.get() !== "sunday" && time.get() !== "night")
 
-		assertEquals([...isOpen.sources], [day, time])
-		assertEquals([...day.pushes], [isOpen])
-		assertEquals([...time.pushes], [isOpen])
+		assertEquals([...isOpen._parents], [day, time])
+		assertEquals([...day._children], [isOpen])
+		assertEquals([...time._children], [isOpen])
 
 		day.set("sunday")
 
-		assertEquals([...isOpen.sources], [day])
-		assertEquals([...day.pushes], [isOpen])
-		assertEquals([...time.pushes], [])
+		assertEquals([...isOpen._parents], [day])
+		assertEquals([...day._children], [isOpen])
+		assertEquals([...time._children], [])
 	})
 })
 
@@ -282,110 +282,5 @@ describe("Effect", () => {
 
 		assertEquals(doubleHistory, [0, 2])
 		assertEquals(tripleHistory, [0, 6])
-	})
-
-	it("can be disposed", () => {
-		const history = []
-		const count = useSignal(0)
-		const effect = useEffect(() => history.push(count.get()))
-		assertEquals(history, [0])
-		count.set(1)
-		assertEquals(history, [0, 1])
-		effect.dispose()
-		count.set(2)
-		assertEquals(history, [0, 1])
-	})
-
-	it("can be fired manually", () => {
-		const history = []
-		const count = useSignal(0)
-		const effect = useEffect(() => history.push(count.get()))
-		assertEquals(history, [0])
-		count.set(1)
-		assertEquals(history, [0, 1])
-		effect()
-		assertEquals(history, [0, 1, 1])
-	})
-})
-
-describe("Update", () => {
-	it("can't be set", () => {
-		const event = useUpdate([], () => {})
-		assertThrows(() => event.set(0), "Events don't have a value")
-	})
-
-	it("doesn't fire when it's created", () => {
-		let clock = 0
-		useUpdate([], () => clock++)
-		assertEquals(clock, 0)
-	})
-
-	it("fires when its sources change", () => {
-		let clock = 0
-		const count = useSignal(0)
-		useUpdate([count], () => clock++)
-		assertEquals(clock, 0)
-		count.set(1)
-		assertEquals(clock, 1)
-	})
-
-	it("recursively fires when its sources change", () => {
-		let doubleClock = 0
-		let tripleClock = 0
-
-		const count = useSignal(0)
-		const doubled = usePush(() => count.get() * 2)
-		const tripled = usePull(() => doubled.get() * 3)
-
-		useUpdate([doubled], () => doubleClock++)
-		useUpdate([tripled], () => tripleClock++)
-
-		assertEquals(doubleClock, 0)
-		assertEquals(tripleClock, 0)
-
-		count.set(1)
-
-		assertEquals(doubleClock, 1)
-		assertEquals(tripleClock, 0)
-
-		tripled.get()
-
-		assertEquals(doubleClock, 1)
-		assertEquals(tripleClock, 1)
-	})
-
-	it("can be disposed", () => {
-		let clock = 0
-		const count = useSignal(0)
-		const event = useUpdate([count], () => clock++)
-		assertEquals(clock, 0)
-		count.set(1)
-		assertEquals(clock, 1)
-		event.dispose()
-		count.set(2)
-		assertEquals(clock, 1)
-	})
-
-	it("can have multiple sources", () => {
-		let clock = 0
-		const count = useSignal(0)
-		const score = useSignal(0)
-		useUpdate([count, score], () => clock++)
-		assertEquals(clock, 0)
-		count.set(1)
-		assertEquals(clock, 1)
-		score.set(1)
-		assertEquals(clock, 2)
-	})
-
-	it("can be fired manually", () => {
-		let clock = 0
-		const count = useSignal(0)
-		const event = useUpdate([count], () => clock++)
-		assertEquals(clock, 0)
-		count.set(1)
-		assertEquals(clock, 1)
-		event()
-		assertEquals(clock, 2)
 	})
 })
