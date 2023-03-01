@@ -1,8 +1,9 @@
 # Signal
 
-## `use(value, options?)`
+## `use(template, options?)`
 
-Make a signal.
+Make a signal.<br>
+Here are some things it can do. (Or scroll to the bottom for a full reference.)
 
 ## Value
 
@@ -107,4 +108,34 @@ use(() => {
 		print("Score: " + player.score)
 	}
 })
+```
+
+# Signal Reference
+
+## `new Signal(template, options)`
+
+Create a new signal with the following options.
+
+| Option    | Description                                                   | Default |
+| --------- | ------------------------------------------------------------- | ------- |
+| `dynamic` | The signal's `template` is run as a function when it updates. | `false` |
+| `lazy`    | The signal only updates when you read it manually.            | `false` |
+| `store`   | The signal's properties can be accessed as signals.           | `false` |
+
+## `use(template, options?)`
+
+The `use` function is a helper that assumes some default `options` based on the `template`.
+
+| Template Type   | `dynamic` | `lazy`  | `store` |
+| --------------- | --------- | ------- | ------- |
+| Function        | `true`    | `false` | `false` |
+| Array or object | `false`   | `false` | `true`  |
+| Everything else | `false`   | `false` | `false` |
+
+You can always override the defaults by passing your own `options`.
+
+```javascript
+const count = use(0)
+const double = use(() => count.get() * 2, { lazy: true })
+print(double.get()) //2
 ```
