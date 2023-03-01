@@ -1039,7 +1039,7 @@ const HabitatFrogasaurus = {}
 			}
 		
 			*[Symbol.iterator]() {
-				yield () => this.get()
+				yield this
 				yield (value) => this.set(value)
 			}
 			//===============//

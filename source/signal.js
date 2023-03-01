@@ -199,7 +199,7 @@ export const Signal = class extends Function {
 	}
 
 	*[Symbol.iterator]() {
-		yield () => this.get()
+		yield this
 		yield (value) => this.set(value)
 	}
 	//===============//
