@@ -165,9 +165,3 @@ export const use = (value, options = {}) => {
 
 	return new Signal(value, properties)
 }
-
-// Legacy
-export const useSignal = use
-export const usePull = (value) => use(value, { lazy: true })
-export const usePush = use
-export const useEffect = use
