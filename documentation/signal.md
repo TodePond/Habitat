@@ -46,7 +46,7 @@ print(count.previous) //0
 
 ## Dynamic
 
-You can make a dynamic signal by passing a function.<br>
+You can make a `dynamic` signal by passing a function.<br>
 It updates whenever one of its used signals updates.
 
 ```javascript
@@ -76,4 +76,35 @@ const double = use(() => count.get() * 2, { lazy: true })
 
 count.set(1)
 print(double.get()) //2
+```
+
+## Store
+
+You can make a `store` by passing an object or array.<br>
+Its properties are all treated like signals.
+
+```javascript
+const position = use([0, 0])
+const dimensions = use([10, 10])
+const right = use(() => position.x + dimensions.width)
+
+print(right.get()) //10
+position.x = 5
+print(right.get()) //15
+```
+
+```javascript
+const player = use({
+	health: 10,
+	score: 0,
+})
+
+const status = use(() => (player.health > 0 ? "alive" : "dead"))
+
+use(() => {
+	if (status.value === "dead") {
+		print("Game over!")
+		print("Score: " + player.score)
+	}
+})
 ```

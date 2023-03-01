@@ -21,6 +21,9 @@ export const Signal = class extends Function {
 		return this._current
 	}
 
+	// Used for storing the store's properties
+	_properties = {}
+
 	constructor(value, options = {}) {
 		//==== Sugar ====//
 		super("value", "return this._self._func(value)")
@@ -77,6 +80,28 @@ export const Signal = class extends Function {
 		this._previous = this._current
 		this._birth = shared.clock++
 		this._current = value
+
+		// If we're a store, create signals for each property
+		if (this.store) {
+			for (const key in value) {
+				if (this._properties[key] === undefined) {
+					this._properties[key] = use(value[key], { lazy: self.lazy })
+					Reflect.defineProperty(this, key, {
+						get() {
+							return this._properties[key].get()
+						},
+						set(value) {
+							this._properties[key].set(value)
+						},
+						enumerable: true,
+						configurable: true,
+					})
+				}
+
+				const property = this._properties[key]
+				property.set(value[key])
+			}
+		}
 
 		// Update our eager children
 		const children = [...this._children]
@@ -165,3 +190,6 @@ export const use = (value, options = {}) => {
 
 	return new Signal(value, properties)
 }
+
+// Legacy
+export const useLazy = (value) => use(value, { lazy: true })
