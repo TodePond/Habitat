@@ -941,6 +941,15 @@ const HabitatFrogasaurus = {}
 						const property = this._properties[key]
 						property.set(value[key])
 					}
+		
+					// Remove any properties that no longer exist
+					for (const key in this._properties) {
+						if (value[key] === undefined) {
+							this._properties[key].dispose()
+							Reflect.deleteProperty(this._properties, key)
+							Reflect.deleteProperty(this, key)
+						}
+					}
 				}
 		
 				// Update our eager children
@@ -1002,6 +1011,22 @@ const HabitatFrogasaurus = {}
 		
 				// Update our value
 				this.set(value)
+			}
+		
+			dispose() {
+				// Remove ourselves from our parents
+				const parents = [...this._parents]
+				for (const parent of parents) {
+					parent._children.delete(this)
+				}
+				this._parents.clear()
+		
+				// Remove ourselves from our children
+				const children = [...this._children]
+				for (const child of children) {
+					child._parents.delete(this)
+				}
+				this._children.clear()
 			}
 		
 			//==== Sugar ====//

@@ -268,4 +268,81 @@ describe("Effect", () => {
 		assertEquals(doubleHistory, [0, 2])
 		assertEquals(tripleHistory, [0, 6])
 	})
+
+	it("can be disposed", () => {
+		const history = []
+		const count = use(0)
+		const effect = use(() => history.push(count.get()))
+		assertEquals(history, [0])
+		count.set(1)
+		assertEquals(history, [0, 1])
+		effect.dispose()
+		count.set(2)
+		assertEquals(history, [0, 1])
+	})
+})
+
+describe("Store", () => {
+	it("gets a property", () => {
+		const player = use({ count: 0 })
+		assertEquals(player.count, 0)
+	})
+
+	it("sets a property", () => {
+		const player = use({ count: 0 })
+		player.count = 1
+		assertEquals(player.count, 1)
+	})
+
+	it("gets a property recursively", () => {
+		const player = use({ count: 0 })
+		const doubled = use(() => player.count * 2)
+		assertEquals(doubled.value, 0)
+		player.count = 1
+		assertEquals(doubled.value, 2)
+	})
+
+	it("works with arrays", () => {
+		const position = use([0, 0])
+		assertEquals(position[0], 0)
+		position[0] = 10
+		assertEquals(position[0], 10)
+	})
+
+	it("works with arrays recursively", () => {
+		const position = use([0, 0])
+		const doubled = use(() => position[0] * 2)
+		assertEquals(doubled.value, 0)
+		position[0] = 10
+		assertEquals(doubled.value, 20)
+	})
+
+	it("works with lazy signals", () => {
+		const player = use({ count: 0 })
+		const doubled = use(() => player.count * 2)
+		const tripled = useLazy(() => doubled.value * 3)
+		assertEquals(tripled.value, 0)
+		player.count = 1
+		assertEquals(tripled.value, 6)
+	})
+
+	it("can be overwritten", () => {
+		const player = use({ count: 0 })
+		player.set({ count: 1 })
+		assertEquals(player.count, 1)
+	})
+
+	it("maintain links through overrides", () => {
+		const player = use({ count: 0 })
+		const doubled = use(() => player.count * 2)
+		player.set({ count: 1 })
+		assertEquals(doubled.value, 2)
+	})
+
+	it("garbage collects unused signals", () => {
+		const player = use({ count: 0 })
+		assertEquals(player.count, 0)
+		player.set({ score: 1 })
+		assertEquals(player.score, 1)
+	})
 })
