@@ -294,6 +294,34 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./document.js"].$$ = $$
 	}
 
+	//====== ./entity.js ======
+	{
+		HabitatFrogasaurus["./entity.js"] = {}
+		
+		const Entity = class {
+			constructor(components = []) {
+				for (const component of components) {
+					this[component.name] = component
+					component.entity = this
+				}
+			}
+		}
+		
+		const Component = class extends Signal {
+			name = "anonymous"
+			store = true
+		}
+		
+		Component.Transform = class extends Component {
+			name = "transform"
+			position = [0, 0]
+		}
+		
+
+		HabitatFrogasaurus["./entity.js"].Entity = Entity
+		HabitatFrogasaurus["./entity.js"].Component = Component
+	}
+
 	//====== ./event.js ======
 	{
 		HabitatFrogasaurus["./event.js"] = {}
@@ -1552,6 +1580,7 @@ const HabitatFrogasaurus = {}
 	}
 
 	const { defineAccessor, defineGetter } = HabitatFrogasaurus["./property.js"]
+	const { Signal } = HabitatFrogasaurus["./signal.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { registerVectorMethods, add, crossProduct, scale, subtract } = HabitatFrogasaurus["./vector.js"]
@@ -1594,6 +1623,8 @@ export const print9 = HabitatFrogasaurus["./console.js"].print9
 export const registerDebugMethods = HabitatFrogasaurus["./console.js"].registerDebugMethods
 export const $ = HabitatFrogasaurus["./document.js"].$
 export const $$ = HabitatFrogasaurus["./document.js"].$$
+export const Entity = HabitatFrogasaurus["./entity.js"].Entity
+export const Component = HabitatFrogasaurus["./entity.js"].Component
 export const fireEvent = HabitatFrogasaurus["./event.js"].fireEvent
 export const on = HabitatFrogasaurus["./event.js"].on
 export const registerMethods = HabitatFrogasaurus["./habitat.js"].registerMethods
@@ -1678,6 +1709,8 @@ export const Habitat = {
 	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
 	$: HabitatFrogasaurus["./document.js"].$,
 	$$: HabitatFrogasaurus["./document.js"].$$,
+	Entity: HabitatFrogasaurus["./entity.js"].Entity,
+	Component: HabitatFrogasaurus["./entity.js"].Component,
 	fireEvent: HabitatFrogasaurus["./event.js"].fireEvent,
 	on: HabitatFrogasaurus["./event.js"].on,
 	registerMethods: HabitatFrogasaurus["./habitat.js"].registerMethods,
