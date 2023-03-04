@@ -359,17 +359,13 @@ const HabitatFrogasaurus = {}
 		}
 		
 		const Signal = class extends Function {
-			static addProperty(object, name, signal) {
-				Reflect.defineProperty(object, name, {
-					get() {
-						return signal.get()
-					},
-					set(value) {
-						signal.set(value)
-					},
-					enumerable: true,
-					configurable: true,
-				})
+			static glue(object) {
+				for (const key in object) {
+					const value = object[key]
+					if (value instanceof Signal) {
+						value.attach(object, key)
+					}
+				}
 			}
 		
 			// How the signal behaves
@@ -453,7 +449,7 @@ const HabitatFrogasaurus = {}
 						if (!this._properties.has(key)) {
 							const property = use(value[key], { lazy: this.lazy })
 							this._properties.set(key, property)
-							Signal.addProperty(this, key, property)
+							property.attach(this, key)
 						}
 		
 						const property = this._properties.get(key)
@@ -498,6 +494,15 @@ const HabitatFrogasaurus = {}
 		
 				// Return our value
 				return this._current
+			}
+		
+			attach(object, key) {
+				Reflect.defineProperty(object, key, {
+					get: () => this.get(),
+					set: (value) => this.set(value),
+					enumerable: true,
+					configurable: true,
+				})
 			}
 		
 			update() {
@@ -1499,6 +1504,7 @@ const HabitatFrogasaurus = {}
 	//====== ./entity.js ======
 	{
 		HabitatFrogasaurus["./entity.js"] = {}
+		
 		const Entity = class {
 			constructor(components = []) {
 				for (const component of components) {
@@ -1510,12 +1516,16 @@ const HabitatFrogasaurus = {}
 		
 		const Component = class {
 			name = "anonymous"
-			store = true
 		}
 		
-		Component.Transform = class {
+		Component.Transform = class extends Component {
 			name = "transform"
-			position = [0, 0]
+			position = use([0, 0])
+		
+			constructor() {
+				super()
+				Signal.glue(this)
+			}
 		}
 		
 
@@ -1589,6 +1599,7 @@ const HabitatFrogasaurus = {}
 	const { on, fireEvent } = HabitatFrogasaurus["./event.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
 	const { lerp } = HabitatFrogasaurus["./lerp.js"]
+	const { Signal, use } = HabitatFrogasaurus["./signal.js"]
 
 }
 

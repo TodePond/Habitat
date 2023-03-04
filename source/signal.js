@@ -4,17 +4,13 @@ const shared = {
 }
 
 export const Signal = class extends Function {
-	static addProperty(object, name, signal) {
-		Reflect.defineProperty(object, name, {
-			get() {
-				return signal.get()
-			},
-			set(value) {
-				signal.set(value)
-			},
-			enumerable: true,
-			configurable: true,
-		})
+	static glue(object) {
+		for (const key in object) {
+			const value = object[key]
+			if (value instanceof Signal) {
+				value.attach(object, key)
+			}
+		}
 	}
 
 	// How the signal behaves
@@ -98,7 +94,7 @@ export const Signal = class extends Function {
 				if (!this._properties.has(key)) {
 					const property = use(value[key], { lazy: this.lazy })
 					this._properties.set(key, property)
-					Signal.addProperty(this, key, property)
+					property.attach(this, key)
 				}
 
 				const property = this._properties.get(key)
@@ -143,6 +139,15 @@ export const Signal = class extends Function {
 
 		// Return our value
 		return this._current
+	}
+
+	attach(object, key) {
+		Reflect.defineProperty(object, key, {
+			get: () => this.get(),
+			set: (value) => this.set(value),
+			enumerable: true,
+			configurable: true,
+		})
 	}
 
 	update() {

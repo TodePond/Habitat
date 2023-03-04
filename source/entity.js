@@ -1,3 +1,5 @@
+import { Signal, use } from "./signal.js"
+
 export const Entity = class {
 	constructor(components = []) {
 		for (const component of components) {
@@ -9,10 +11,14 @@ export const Entity = class {
 
 export const Component = class {
 	name = "anonymous"
-	store = true
 }
 
-Component.Transform = class {
+Component.Transform = class extends Component {
 	name = "transform"
-	position = [0, 0]
+	position = use([0, 0])
+
+	constructor() {
+		super()
+		Signal.glue(this)
+	}
 }
