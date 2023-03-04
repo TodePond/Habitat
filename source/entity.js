@@ -1,5 +1,3 @@
-import { Signal } from "./signal.js"
-
 export const Entity = class {
 	constructor(components = []) {
 		for (const component of components) {
@@ -9,12 +7,12 @@ export const Entity = class {
 	}
 }
 
-export const Component = class extends Signal {
+export const Component = class {
 	name = "anonymous"
 	store = true
 }
 
-Component.Transform = class extends Component {
+Component.Transform = class {
 	name = "transform"
 	position = [0, 0]
 }

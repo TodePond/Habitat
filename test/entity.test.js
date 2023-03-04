@@ -1,5 +1,5 @@
 import { Component, Entity } from "../source/entity.js"
-import { Signal, use } from "../source/signal.js"
+import { use } from "../source/signal.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Entity", () => {
@@ -14,12 +14,6 @@ describe("Component", () => {
 	it("has a name", () => {
 		const component = new Component()
 		assertEquals(component.name, "anonymous")
-	})
-
-	it("is a store", () => {
-		const component = new Component()
-		assertEquals(component instanceof Signal, true)
-		assertEquals(component.store, true)
 	})
 
 	it("works as a signal", () => {

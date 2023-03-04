@@ -4,6 +4,19 @@ const shared = {
 }
 
 export const Signal = class extends Function {
+	static addProperty(object, name, signal) {
+		Reflect.defineProperty(object, name, {
+			get() {
+				return signal.get()
+			},
+			set(value) {
+				signal.set(value)
+			},
+			enumerable: true,
+			configurable: true,
+		})
+	}
+
 	// How the signal behaves
 	dynamic = false
 	lazy = false
@@ -13,6 +26,7 @@ export const Signal = class extends Function {
 	_birth = -Infinity
 	_children = new Set()
 	_parents = new Set()
+	_properties = new Map()
 
 	// Used for storing the signal's value
 	_current = undefined
@@ -20,9 +34,6 @@ export const Signal = class extends Function {
 	_evaluate = function () {
 		return this._current
 	}
-
-	// Used for storing the store's properties
-	_properties = {}
 
 	constructor(value, options = {}) {
 		//==== Sugar ====//
@@ -84,29 +95,21 @@ export const Signal = class extends Function {
 		// If we're a store, create signals for each property
 		if (this.store) {
 			for (const key in value) {
-				if (this._properties[key] === undefined) {
-					this._properties[key] = use(value[key], { lazy: self.lazy })
-					Reflect.defineProperty(this, key, {
-						get() {
-							return this._properties[key].get()
-						},
-						set(value) {
-							this._properties[key].set(value)
-						},
-						enumerable: true,
-						configurable: true,
-					})
+				if (!this._properties.has(key)) {
+					const property = use(value[key], { lazy: this.lazy })
+					this._properties.set(key, property)
+					Signal.addProperty(this, key, property)
 				}
 
-				const property = this._properties[key]
+				const property = this._properties.get(key)
 				property.set(value[key])
 			}
 
 			// Remove any properties that no longer exist
-			for (const key in this._properties) {
+			for (const [key, property] of this._properties) {
 				if (value[key] === undefined) {
-					this._properties[key].dispose()
-					Reflect.deleteProperty(this._properties, key)
+					property.dispose()
+					this._properties.delete(key)
 					Reflect.deleteProperty(this, key)
 				}
 			}
@@ -186,6 +189,7 @@ export const Signal = class extends Function {
 		for (const child of children) {
 			child._parents.delete(this)
 		}
+
 		this._children.clear()
 	}
 
