@@ -3,15 +3,8 @@ const shared = {
 	active: null,
 }
 
-export const Signal = class extends Function {
-	static glue(object) {
-		for (const key in object) {
-			const value = object[key]
-			if (value instanceof Signal) {
-				value.attach(object, key)
-			}
-		}
-	}
+const _Signal = class {
+	_isSignal = true
 
 	// How the signal behaves
 	dynamic = false
@@ -32,27 +25,8 @@ export const Signal = class extends Function {
 	}
 
 	constructor(value, options = {}) {
-		//==== Sugar ====//
-		super("value", "return this._self._func(value)")
-		let self = this.bind(this)
-		if (Array.isArray(value)) {
-			const signal = self
-			self = new ArrayStore(value, self)
-			self._signal = signal
-		}
-		this._self = self
-		Object.assign(self, this)
-		self._func = (value) => {
-			if (value === undefined) {
-				return self.get()
-			} else {
-				self.set(value)
-			}
-		}
-		//===============//
-
 		// Apply options
-		Object.assign(self, {
+		Object.assign(this, {
 			dynamic: false,
 			lazy: false,
 			store: false,
@@ -60,18 +34,18 @@ export const Signal = class extends Function {
 		})
 
 		// Initialise our value
-		if (self.dynamic) {
-			self._evaluate = value
+		if (this.dynamic) {
+			this._evaluate = value
 		} else {
-			self._current = value
+			this._current = value
 		}
 
 		// Initialise the signal if eager
-		if (!self.lazy) {
-			self.update()
+		if (!this.lazy) {
+			this.update()
 		}
 
-		return self
+		return this
 	}
 
 	_addParent(parent) {
@@ -95,7 +69,7 @@ export const Signal = class extends Function {
 				if (this._properties.has(key)) continue
 				const property = use(value[key])
 				this._properties.set(key, property)
-				property.attach(this, key)
+				property.glueTo(this, key)
 			}
 
 			// Update existing properties
@@ -143,15 +117,6 @@ export const Signal = class extends Function {
 
 		// Return our value
 		return this._current
-	}
-
-	attach(object, key) {
-		Reflect.defineProperty(object, key, {
-			get: () => this.get(),
-			set: (value) => this.set(value),
-			enumerable: true,
-			configurable: true,
-		})
 	}
 
 	update() {
@@ -209,8 +174,84 @@ export const Signal = class extends Function {
 
 		this._children.clear()
 	}
+}
 
-	//==== Sugar ====//
+export const Signal = class extends Function {
+	static glueProperties(object) {
+		for (const key in object) {
+			const value = object[key]
+			if (value._isSignal) {
+				value.glueTo(object, key)
+			}
+		}
+	}
+
+	_isSignal = true
+
+	// How the signal behaves
+	dynamic = false
+	lazy = false
+	store = false
+
+	// Used for managing when to update the signal
+	_birth = -Infinity
+	_children = new Set()
+	_parents = new Set()
+	_properties = new Map()
+
+	// Used for storing the signal's value
+	_current = undefined
+	_previous = undefined
+	_evaluate = function () {
+		return this._current
+	}
+
+	constructor(value, options = {}) {
+		super("value", "return this._self._func(value)")
+		const self = this.bind(this)
+		this._self = self
+		Object.assign(self, this)
+		self._func = (value) => {
+			if (value === undefined) {
+				return self.get()
+			} else {
+				self.set(value)
+			}
+		}
+
+		self.signal = new _Signal(value, options)
+		return self
+	}
+
+	_addParent(parent) {
+		return this.signal._addParent(parent)
+	}
+
+	set(value) {
+		return this.signal.set(value)
+	}
+
+	get() {
+		return this.signal.get()
+	}
+
+	glueTo(object, key) {
+		Reflect.defineProperty(object, key, {
+			get: () => this.get(),
+			set: (value) => this.set(value),
+			enumerable: true,
+			configurable: true,
+		})
+	}
+
+	update() {
+		return this.signal.update()
+	}
+
+	dispose() {
+		return this.signal.dispose()
+	}
+
 	get value() {
 		return this.get()
 	}
@@ -223,45 +264,11 @@ export const Signal = class extends Function {
 		yield this
 		yield (value) => this.set(value)
 	}
-	//===============//
 }
 
-const ArrayStore = class extends Array {
-	constructor(value) {
-		super()
-		this.push(...value)
-	}
-
-	set(value) {
-		return this._signal.set.apply(this, [value])
-	}
-
-	get() {
-		return this._signal.get.apply(this, [])
-	}
-
-	update() {
-		return this._signal.update.apply(this, [])
-	}
-
-	dispose() {
-		return this._signal.dispose.apply(this, [])
-	}
-
-	attach(object, key) {
-		return this._signal.attach.apply(this, [object, key])
-	}
-
-	_addParent(parent) {
-		return this._signal._addParent.apply(this, [parent])
-	}
-
-	get value() {
-		return this.get()
-	}
-
-	set value(value) {
-		this.set(value)
+const SignalView = class {
+	constructor(signal) {
+		this._signal = signal
 	}
 }
 

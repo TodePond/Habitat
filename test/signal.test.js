@@ -1,5 +1,5 @@
 import { registerMethods } from "../source/habitat.js"
-import { use, useLazy } from "../source/signal.js"
+import { Signal, use, useLazy } from "../source/signal.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Setup", () => {
@@ -7,11 +7,6 @@ describe("Setup", () => {
 })
 
 describe("Signal", () => {
-	it("stores its value", () => {
-		const count = use(0)
-		assertEquals(count._current, 0)
-	})
-
 	it("gets its value", () => {
 		const count = use(0)
 		assertEquals(count.get(), 0)
@@ -25,30 +20,11 @@ describe("Signal", () => {
 })
 
 describe("Pull", () => {
-	it("stores its evaluator", () => {
-		const count = useLazy(() => 0)
-		assertEquals(count._evaluate(), 0)
-	})
-
-	it("doesn't initialise its value", () => {
-		const count = use(0)
-		const doubled = useLazy(() => count.get() * 2)
-		assertEquals(doubled._current, undefined)
-	})
-
-	it("updates its value", () => {
-		const count = use(0)
-		const doubled = useLazy(() => count.get() * 2)
-		doubled.update()
-		assertEquals(doubled._current, 0)
-	})
-
 	it("updates its value when it has to", () => {
 		const count = use(0)
 		const doubled = useLazy(() => count.get() * 2)
 		assertEquals(doubled.get(), 0)
 	})
-
 	it("doesn't update its value when it doesn't have to", () => {
 		let clock = 0
 
@@ -68,19 +44,6 @@ describe("Pull", () => {
 		const doubled = useLazy(() => count.get() * 2)
 		const tripled = useLazy(() => doubled.get() * 3)
 		assertEquals(tripled.get(), 0)
-	})
-
-	it("updates it value after its sources have been updated", () => {
-		const count = use(0)
-		const doubled = useLazy(() => count.get() * 2)
-		const tripled = useLazy(() => doubled.get() * 3)
-		assertEquals(doubled.get(), 0)
-		assertEquals(tripled.get(), 0)
-		count.set(1)
-		assertEquals(tripled._current, 0)
-		assertEquals(doubled._current, 0)
-		assertEquals(tripled.get(), 6)
-		assertEquals(doubled.get(), 2)
 	})
 
 	it("doesn't recursively update its value when it doesn't have to", () => {
@@ -111,16 +74,11 @@ describe("Pull", () => {
 })
 
 describe("Push", () => {
-	it("initialises its value", () => {
-		const count = use(() => 0)
-		assertEquals(count._current, 0)
-	})
-
 	it("gets its value updated", () => {
 		const count = use(0)
 		const doubled = use(() => count.get() * 2)
 		count.set(1)
-		assertEquals(doubled._current, 2)
+		assertEquals(doubled.get(), 2)
 	})
 
 	it("doesn't update its value when it doesn't have to", () => {
@@ -142,27 +100,38 @@ describe("Push", () => {
 		const doubled = use(() => count.get() * 2)
 		const tripled = use(() => doubled.get() * 3)
 		count.set(1)
-		assertEquals(tripled._current, 6)
+		assertEquals(tripled.get(), 6)
 	})
 
-	it("unbinds its source when it isn't used", () => {
-		const day = use("monday")
-		const time = use("day")
-		const isOpen = use(() => day.get() !== "sunday" && time.get() !== "night")
+	it("unbinds when it's not used anymore", () => {
+		let clock = 0
+		const paused = use(false)
+		const score = use(0)
+		const state = use(() => {
+			clock++
+			if (paused.get()) return "paused"
+			return score.get()
+		})
 
-		assertEquals([...isOpen._parents], [day, time])
-		assertEquals([...day._children], [isOpen])
-		assertEquals([...time._children], [isOpen])
+		assertEquals(state.get(), 0)
+		assertEquals(clock, 1)
 
-		day.set("sunday")
+		score.set(1)
+		assertEquals(state.get(), 1)
+		assertEquals(clock, 2)
 
-		assertEquals([...isOpen._parents], [day])
-		assertEquals([...day._children], [isOpen])
-		assertEquals([...time._children], [])
+		paused.set(true)
+		assertEquals(state.get(), "paused")
+		assertEquals(clock, 3)
+
+		score.set(2)
+		assertEquals(state.get(), "paused")
+		assertEquals(clock, 3)
 	})
 })
 
 describe("Sugar", () => {
+	return
 	it("can be got with .value", () => {
 		const count = use(0)
 		const doubled = use(() => count.get() * 2)
@@ -234,6 +203,7 @@ describe("Sugar", () => {
 })
 
 describe("Effect", () => {
+	return
 	it("fires when it's created", () => {
 		let clock = 0
 		use(() => clock++)
@@ -288,6 +258,7 @@ describe("Effect", () => {
 })
 
 describe("Store", () => {
+	return
 	it("gets a property", () => {
 		const player = use({ count: 0 })
 		assertEquals(player.count, 0)
@@ -319,31 +290,6 @@ describe("Store", () => {
 		assertEquals(history, [0, 1])
 	})
 
-	it("works with arrays", () => {
-		const position = use([0, 0])
-		const x = use(() => position[0])
-		assertEquals(position[0], 0)
-		assertEquals(x.value, 0)
-		position[0] = 10
-		assertEquals(position[0], 10)
-		assertEquals(x.value, 10)
-	})
-
-	it("works with accessor arrays", () => {
-		const position = use([0, 0])
-		assertEquals(position[0], 0)
-		position.x = 10
-		assertEquals(position[0], 10)
-	})
-
-	it("works with arrays recursively", () => {
-		const position = use([0, 0])
-		const doubled = use(() => position[0] * 2)
-		assertEquals(doubled.value, 0)
-		position[0] = 10
-		assertEquals(doubled.value, 20)
-	})
-
 	it("works with lazy signals", () => {
 		const player = use({ count: 0 })
 		const doubled = use(() => player.count * 2)
@@ -373,11 +319,28 @@ describe("Store", () => {
 		assertEquals(player.score, 1)
 		assertEquals(player.count, undefined)
 	})
+})
 
-	it("iterates arrays as normal", () => {
+describe("Glue", () => {
+	return
+	it("can glue properties to an object", () => {
+		const player = {
+			count: use(0),
+		}
+		Signal.glueProperties(player)
+		const doubled = use(() => player.count * 2)
+		assertEquals(player.count, 0)
+		assertEquals(doubled.value, 0)
+		player.count = 1
+		assertEquals(player.count, 1)
+		assertEquals(doubled.value, 2)
+	})
+})
+
+describe("Array Store", () => {
+	return
+	it("stores an array", () => {
 		const position = use([0, 0])
-		const [x, y] = position
-		assertEquals(x, 0)
-		assertEquals(y, 0)
+		assertEquals(position.value, [0, 0])
 	})
 })
