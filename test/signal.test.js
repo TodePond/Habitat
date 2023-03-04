@@ -131,7 +131,6 @@ describe("Push", () => {
 })
 
 describe("Sugar", () => {
-	return
 	it("can be got with .value", () => {
 		const count = use(0)
 		const doubled = use(() => count.get() * 2)
@@ -203,7 +202,6 @@ describe("Sugar", () => {
 })
 
 describe("Effect", () => {
-	return
 	it("fires when it's created", () => {
 		let clock = 0
 		use(() => clock++)
@@ -258,12 +256,12 @@ describe("Effect", () => {
 })
 
 describe("Store", () => {
-	return
 	it("gets a property", () => {
 		const player = use({ count: 0 })
 		assertEquals(player.count, 0)
 	})
 
+	return
 	it("sets a property", () => {
 		const player = use({ count: 0 })
 		player.count = 1

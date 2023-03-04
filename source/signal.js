@@ -4,7 +4,7 @@ const shared = {
 }
 
 const _Signal = class {
-	_isSignal = true
+	_view = undefined
 
 	// How the signal behaves
 	dynamic = false
@@ -24,7 +24,7 @@ const _Signal = class {
 		return this._current
 	}
 
-	constructor(value, options = {}) {
+	constructor(view, value, options = {}) {
 		// Apply options
 		Object.assign(this, {
 			dynamic: false,
@@ -32,6 +32,8 @@ const _Signal = class {
 			store: false,
 			...options,
 		})
+
+		this._view = view
 
 		// Initialise our value
 		if (this.dynamic) {
@@ -69,7 +71,7 @@ const _Signal = class {
 				if (this._properties.has(key)) continue
 				const property = use(value[key])
 				this._properties.set(key, property)
-				property.glueTo(this, key)
+				property.glueTo(this._view, key)
 			}
 
 			// Update existing properties
@@ -79,7 +81,7 @@ const _Signal = class {
 				} else {
 					property.dispose()
 					this._properties.delete(key)
-					Reflect.deleteProperty(this, key)
+					Reflect.deleteProperty(this._view, key)
 				}
 			}
 		}
@@ -176,7 +178,7 @@ const _Signal = class {
 	}
 }
 
-export const Signal = class extends Function {
+const View = class extends Function {
 	static glueProperties(object) {
 		for (const key in object) {
 			const value = object[key]
@@ -187,6 +189,7 @@ export const Signal = class extends Function {
 	}
 
 	_isSignal = true
+	_signal = undefined
 
 	// How the signal behaves
 	dynamic = false
@@ -219,7 +222,7 @@ export const Signal = class extends Function {
 			}
 		}
 
-		self.signal = new _Signal(value, options)
+		self.signal = new _Signal(self, value, options)
 		return self
 	}
 
@@ -266,11 +269,7 @@ export const Signal = class extends Function {
 	}
 }
 
-const SignalView = class {
-	constructor(signal) {
-		this._signal = signal
-	}
-}
+export const Signal = View
 
 export const use = (value, options = {}) => {
 	const properties = {

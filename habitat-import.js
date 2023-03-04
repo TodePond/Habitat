@@ -359,7 +359,7 @@ const HabitatFrogasaurus = {}
 		}
 		
 		const _Signal = class {
-			_isSignal = true
+			_view = undefined
 		
 			// How the signal behaves
 			dynamic = false
@@ -379,7 +379,7 @@ const HabitatFrogasaurus = {}
 				return this._current
 			}
 		
-			constructor(value, options = {}) {
+			constructor(view, value, options = {}) {
 				// Apply options
 				Object.assign(this, {
 					dynamic: false,
@@ -387,6 +387,8 @@ const HabitatFrogasaurus = {}
 					store: false,
 					...options,
 				})
+		
+				this._view = view
 		
 				// Initialise our value
 				if (this.dynamic) {
@@ -424,7 +426,7 @@ const HabitatFrogasaurus = {}
 						if (this._properties.has(key)) continue
 						const property = use(value[key])
 						this._properties.set(key, property)
-						property.glueTo(this, key)
+						property.glueTo(this._view, key)
 					}
 		
 					// Update existing properties
@@ -434,7 +436,7 @@ const HabitatFrogasaurus = {}
 						} else {
 							property.dispose()
 							this._properties.delete(key)
-							Reflect.deleteProperty(this, key)
+							Reflect.deleteProperty(this._view, key)
 						}
 					}
 				}
@@ -531,7 +533,7 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		const Signal = class extends Function {
+		const View = class extends Function {
 			static glueProperties(object) {
 				for (const key in object) {
 					const value = object[key]
@@ -542,6 +544,7 @@ const HabitatFrogasaurus = {}
 			}
 		
 			_isSignal = true
+			_signal = undefined
 		
 			// How the signal behaves
 			dynamic = false
@@ -574,7 +577,7 @@ const HabitatFrogasaurus = {}
 					}
 				}
 		
-				self.signal = new _Signal(value, options)
+				self.signal = new _Signal(self, value, options)
 				return self
 			}
 		
@@ -621,11 +624,7 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		const SignalView = class {
-			constructor(signal) {
-				this._signal = signal
-			}
-		}
+		const Signal = View
 		
 		const use = (value, options = {}) => {
 			const properties = {
