@@ -1,4 +1,4 @@
-import { Signal, use } from "./signal.js"
+import { use } from "./signal.js"
 
 export const Entity = class {
 	constructor(components = []) {
@@ -19,6 +19,5 @@ Component.Transform = class extends Component {
 
 	constructor() {
 		super()
-		Signal.glue(this)
 	}
 }

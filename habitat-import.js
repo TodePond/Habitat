@@ -377,7 +377,6 @@ const HabitatFrogasaurus = {}
 			_birth = -Infinity
 			_children = new Set()
 			_parents = new Set()
-			_properties = new Map()
 		
 			// Used for storing the signal's value
 			_current = undefined
@@ -409,7 +408,18 @@ const HabitatFrogasaurus = {}
 					...options,
 				})
 		
-				// Apply provided argument
+				// Make a store if we're a store
+				if (self.store) {
+					self._current = self.dynamic ? value() : value
+					for (const key in self._current) {
+						const property = self._current[key]
+						const signal = use(property, { lazy: self.lazy })
+						signal.attach(self._current, key)
+					}
+					return self._current
+				}
+		
+				// Initialise our value
 				if (self.dynamic) {
 					self._evaluate = value
 				} else {
@@ -442,29 +452,6 @@ const HabitatFrogasaurus = {}
 				this._previous = this._current
 				this._birth = shared.clock++
 				this._current = value
-		
-				// If we're a store, create signals for each property
-				if (this.store) {
-					for (const key in value) {
-						if (!this._properties.has(key)) {
-							const property = use(value[key], { lazy: this.lazy })
-							this._properties.set(key, property)
-							property.attach(this, key)
-						}
-		
-						const property = this._properties.get(key)
-						property.set(value[key])
-					}
-		
-					// Remove any properties that no longer exist
-					for (const [key, property] of this._properties) {
-						if (value[key] === undefined) {
-							property.dispose()
-							this._properties.delete(key)
-							Reflect.deleteProperty(this, key)
-						}
-					}
-				}
 		
 				// Update our eager children
 				const children = [...this._children]
@@ -1524,7 +1511,6 @@ const HabitatFrogasaurus = {}
 		
 			constructor() {
 				super()
-				Signal.glue(this)
 			}
 		}
 		
@@ -1599,7 +1585,7 @@ const HabitatFrogasaurus = {}
 	const { on, fireEvent } = HabitatFrogasaurus["./event.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
 	const { lerp } = HabitatFrogasaurus["./lerp.js"]
-	const { Signal, use } = HabitatFrogasaurus["./signal.js"]
+	const { use } = HabitatFrogasaurus["./signal.js"]
 
 }
 

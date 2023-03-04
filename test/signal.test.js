@@ -1,5 +1,10 @@
+import { registerMethods } from "../source/habitat.js"
 import { use, useLazy } from "../source/signal.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
+
+describe("Setup", () => {
+	registerMethods()
+})
 
 describe("Signal", () => {
 	it("stores its value", () => {
@@ -309,6 +314,13 @@ describe("Store", () => {
 		assertEquals(position[0], 10)
 	})
 
+	it("works with accessor arrays", () => {
+		const position = use([0, 0])
+		assertEquals(position[0], 0)
+		position.x = 10
+		assertEquals(position[0], 10)
+	})
+
 	it("works with arrays recursively", () => {
 		const position = use([0, 0])
 		const doubled = use(() => position[0] * 2)
@@ -328,21 +340,21 @@ describe("Store", () => {
 
 	it("can be overwritten", () => {
 		const player = use({ count: 0 })
-		player.set({ count: 1 })
+		Object.assign(player, { count: 1 })
 		assertEquals(player.count, 1)
 	})
 
 	it("maintain links through overrides", () => {
 		const player = use({ count: 0 })
 		const doubled = use(() => player.count * 2)
-		player.set({ count: 1 })
+		Object.assign(player, { count: 1 })
 		assertEquals(doubled.value, 2)
 	})
 
 	it("garbage collects unused signals", () => {
 		const player = use({ count: 0 })
 		assertEquals(player.count, 0)
-		player.set({ score: 1 })
+		Object.assign(player, { score: 1 })
 		assertEquals(player.score, 1)
 	})
 })

@@ -1,5 +1,11 @@
 import { Component, Entity } from "../source/entity.js"
+import { registerMethods } from "../source/habitat.js"
+import { use } from "../source/signal.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
+
+describe("Setup", () => {
+	registerMethods()
+})
 
 describe("Entity", () => {
 	it("gets a component", () => {
@@ -18,7 +24,16 @@ describe("Component", () => {
 
 describe("Component.Transform", () => {
 	it("has a position", () => {
-		const component = new Component.Transform()
-		assertEquals(component.position, [0, 0])
+		const transform = new Component.Transform()
+		assertEquals(transform.position, [0, 0])
+	})
+
+	it("uses position as a signal", () => {
+		const transform = new Component.Transform()
+		assertEquals(transform.position, [0, 0])
+		const x = use(() => transform.position[0])
+		assertEquals(x.value, 0)
+		transform.position.x = 10
+		assertEquals(x.value, 10)
 	})
 })
