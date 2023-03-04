@@ -23,15 +23,16 @@ describe("Component", () => {
 })
 
 describe("Component.Transform", () => {
-	return
 	it("has a position", () => {
 		const transform = new Component.Transform()
-		assertEquals(transform.position, [0, 0])
+		assertEquals([...transform.position], [0, 0])
+		assertEquals(transform.position[0], 0)
+		assertEquals(transform.position.x, 0)
 	})
 
 	it("uses position as a signal", () => {
 		const transform = new Component.Transform()
-		assertEquals(transform.position, [0, 0])
+		assertEquals([...transform.position], [0, 0])
 		const x = use(() => transform.position[0])
 		assertEquals(x.value, 0)
 		transform.position.x = 10
