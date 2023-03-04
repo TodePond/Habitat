@@ -307,11 +307,26 @@ describe("Store", () => {
 		assertEquals(doubled.value, 2)
 	})
 
+	it("disposes", () => {
+		const player = use({ count: 0 })
+		const history = []
+		use(() => history.push(player.count))
+		assertEquals(history, [0])
+		player.count = 1
+		assertEquals(history, [0, 1])
+		player.dispose()
+		player.count = 2
+		assertEquals(history, [0, 1])
+	})
+
 	it("works with arrays", () => {
 		const position = use([0, 0])
+		const x = use(() => position[0])
 		assertEquals(position[0], 0)
+		assertEquals(x.value, 0)
 		position[0] = 10
 		assertEquals(position[0], 10)
+		assertEquals(x.value, 10)
 	})
 
 	it("works with accessor arrays", () => {
@@ -347,14 +362,22 @@ describe("Store", () => {
 	it("maintain links through overrides", () => {
 		const player = use({ count: 0 })
 		const doubled = use(() => player.count * 2)
-		Object.assign(player, { count: 1 })
+		player.set({ count: 1 })
 		assertEquals(doubled.value, 2)
 	})
 
 	it("garbage collects unused signals", () => {
 		const player = use({ count: 0 })
 		assertEquals(player.count, 0)
-		Object.assign(player, { score: 1 })
+		player.set({ score: 1 })
 		assertEquals(player.score, 1)
+		assertEquals(player.count, undefined)
+	})
+
+	it("iterates arrays as normal", () => {
+		const position = use([0, 0])
+		const [x, y] = position
+		assertEquals(x, 0)
+		assertEquals(y, 0)
 	})
 })

@@ -22,6 +22,7 @@ export const Signal = class extends Function {
 	_birth = -Infinity
 	_children = new Set()
 	_parents = new Set()
+	_properties = new Map()
 
 	// Used for storing the signal's value
 	_current = undefined
@@ -33,7 +34,12 @@ export const Signal = class extends Function {
 	constructor(value, options = {}) {
 		//==== Sugar ====//
 		super("value", "return this._self._func(value)")
-		const self = this.bind(this)
+		let self = this.bind(this)
+		if (Array.isArray(value)) {
+			const signal = self
+			self = new ArrayStore(value, self)
+			self._signal = signal
+		}
 		this._self = self
 		Object.assign(self, this)
 		self._func = (value) => {
@@ -52,17 +58,6 @@ export const Signal = class extends Function {
 			store: false,
 			...options,
 		})
-
-		// Make a store if we're a store
-		if (self.store) {
-			self._current = self.dynamic ? value() : value
-			for (const key in self._current) {
-				const property = self._current[key]
-				const signal = use(property, { lazy: self.lazy })
-				signal.attach(self._current, key)
-			}
-			return self._current
-		}
 
 		// Initialise our value
 		if (self.dynamic) {
@@ -93,6 +88,28 @@ export const Signal = class extends Function {
 	}
 
 	set(value) {
+		// If we're a store, update our properties
+		if (this.store) {
+			// Add new properties
+			for (const key in value) {
+				if (this._properties.has(key)) continue
+				const property = use(value[key])
+				this._properties.set(key, property)
+				property.attach(this, key)
+			}
+
+			// Update existing properties
+			for (const [key, property] of this._properties) {
+				if (key in value) {
+					property.set(value[key])
+				} else {
+					property.dispose()
+					this._properties.delete(key)
+					Reflect.deleteProperty(this, key)
+				}
+			}
+		}
+
 		// Update our value
 		this._previous = this._current
 		this._birth = shared.clock++
@@ -181,6 +198,14 @@ export const Signal = class extends Function {
 		for (const child of children) {
 			child._parents.delete(this)
 		}
+		this._children.clear()
+
+		// Remove properties
+		const properties = [...this._properties]
+		for (const [, property] of properties) {
+			property.dispose()
+		}
+		this._properties.clear()
 
 		this._children.clear()
 	}
@@ -199,6 +224,45 @@ export const Signal = class extends Function {
 		yield (value) => this.set(value)
 	}
 	//===============//
+}
+
+const ArrayStore = class extends Array {
+	constructor(value) {
+		super()
+		this.push(...value)
+	}
+
+	set(value) {
+		return this._signal.set.apply(this, [value])
+	}
+
+	get() {
+		return this._signal.get.apply(this, [])
+	}
+
+	update() {
+		return this._signal.update.apply(this, [])
+	}
+
+	dispose() {
+		return this._signal.dispose.apply(this, [])
+	}
+
+	attach(object, key) {
+		return this._signal.attach.apply(this, [object, key])
+	}
+
+	_addParent(parent) {
+		return this._signal._addParent.apply(this, [parent])
+	}
+
+	get value() {
+		return this.get()
+	}
+
+	set value(value) {
+		this.set(value)
+	}
 }
 
 export const use = (value, options = {}) => {
