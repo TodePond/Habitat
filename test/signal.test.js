@@ -343,6 +343,21 @@ describe("Store", () => {
 			assertEquals(["count", "score"].includes(key), true)
 		}
 	})
+
+	it("doesn't double up updates", () => {
+		let clock = 0
+		const player = use({ count: 0 })
+		const currentPlayer = use(() => {
+			clock++
+			return player.count
+		})
+
+		assertEquals(clock, 1)
+		assertEquals(currentPlayer.value, 0)
+		assertEquals(clock, 1)
+		player.count = 1
+		assertEquals(clock, 2)
+	})
 })
 
 describe("Glue", () => {
@@ -435,5 +450,25 @@ describe("Array Store", () => {
 		assertEquals([...position], [0, 0])
 		position[0] = 1
 		assertEquals([...position], [1, 0])
+	})
+
+	it("can be disposed", () => {
+		const position = use([0, 0])
+		const history = []
+		use(() => history.push(position[0]))
+		assertEquals(history, [0])
+		position[0] = 1
+		assertEquals(history, [0, 1])
+		position.dispose()
+		position[0] = 2
+		assertEquals(history, [0, 1])
+		position._signal[0] = 3
+		assertEquals(history, [0, 1])
+	})
+
+	it("can be set via signal", () => {
+		const position = use([0, 0])
+		position._signal[0] = 1
+		assertEquals(position[0], 1)
 	})
 })
