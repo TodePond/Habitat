@@ -384,22 +384,22 @@ describe("Array Store", () => {
 	})
 
 	it("has length", () => {
-		const position = use([0, 0, 0])
+		const position = use([0, 0])
 		assertEquals(position.length, 2)
 	})
 
 	it("has array methods", () => {
 		const position = use([0, 0])
 		assertEquals([...position], [0, 0])
-		//const head = position.slice(1, 2)
-		//assertEquals([...head], [0])
+		const head = position.slice(1, 2)
+		assertEquals([...head], [0])
 	})
 
 	it("has array accessors", () => {
 		const position = use([0, 0])
-		//assertEquals(position.x, 0)
-		//position.x = 1
-		//assertEquals(position.x, 1)
+		assertEquals(position.x, 0)
+		position.x = 1
+		assertEquals(position.x, 1)
 	})
 
 	it("can be set", () => {
@@ -428,5 +428,12 @@ describe("Array Store", () => {
 	it("has signal methods", () => {
 		const position = use([0, 0])
 		assertEquals([...position.value], [0, 0])
+	})
+
+	it("iterates after updates", () => {
+		const position = use([0, 0])
+		assertEquals([...position], [0, 0])
+		position[0] = 1
+		assertEquals([...position], [1, 0])
 	})
 })

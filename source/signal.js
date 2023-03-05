@@ -242,6 +242,53 @@ const Signal = class extends Function {
 	}
 }
 
+export const ArrayView = class extends Array {
+	constructor(signal) {
+		if (typeof signal === "number") {
+			return super(signal)
+		}
+		super()
+		Reflect.defineProperty(this, "_signal", { value: signal })
+		const updater = use(() => {
+			this.length = 0
+			this.push(...signal)
+		})
+		Reflect.defineProperty(this, "_updater", { value: updater })
+
+		for (const [key] of signal._properties) {
+			Reflect.defineProperty(this, key, {
+				get: () => signal[key],
+				set: (value) => (signal[key] = value),
+			})
+		}
+	}
+
+	dispose() {
+		this._updater.dispose()
+		this._signal.dispose()
+	}
+
+	set(value) {
+		this._signal.set(value)
+	}
+
+	get() {
+		return this._signal.get()
+	}
+
+	update() {
+		this._signal.update()
+	}
+
+	get value() {
+		return this._signal.value
+	}
+
+	set value(value) {
+		this._signal.value = value
+	}
+}
+
 export const use = (value, options = {}) => {
 	const properties = {
 		dynamic: typeof value === "function",
@@ -251,14 +298,17 @@ export const use = (value, options = {}) => {
 	}
 
 	const signal = new Signal(value, properties)
+	if (Array.isArray(value) && properties.store) {
+		return new ArrayView(signal)
+	}
 	return signal
 }
 
-use.glue = (object) => {
-	for (const key in object) {
-		const value = object[key]
+use.glue = (source, target = source) => {
+	for (const key in source) {
+		const value = source[key]
 		if (value._isSignal) {
-			value.glueTo(object, key)
+			value.glueTo(target, key)
 		}
 	}
 }
