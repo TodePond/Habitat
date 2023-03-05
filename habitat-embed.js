@@ -532,12 +532,47 @@ const HabitatFrogasaurus = {}
 		
 				this._children.clear()
 			}
+		
+			glueTo(object, key) {
+				if (this.store) {
+					Reflect.defineProperty(object, key, {
+						get: () => this._view,
+						set: (value) => this.set(value),
+						enumerable: true,
+						configurable: true,
+					})
+					return
+				}
+		
+				Reflect.defineProperty(object, key, {
+					get: () => this.get(),
+					set: (value) => this.set(value),
+					enumerable: true,
+					configurable: true,
+				})
+			}
+		
+			*[Symbol.iterator]() {
+				if (this.store) {
+					if (this._view instanceof ArraySignal) {
+						for (const [key] of this._properties) {
+							yield this._view[key]
+						}
+					} else {
+						for (const [key] of this._properties) {
+							yield this._view[key]
+						}
+					}
+					return
+				}
+		
+				yield this._view
+				yield (value) => this._view.set(value)
+			}
 		}
 		
-		const View = class extends Function {
-			_isSignal = true
-			_signal = undefined
-		
+		// The signal view class that provides extra sugar
+		const FunctionSignal = class extends Function {
 			constructor(value, options = {}) {
 				super("value", "return this._self._func(value)")
 				const self = this.bind(this)
@@ -551,7 +586,9 @@ const HabitatFrogasaurus = {}
 					}
 				}
 		
-				self._signal = new _Signal(self, value, options)
+				const signal = new _Signal(self, value, options)
+				Reflect.defineProperty(self, "_isSignal", { value: true })
+				Reflect.defineProperty(self, "_signal", { value: signal })
 				return self
 			}
 		
@@ -568,22 +605,7 @@ const HabitatFrogasaurus = {}
 			}
 		
 			glueTo(object, key) {
-				if (this._signal.store) {
-					Reflect.defineProperty(object, key, {
-						get: () => this,
-						set: (value) => this.set(value),
-						enumerable: true,
-						configurable: true,
-					})
-					return
-				}
-		
-				Reflect.defineProperty(object, key, {
-					get: () => this.get(),
-					set: (value) => this.set(value),
-					enumerable: true,
-					configurable: true,
-				})
+				return this._signal.glueTo(object, key)
 			}
 		
 			update() {
@@ -603,25 +625,56 @@ const HabitatFrogasaurus = {}
 			}
 		
 			*[Symbol.iterator]() {
-				if (this._signal.store) {
-					for (const [key] of this._signal._properties) {
-						yield this[key]
-					}
-					return
+				for (const value of this._signal) {
+					yield value
 				}
-		
-				yield this
-				yield (value) => this.set(value)
 			}
 		}
 		
-		const Signal = View
+		const ArraySignal = class extends Array {
+			constructor(value, options = {}) {
+				super()
+				const signal = new _Signal(this, value, options)
+				Reflect.defineProperty(this, "_isSignal", { value: true })
+				Reflect.defineProperty(this, "_signal", { value: signal })
+				return this
+			}
 		
-		Signal.glueProperties = (object) => {
-			for (const key in object) {
-				const value = object[key]
-				if (value._isSignal) {
-					value.glueTo(object, key)
+			_addParent(parent) {
+				return this._signal._addParent(parent)
+			}
+		
+			set(value) {
+				this._signal.set(value)
+			}
+		
+			get() {
+				return this._signal.get()
+			}
+		
+			glueTo(object, key) {
+				return this._signal.glueTo(object, key)
+			}
+		
+			update() {
+				return this._signal.update()
+			}
+		
+			dispose() {
+				return this._signal.dispose()
+			}
+		
+			get value() {
+				return this.get()
+			}
+		
+			set value(value) {
+				this.set(value)
+			}
+		
+			*[Symbol.iterator]() {
+				for (const [key] of this._signal._properties) {
+					yield this[key]
 				}
 			}
 		}
@@ -634,14 +687,28 @@ const HabitatFrogasaurus = {}
 				...options,
 			}
 		
-			return new Signal(value, properties)
+			if (properties.store && Array.isArray(value)) {
+				return new ArraySignal(value, properties)
+			}
+		
+			return new FunctionSignal(value, properties)
+		}
+		
+		use.glue = (object) => {
+			for (const key in object) {
+				const value = object[key]
+				if (value._isSignal) {
+					value.glueTo(object, key)
+				}
+			}
 		}
 		
 		// Legacy
 		const useLazy = (value) => use(value, { lazy: true })
 		
 
-		HabitatFrogasaurus["./signal.js"].Signal = Signal
+		HabitatFrogasaurus["./signal.js"].FunctionSignal = FunctionSignal
+		HabitatFrogasaurus["./signal.js"].ArraySignal = ArraySignal
 		HabitatFrogasaurus["./signal.js"].use = use
 		HabitatFrogasaurus["./signal.js"].useLazy = useLazy
 	}
@@ -1581,7 +1648,7 @@ const HabitatFrogasaurus = {}
 		
 			constructor() {
 				super()
-				Signal.glue(this)
+				use.glue(this)
 			}
 		}
 		
@@ -1656,7 +1723,7 @@ const HabitatFrogasaurus = {}
 	const { on, fireEvent } = HabitatFrogasaurus["./event.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
 	const { lerp } = HabitatFrogasaurus["./lerp.js"]
-	const { Signal, use } = HabitatFrogasaurus["./signal.js"]
+	const { use } = HabitatFrogasaurus["./signal.js"]
 
 }
 
@@ -1688,7 +1755,8 @@ const Habitat = {
 	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
 	defineAccessor: HabitatFrogasaurus["./property.js"].defineAccessor,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
-	Signal: HabitatFrogasaurus["./signal.js"].Signal,
+	FunctionSignal: HabitatFrogasaurus["./signal.js"].FunctionSignal,
+	ArraySignal: HabitatFrogasaurus["./signal.js"].ArraySignal,
 	use: HabitatFrogasaurus["./signal.js"].use,
 	useLazy: HabitatFrogasaurus["./signal.js"].useLazy,
 	equals: HabitatFrogasaurus["./vector.js"].equals,

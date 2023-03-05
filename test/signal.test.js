@@ -1,5 +1,5 @@
 import { registerMethods } from "../source/habitat.js"
-import { Signal, use, useLazy } from "../source/signal.js"
+import { use, useLazy } from "../source/signal.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Setup", () => {
@@ -323,7 +323,7 @@ describe("Glue", () => {
 		const player = {
 			count: use(0),
 		}
-		Signal.glueProperties(player)
+		use.glue(player)
 		const doubled = use(() => player.count * 2)
 		assertEquals(player.count, 0)
 		assertEquals(doubled.value, 0)
@@ -336,7 +336,7 @@ describe("Glue", () => {
 		const player = {
 			position: use({ x: 0, y: 0 }),
 		}
-		Signal.glueProperties(player)
+		use.glue(player)
 		const left = use(() => player.position.x)
 		assertEquals(player.position.x, 0)
 		assertEquals(left.value, 0)
@@ -347,10 +347,52 @@ describe("Glue", () => {
 })
 
 describe("Array Store", () => {
-	it("stores an array", () => {
+	it("is iterable", () => {
 		const position = use([0, 0])
 		const [x, y] = position
 		assertEquals(x, 0)
 		assertEquals(y, 0)
+		assertEquals(position[0], 0)
+		assertEquals([...position], [0, 0])
+	})
+
+	it("has length", () => {
+		const position = use([0, 0])
+		assertEquals(position.length, 2)
+	})
+
+	it("has array methods", () => {
+		const position = use([0, 0])
+		assertEquals([...position], [0, 0])
+		const head = [...position].slice(1, 2)
+		assertEquals([...head], [0])
+	})
+
+	it("can be set", () => {
+		const position = use([0, 0])
+		position[0] = 1
+		assertEquals(position[0], 1)
+	})
+
+	it("can push", () => {
+		const position = use([0, 0])
+		const x = use(() => position[0])
+		assertEquals(x.value, 0)
+		position[0] = 1
+		assertEquals(x.value, 1)
+	})
+
+	it("can push recursively", () => {
+		const position = use([0, 0])
+		const x = use(() => position[0])
+		const doubled = use(() => x.value * 2)
+		assertEquals(doubled.value, 0)
+		position[0] = 1
+		assertEquals(doubled.value, 2)
+	})
+
+	it("has signal methods", () => {
+		const position = use([0, 0])
+		assertEquals([...position.value], [0, 0])
 	})
 })
