@@ -1,14 +1,15 @@
 <script src="../habitat-embed.js"></script>
 <script>
 	Habitat.registerEverything()
-	window.position = use([0, 0])
+	const position = use([0, 0])
 	const display = HTML("<div></div>")
 
 	addEventListener("click", (event) => {
-		position[0] = event.clientX
-		position[1] = event.clientY
+		position.x = event.clientX
+		position.y = event.clientY
 	})
 
+	// Display the last click position
 	const updater = use(() => {
 		display.textContent = position.join(", ")
 	})
