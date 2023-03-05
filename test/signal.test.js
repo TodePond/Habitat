@@ -472,3 +472,16 @@ describe("Array Store", () => {
 		assertEquals(position[0], 1)
 	})
 })
+
+describe("Implicit", () => {
+	it("becomes a string", () => {
+		const name = use("Bob")
+		assertEquals(name + "!", "Bob!")
+		assertEquals(`${name}!`, "Bob!")
+	})
+
+	it("becomes a number", () => {
+		const age = use(10)
+		assertEquals(age + 1, 11)
+	})
+})

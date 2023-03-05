@@ -595,6 +595,21 @@ const HabitatFrogasaurus = {}
 				yield this
 				yield (value) => this.set(value)
 			}
+		
+			[Symbol.toPrimitive](hint) {
+				if (hint === "string") {
+					return this.get().toString()
+				}
+				return this.get()
+			}
+		
+			valueOf() {
+				return this.get()
+			}
+		
+			toString() {
+				return this.get().toString()
+			}
 		}
 		
 		const ArrayView = class extends Array {
