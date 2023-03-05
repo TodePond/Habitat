@@ -359,51 +359,60 @@ const HabitatFrogasaurus = {}
 		}
 		
 		// The underlying signal class
-		const _Signal = class {
-			_view = undefined
+		const Signal = class extends Function {
+			constructor(value, options = {}) {
+				super("value", "return this._self._func(value)")
+				const self = this.bind(this)
+				this.setInternalProperty("_self", self)
+				Object.assign(self, this)
+				self.setInternalProperty("_func", (value) => {
+					if (value === undefined) {
+						return self.get()
+					} else {
+						self.set(value)
+					}
+				})
 		
-			// How the signal behaves
-			dynamic = false
-			lazy = false
-			store = false
+				self.setInternalProperty("_isSignal", true)
+				self.setInternalProperty("dynamic", false)
+				self.setInternalProperty("lazy", false)
+				self.setInternalProperty("store", false)
+				self.setInternalProperty("_birth", -Infinity)
+				self.setInternalProperty("_children", new Set())
+				self.setInternalProperty("_parents", new Set())
+				self.setInternalProperty("_properties", new Map())
+				self.setInternalProperty("_current", undefined)
+				self.setInternalProperty("_previous", undefined)
+				self.setInternalProperty("_evaluate", () => self._current)
 		
-			// Used for managing when to update the signal
-			_birth = -Infinity
-			_children = new Set()
-			_parents = new Set()
-			_properties = new Map()
-		
-			// Used for storing the signal's value
-			_current = undefined
-			_previous = undefined
-			_evaluate = function () {
-				return this._current
-			}
-		
-			constructor(view, value, options = {}) {
 				// Apply options
-				Object.assign(this, {
+				Object.assign(self, {
 					dynamic: false,
 					lazy: false,
 					store: false,
 					...options,
 				})
 		
-				this._view = view
-		
 				// Initialise our value
-				if (this.dynamic) {
-					this._evaluate = value
+				if (self.dynamic) {
+					self._evaluate = value
 				} else {
-					this._current = value
+					self._current = value
 				}
 		
 				// Initialise the signal if eager
-				if (!this.lazy) {
-					this.update()
+				if (!self.lazy) {
+					self.update()
 				}
 		
-				return this
+				return self
+			}
+		
+			setInternalProperty(key, value) {
+				Reflect.defineProperty(this, key, {
+					value,
+					writable: true,
+				})
 			}
 		
 			_addParent(parent) {
@@ -427,7 +436,7 @@ const HabitatFrogasaurus = {}
 						if (this._properties.has(key)) continue
 						const property = use(value[key])
 						this._properties.set(key, property)
-						property.glueTo(this._view, key)
+						property.glueTo(this, key)
 					}
 		
 					// Update existing properties
@@ -437,7 +446,7 @@ const HabitatFrogasaurus = {}
 						} else {
 							property.dispose()
 							this._properties.delete(key)
-							Reflect.deleteProperty(this._view, key)
+							Reflect.deleteProperty(this, key)
 						}
 					}
 				}
@@ -536,7 +545,7 @@ const HabitatFrogasaurus = {}
 			glueTo(object, key) {
 				if (this.store) {
 					Reflect.defineProperty(object, key, {
-						get: () => this._view,
+						get: () => this,
 						set: (value) => this.set(value),
 						enumerable: true,
 						configurable: true,
@@ -552,130 +561,30 @@ const HabitatFrogasaurus = {}
 				})
 			}
 		
+			get value() {
+				return this.get()
+			}
+		
+			set value(value) {
+				this.set(value)
+			}
+		
 			*[Symbol.iterator]() {
 				if (this.store) {
-					if (this._view instanceof ArraySignal) {
+					if (Array.isArray(this._current)) {
 						for (const [key] of this._properties) {
-							yield this._view[key]
+							yield this[key]
 						}
 					} else {
 						for (const [key] of this._properties) {
-							yield this._view[key]
+							yield [key, this[key]]
 						}
 					}
 					return
 				}
 		
-				yield this._view
-				yield (value) => this._view.set(value)
-			}
-		}
-		
-		// The signal view class that provides extra sugar
-		const FunctionSignal = class extends Function {
-			constructor(value, options = {}) {
-				super("value", "return this._self._func(value)")
-				const self = this.bind(this)
-				this._self = self
-				Object.assign(self, this)
-				self._func = (value) => {
-					if (value === undefined) {
-						return self.get()
-					} else {
-						self.set(value)
-					}
-				}
-		
-				const signal = new _Signal(self, value, options)
-				Reflect.defineProperty(self, "_isSignal", { value: true })
-				Reflect.defineProperty(self, "_signal", { value: signal })
-				return self
-			}
-		
-			_addParent(parent) {
-				return this._signal._addParent(parent)
-			}
-		
-			set(value) {
-				return this._signal.set(value)
-			}
-		
-			get() {
-				return this._signal.get()
-			}
-		
-			glueTo(object, key) {
-				return this._signal.glueTo(object, key)
-			}
-		
-			update() {
-				return this._signal.update()
-			}
-		
-			dispose() {
-				return this._signal.dispose()
-			}
-		
-			get value() {
-				return this.get()
-			}
-		
-			set value(value) {
-				this.set(value)
-			}
-		
-			*[Symbol.iterator]() {
-				for (const value of this._signal) {
-					yield value
-				}
-			}
-		}
-		
-		const ArraySignal = class extends Array {
-			constructor(value, options = {}) {
-				super()
-				const signal = new _Signal(this, value, options)
-				Reflect.defineProperty(this, "_isSignal", { value: true })
-				Reflect.defineProperty(this, "_signal", { value: signal })
-				return this
-			}
-		
-			_addParent(parent) {
-				return this._signal._addParent(parent)
-			}
-		
-			set(value) {
-				this._signal.set(value)
-			}
-		
-			get() {
-				return this._signal.get()
-			}
-		
-			glueTo(object, key) {
-				return this._signal.glueTo(object, key)
-			}
-		
-			update() {
-				return this._signal.update()
-			}
-		
-			dispose() {
-				return this._signal.dispose()
-			}
-		
-			get value() {
-				return this.get()
-			}
-		
-			set value(value) {
-				this.set(value)
-			}
-		
-			*[Symbol.iterator]() {
-				for (const [key] of this._signal._properties) {
-					yield this[key]
-				}
+				yield this
+				yield (value) => this.set(value)
 			}
 		}
 		
@@ -687,11 +596,8 @@ const HabitatFrogasaurus = {}
 				...options,
 			}
 		
-			if (properties.store && Array.isArray(value)) {
-				return new ArraySignal(value, properties)
-			}
-		
-			return new FunctionSignal(value, properties)
+			const signal = new Signal(value, properties)
+			return signal
 		}
 		
 		use.glue = (object) => {
@@ -703,14 +609,8 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		// Legacy
-		const useLazy = (value) => use(value, { lazy: true })
-		
 
-		HabitatFrogasaurus["./signal.js"].FunctionSignal = FunctionSignal
-		HabitatFrogasaurus["./signal.js"].ArraySignal = ArraySignal
 		HabitatFrogasaurus["./signal.js"].use = use
-		HabitatFrogasaurus["./signal.js"].useLazy = useLazy
 	}
 
 	//====== ./vector.js ======
@@ -1754,10 +1654,7 @@ export const registerDebugMethods = HabitatFrogasaurus["./console.js"].registerD
 export const defineGetter = HabitatFrogasaurus["./property.js"].defineGetter
 export const defineAccessor = HabitatFrogasaurus["./property.js"].defineAccessor
 export const LinkedList = HabitatFrogasaurus["./linked-list.js"].LinkedList
-export const FunctionSignal = HabitatFrogasaurus["./signal.js"].FunctionSignal
-export const ArraySignal = HabitatFrogasaurus["./signal.js"].ArraySignal
 export const use = HabitatFrogasaurus["./signal.js"].use
-export const useLazy = HabitatFrogasaurus["./signal.js"].useLazy
 export const equals = HabitatFrogasaurus["./vector.js"].equals
 export const scale = HabitatFrogasaurus["./vector.js"].scale
 export const multiply = HabitatFrogasaurus["./vector.js"].multiply
@@ -1841,10 +1738,7 @@ export const Habitat = {
 	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
 	defineAccessor: HabitatFrogasaurus["./property.js"].defineAccessor,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
-	FunctionSignal: HabitatFrogasaurus["./signal.js"].FunctionSignal,
-	ArraySignal: HabitatFrogasaurus["./signal.js"].ArraySignal,
 	use: HabitatFrogasaurus["./signal.js"].use,
-	useLazy: HabitatFrogasaurus["./signal.js"].useLazy,
 	equals: HabitatFrogasaurus["./vector.js"].equals,
 	scale: HabitatFrogasaurus["./vector.js"].scale,
 	multiply: HabitatFrogasaurus["./vector.js"].multiply,
