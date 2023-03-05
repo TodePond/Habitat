@@ -358,6 +358,7 @@ const HabitatFrogasaurus = {}
 			active: null,
 		}
 		
+		// The underlying signal class
 		const _Signal = class {
 			_view = undefined
 		
@@ -534,35 +535,8 @@ const HabitatFrogasaurus = {}
 		}
 		
 		const View = class extends Function {
-			static glueProperties(object) {
-				for (const key in object) {
-					const value = object[key]
-					if (value._isSignal) {
-						value.glueTo(object, key)
-					}
-				}
-			}
-		
 			_isSignal = true
 			_signal = undefined
-		
-			// How the signal behaves
-			dynamic = false
-			lazy = false
-			store = false
-		
-			// Used for managing when to update the signal
-			_birth = -Infinity
-			_children = new Set()
-			_parents = new Set()
-			_properties = new Map()
-		
-			// Used for storing the signal's value
-			_current = undefined
-			_previous = undefined
-			_evaluate = function () {
-				return this._current
-			}
 		
 			constructor(value, options = {}) {
 				super("value", "return this._self._func(value)")
@@ -629,12 +603,28 @@ const HabitatFrogasaurus = {}
 			}
 		
 			*[Symbol.iterator]() {
+				if (this._signal.store) {
+					for (const [key] of this._signal._properties) {
+						yield this[key]
+					}
+					return
+				}
+		
 				yield this
 				yield (value) => this.set(value)
 			}
 		}
 		
 		const Signal = View
+		
+		Signal.glueProperties = (object) => {
+			for (const key in object) {
+				const value = object[key]
+				if (value._isSignal) {
+					value.glueTo(object, key)
+				}
+			}
+		}
 		
 		const use = (value, options = {}) => {
 			const properties = {

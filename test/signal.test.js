@@ -349,6 +349,8 @@ describe("Glue", () => {
 describe("Array Store", () => {
 	it("stores an array", () => {
 		const position = use([0, 0])
-		assertEquals(position, [0, 0])
+		const [x, y] = position
+		assertEquals(x, 0)
+		assertEquals(y, 0)
 	})
 })
