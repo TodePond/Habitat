@@ -261,7 +261,6 @@ describe("Store", () => {
 		assertEquals(player.count, 0)
 	})
 
-	return
 	it("sets a property", () => {
 		const player = use({ count: 0 })
 		player.count = 1
@@ -320,7 +319,6 @@ describe("Store", () => {
 })
 
 describe("Glue", () => {
-	return
 	it("can glue properties to an object", () => {
 		const player = {
 			count: use(0),
@@ -333,10 +331,22 @@ describe("Glue", () => {
 		assertEquals(player.count, 1)
 		assertEquals(doubled.value, 2)
 	})
+
+	it("can glue stores to an object", () => {
+		const player = {
+			position: use({ x: 0, y: 0 }),
+		}
+		Signal.glueProperties(player)
+		const left = use(() => player.position.x)
+		assertEquals(player.position.x, 0)
+		assertEquals(left.value, 0)
+		player.position.x = 1
+		assertEquals(player.position.x, 1)
+		assertEquals(left.value, 1)
+	})
 })
 
 describe("Array Store", () => {
-	return
 	it("stores an array", () => {
 		const position = use([0, 0])
 		assertEquals(position.value, [0, 0])

@@ -577,23 +577,33 @@ const HabitatFrogasaurus = {}
 					}
 				}
 		
-				self.signal = new _Signal(self, value, options)
+				self._signal = new _Signal(self, value, options)
 				return self
 			}
 		
 			_addParent(parent) {
-				return this.signal._addParent(parent)
+				return this._signal._addParent(parent)
 			}
 		
 			set(value) {
-				return this.signal.set(value)
+				return this._signal.set(value)
 			}
 		
 			get() {
-				return this.signal.get()
+				return this._signal.get()
 			}
 		
 			glueTo(object, key) {
+				if (this._signal.store) {
+					Reflect.defineProperty(object, key, {
+						get: () => this,
+						set: (value) => this.set(value),
+						enumerable: true,
+						configurable: true,
+					})
+					return
+				}
+		
 				Reflect.defineProperty(object, key, {
 					get: () => this.get(),
 					set: (value) => this.set(value),
@@ -603,11 +613,11 @@ const HabitatFrogasaurus = {}
 			}
 		
 			update() {
-				return this.signal.update()
+				return this._signal.update()
 			}
 		
 			dispose() {
-				return this.signal.dispose()
+				return this._signal.dispose()
 			}
 		
 			get value() {
