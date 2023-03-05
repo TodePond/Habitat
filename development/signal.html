@@ -1,16 +1,16 @@
 <script src="../habitat-embed.js"></script>
 <script>
 	Habitat.registerEverything()
-	const position = use([0, 0])
+	window.position = use([0, 0])
 	const display = HTML("<div></div>")
 
 	addEventListener("click", (event) => {
 		position[0] = event.clientX
-		print(position)
+		position[1] = event.clientY
 	})
 
 	const updater = use(() => {
-		display.textContent = position[0]
+		display.textContent = position.join(", ")
 	})
 
 	addEventListener("load", () => {

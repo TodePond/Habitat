@@ -29,4 +29,5 @@
 -   [SVG](svg.md)
 -   [Touch](touch.md)
 -   [Tween](tween.md)
+-   [Use](use.md)
 -   [Vector](vector.md)
