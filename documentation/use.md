@@ -1,5 +1,10 @@
 # Use
 
+You can make a signal with the `use` function.<br>
+Check out the [Signal](signal.md) documentation for info.
+
+````javascript
+
 ## `use(template)`
 
 Use state based on a value.
@@ -12,7 +17,7 @@ addEventListener("click", () => count.value++)
 use(() => {
 	display.textContent = count
 })
-```
+````
 
 Use state based on other state.
 
