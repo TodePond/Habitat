@@ -358,6 +358,15 @@ describe("Store", () => {
 		player.count = 1
 		assertEquals(clock, 2)
 	})
+
+	it("updates its own value", () => {
+		const player = use({ count: 0 })
+		assertEquals(player.value, { count: 0 })
+		player.count = 1
+		assertEquals(player.value, { count: 1 })
+		player.count = 2
+		assertEquals(player.value, { count: 2 })
+	})
 })
 
 describe("Glue", () => {
@@ -407,7 +416,7 @@ describe("Array Store", () => {
 		const position = use([0, 0])
 		assertEquals([...position], [0, 0])
 		const head = position.slice(1, 2)
-		assertEquals([...head], [0])
+		assertEquals(head, [0])
 	})
 
 	it("has array accessors", () => {
@@ -470,6 +479,15 @@ describe("Array Store", () => {
 		const position = use([0, 0])
 		position._signal[0] = 1
 		assertEquals(position[0], 1)
+	})
+
+	it("updates its own value", () => {
+		const position = use([0, 0])
+		assertEquals(position.value, [0, 0])
+		position[0] = 1
+		assertEquals(position.value, [1, 0])
+		position[0] = 2
+		assertEquals(position.value, [2, 0])
 	})
 })
 

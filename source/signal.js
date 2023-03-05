@@ -26,6 +26,7 @@ const Signal = class extends Function {
 		self.setInternalProperty("_children", new Set())
 		self.setInternalProperty("_parents", new Set())
 		self.setInternalProperty("_properties", new Map())
+		self.setInternalProperty("_store", undefined)
 		self.setInternalProperty("_current", undefined)
 		self.setInternalProperty("_previous", undefined)
 		self.setInternalProperty("_evaluate", () => self._current)
@@ -88,7 +89,10 @@ const Signal = class extends Function {
 			// Add new properties
 			for (const key in value) {
 				if (this._properties.has(key)) continue
-				const property = use(value[key])
+				const property = use(value[key], { lazy: this.lazy })
+				property._store = use(() => {
+					this._current[key] = property.get()
+				})
 				this._properties.set(key, property)
 				property.glueTo(this, key)
 			}
@@ -108,7 +112,9 @@ const Signal = class extends Function {
 		// Update our value
 		this._previous = this._current
 		this._birth = shared.clock++
-		this._current = value
+		if (!this.store) {
+			this._current = value
+		}
 
 		// Update our eager children
 		const children = [...this._children]
@@ -193,6 +199,10 @@ const Signal = class extends Function {
 		}
 		this._properties.clear()
 
+		if (this._store !== undefined) {
+			this._store.dispose()
+		}
+
 		this._children.clear()
 	}
 
@@ -260,26 +270,19 @@ const Signal = class extends Function {
 export const ArrayView = class extends Array {
 	constructor(signal) {
 		if (typeof signal === "number") {
-			return super(signal)
+			return new Array(signal)
 		}
 		super()
 		Reflect.defineProperty(this, "_signal", { value: signal })
-		const updater = use(() => {
-			this.length = 0
-			this.push(...signal)
-		})
-		Reflect.defineProperty(this, "_updater", { value: updater })
-
-		for (const [key] of signal._properties) {
+		for (const [key, property] of signal._properties) {
 			Reflect.defineProperty(this, key, {
-				get: () => signal[key],
-				set: (value) => (signal[key] = value),
+				get: () => property.get(),
+				set: (value) => property.set(value),
 			})
 		}
 	}
 
 	dispose() {
-		this._updater.dispose()
 		this._signal.dispose()
 	}
 
@@ -296,7 +299,7 @@ export const ArrayView = class extends Array {
 	}
 
 	get value() {
-		return this._signal.value
+		return this._signal.get()
 	}
 
 	set value(value) {

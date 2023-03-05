@@ -2,111 +2,60 @@
 
 ## `use(template, options?)`
 
-Make a signal.<br>
-Here are some things it can do. (Or scroll to the bottom for a full reference.)
-
-## Value
-
-You can store a value.
-
-```javascript
-const count = use(0)
-```
-
-You can get and set the value in various ways.
-
-```javascript
-const count = use(0)
-count.set(1)
-print(count.get()) //1
-```
-
-```javascript
-const count = use(0)
-count.value = 1
-print(count.value) //1
-```
-
-```javascript
-const count = use(0)
-count(1)
-print(count()) //1
-```
-
-```javascript
-const [getCount, setCount] = use(0)
-setCount(1)
-print(getCount()) //1
-```
-
-```javascript
-const count = use(0)
-count.value = 1
-print(count.previous) //0
-```
-
-## Dynamic
-
-You can make a `dynamic` signal by passing a function.<br>
-It updates whenever one of its used signals updates.
-
-```javascript
-const count = use(0)
-const double = use(() => count.get() * 2)
-
-count.set(1)
-print(double.get()) //2
-```
+Use state based on a value.
 
 ```javascript
 const count = use(0)
 const display = HTML("<div></div>")
+addEventListener("click", () => count.value++)
+
 use(() => {
-	display.textContent = count.value
+	display.textContent = count
 })
 ```
 
-## Lazy
-
-You can make a `lazy` dynamic signal.<br>
-It updates whenever you read from it (but only if it has to).
+Use state based on other state.
 
 ```javascript
 const count = use(0)
-const double = use(() => count.get() * 2, { lazy: true })
+const doubled = use(() => count * 2)
+const display = HTML("<div></div>")
+addEventListener("click", () => count.value++)
 
-count.set(1)
-print(double.get()) //2
+use(() => {
+	display.textContent = doubled
+})
 ```
 
-## Store
-
-You can make a `store` by passing an object or array.<br>
-Its properties are all treated like signals.
-
-```javascript
-const position = use([0, 0])
-const dimensions = use([10, 10])
-const right = use(() => position.x + dimensions.width)
-
-print(right.get()) //10
-position.x = 5
-print(right.get()) //15
-```
+Use state based on an object store.
 
 ```javascript
 const player = use({
-	health: 10,
+	name: "Lu",
 	score: 0,
 })
 
-const status = use(() => (player.health > 0 ? "alive" : "dead"))
+const display = HTML("<div></div>")
+addEventListener("click", () => player.score++)
 
 use(() => {
-	if (status.value === "dead") {
-		print("Game over!")
-		print("Score: " + player.score)
-	}
+	display.textContent = `${player.name}: ${player.score}`
+})
+```
+
+Use state based on an array store.
+
+```javascript
+const position = use([0, 0])
+const display = HTML("<div></div>")
+
+addEventListener("click", (event) => {
+	position[0] = event.clientX
+	position[1] = event.clientY
+})
+
+use(() => {
+	display.textContent = position.join(", ")
 })
 ```
 
