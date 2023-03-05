@@ -29,6 +29,15 @@ const Signal = class extends Function {
 		self.setInternalProperty("_current", undefined)
 		self.setInternalProperty("_previous", undefined)
 		self.setInternalProperty("_evaluate", () => self._current)
+		Reflect.defineProperty(self, "length", {
+			get: () => {
+				if (Array.isArray(self._current)) {
+					return self._current.length
+				}
+
+				return 1
+			},
+		})
 
 		// Apply options
 		Object.assign(self, {

@@ -384,8 +384,8 @@ describe("Array Store", () => {
 	})
 
 	it("has length", () => {
-		const position = use([0, 0])
-		//assertEquals(position.length, 2)
+		const position = use([0, 0, 0])
+		assertEquals(position.length, 2)
 	})
 
 	it("has array methods", () => {
