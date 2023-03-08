@@ -322,7 +322,7 @@ export const use = (value, options = {}) => {
 	return signal
 }
 
-use.glue = (source, target = source) => {
+export const glueSignals = (source, target = source) => {
 	for (const key in source) {
 		const value = source[key]
 		if (value._isSignal) {

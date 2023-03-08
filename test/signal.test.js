@@ -1,5 +1,5 @@
 import { registerMethods } from "../source/habitat.js"
-import { use } from "../source/signal.js"
+import { glueSignals, use } from "../source/signal.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Setup", () => {
@@ -374,7 +374,7 @@ describe("Glue", () => {
 		const player = {
 			count: use(0),
 		}
-		use.glue(player)
+		glueSignals(player)
 		const doubled = use(() => player.count * 2)
 		assertEquals(player.count, 0)
 		assertEquals(doubled.value, 0)
@@ -387,7 +387,7 @@ describe("Glue", () => {
 		const player = {
 			position: use({ x: 0, y: 0 }),
 		}
-		use.glue(player)
+		glueSignals(player)
 		const left = use(() => player.position.x)
 		assertEquals(player.position.x, 0)
 		assertEquals(left.value, 0)

@@ -19,6 +19,6 @@ Component.Transform = class extends Component {
 
 	constructor() {
 		super()
-		use.glue(this)
+		glueSignals(this)
 	}
 }
