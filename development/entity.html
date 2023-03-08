@@ -1,0 +1,27 @@
+<script src="../habitat-embed.js"></script>
+<script>
+	Habitat.registerEverything()
+
+	const stage = new Stage({ context: "2d" })
+
+	const scene = new Entity({
+		components: ["stage"],
+		tick(context) {
+			context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+		},
+	})
+
+	const box = new Entity([new Component.Transform(), new Component.Stage()], {
+		tick(context) {
+			const position = this.transform.position
+			context.fillStyle = BLUE
+			context.fillRect(position.x, position.y, 100, 100)
+		},
+	})
+
+	scene.add(box)
+
+	stage.tick = (context) => {
+		scene.stage.tick(context)
+	}
+</script>

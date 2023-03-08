@@ -322,7 +322,7 @@ export const use = (value, options = {}) => {
 	const properties = {
 		dynamic: typeof value === "function",
 		lazy: false,
-		store: Array.isArray(value) || typeof value === "object",
+		store: Array.isArray(value) || value?.constructor === Object,
 		...options,
 	}
 
