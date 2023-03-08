@@ -152,8 +152,3 @@ Component.Stage = class extends Component {
 		stage.resize = this.resize.bind(this)
 	}
 }
-
-Component.slots = {
-	transform: Component.Transform,
-	stage: Component.Stage,
-}

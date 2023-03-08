@@ -450,11 +450,6 @@ const HabitatFrogasaurus = {}
 			}
 		}
 		
-		Component.slots = {
-			transform: Component.Transform,
-			stage: Component.Stage,
-		}
-		
 
 		HabitatFrogasaurus["./entity.js"].Entity = Entity
 		HabitatFrogasaurus["./entity.js"].Component = Component
