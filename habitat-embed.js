@@ -308,10 +308,7 @@ const HabitatFrogasaurus = {}
 				}
 		
 				const { components = [] } = properties
-				for (let component of components) {
-					if (typeof component === "string") {
-						component = new Component.slots[component]()
-					}
+				for (const component of components) {
 					this[component.slot] = component
 					component.entity = this
 				}
@@ -406,6 +403,13 @@ const HabitatFrogasaurus = {}
 		Component.Stage = class extends Component {
 			slot = "stage"
 		
+			constructor(stage) {
+				super()
+				if (stage) {
+					this.connect(stage)
+				}
+			}
+		
 			tick(context) {
 				const { entity } = this
 				entity.tick?.(context)
@@ -436,6 +440,13 @@ const HabitatFrogasaurus = {}
 				for (const child of entity.children) {
 					child.stage?.resize(context)
 				}
+			}
+		
+			connect(stage) {
+				stage.tick = this.tick.bind(this)
+				stage.update = this.update.bind(this)
+				stage.start = this.start.bind(this)
+				stage.resize = this.resize.bind(this)
 			}
 		}
 		

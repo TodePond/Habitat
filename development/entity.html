@@ -2,26 +2,27 @@
 <script>
 	Habitat.registerEverything()
 
-	const stage = new Stage({ context: "2d" })
-
+	const stage = new Stage()
 	const scene = new Entity({
-		components: ["stage"],
+		components: [new Component.Stage(stage)],
 		tick(context) {
-			context.clearRect(0, 0, context.canvas.width, context.canvas.height)
+			const { canvas } = context
+			context.clearRect(0, 0, canvas.width, canvas.height)
 		},
 	})
 
-	const box = new Entity([new Component.Transform(), new Component.Stage()], {
+	const box = new Entity({
+		components: [new Component.Transform(), new Component.Stage()],
 		tick(context) {
 			const position = this.transform.position
 			context.fillStyle = BLUE
 			context.fillRect(position.x, position.y, 100, 100)
 		},
+		update() {
+			this.transform.position.x += 1
+			this.transform.position.y += 1
+		},
 	})
 
 	scene.add(box)
-
-	stage.tick = (context) => {
-		scene.stage.tick(context)
-	}
 </script>
