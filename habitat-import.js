@@ -1145,6 +1145,7 @@ const HabitatFrogasaurus = {}
 					return new Array(signal)
 				}
 				super()
+				Reflect.defineProperty(this, "_isSignal", { value: true })
 				Reflect.defineProperty(this, "_signal", { value: signal })
 				for (const [key, property] of signal._properties) {
 					Reflect.defineProperty(this, key, {
@@ -1177,6 +1178,16 @@ const HabitatFrogasaurus = {}
 			set value(value) {
 				this._signal.value = value
 			}
+		
+			glueTo(object, key) {
+				Reflect.defineProperty(object, key, {
+					get: () => this,
+					set: (value) => this.set(value),
+					enumerable: true,
+					configurable: true,
+				})
+				return
+			}
 		}
 		
 		const use = (value, options = {}) => {
@@ -1197,7 +1208,7 @@ const HabitatFrogasaurus = {}
 		const glueSignals = (source, target = source) => {
 			for (const key in source) {
 				const value = source[key]
-				if (value._isSignal) {
+				if (value?._isSignal) {
 					value.glueTo(target, key)
 				}
 			}

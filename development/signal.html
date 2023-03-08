@@ -1,6 +1,15 @@
 <script src="../habitat-embed.js"></script>
 <script>
 	Habitat.registerEverything()
+	const player = {
+		position: use([0, 0]),
+	}
+	const left = use(() => player.position[0])
+	glueSignals(player)
+	console.log(player.position.value)
+	player.position = [10, 10]
+	console.log(player.position.value)
+	/*
 	const position = use([0, 0])
 	const display = HTML("<div></div>")
 
@@ -17,4 +26,5 @@
 	addEventListener("load", () => {
 		document.body.append(display)
 	})
+	*/
 </script>

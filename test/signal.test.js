@@ -387,13 +387,65 @@ describe("Glue", () => {
 		const player = {
 			position: use({ x: 0, y: 0 }),
 		}
-		glueSignals(player)
 		const left = use(() => player.position.x)
+		glueSignals(player)
 		assertEquals(player.position.x, 0)
 		assertEquals(left.value, 0)
 		player.position.x = 1
 		assertEquals(player.position.x, 1)
 		assertEquals(left.value, 1)
+	})
+
+	it("can allow stores to be overwritten", () => {
+		const player = {
+			position: use({ x: 0, y: 0 }),
+		}
+		glueSignals(player)
+		assertEquals(player.position.x, 0)
+		player.position = { x: 10, y: 10 }
+		assertEquals(player.position.x, 10)
+	})
+
+	it("updates dependencies when you overwrite a store", () => {
+		const player = {
+			position: use({ x: 0, y: 0 }),
+		}
+		const left = use(() => player.position.x)
+		glueSignals(player)
+		assertEquals(left.value, 0)
+		player.position = { x: 10, y: 10 }
+		assertEquals(left.value, 10)
+	})
+
+	it("can glue array stores to an object", () => {
+		const player = {
+			position: use([0, 0]),
+		}
+		glueSignals(player)
+		assertEquals(player.position[0], 0)
+		player.position[0] = 1
+		assertEquals(player.position[0], 1)
+	})
+
+	it("can allow array stores to be overwritten", () => {
+		const player = {
+			position: use([0, 0]),
+		}
+		glueSignals(player)
+		assertEquals(player.position[0], 0)
+		player.position = [10, 10]
+		assertEquals(player.position[0], 10)
+	})
+
+	it("updates dependencies when you overwrite an array store", () => {
+		const player = {
+			position: use([0, 0]),
+		}
+		const left = use(() => player.position[0])
+		glueSignals(player)
+		assertEquals(left.value, 0)
+		player.position = [10, 10]
+		assertEquals(left.value, 10)
 	})
 })
 
