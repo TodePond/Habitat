@@ -1,4 +1,4 @@
-import { use } from "./signal.js"
+import { glueSignals, use } from "./signal.js"
 
 export const Entity = class {
 	constructor(components = []) {
@@ -10,11 +10,11 @@ export const Entity = class {
 }
 
 export const Component = class {
-	name = "anonymous"
+	slot = "component"
 }
 
 Component.Transform = class extends Component {
-	name = "transform"
+	slot = "transform"
 	position = use([0, 0])
 
 	constructor() {

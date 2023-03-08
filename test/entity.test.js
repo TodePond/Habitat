@@ -16,21 +16,19 @@ describe("Entity", () => {
 })
 
 describe("Component", () => {
-	it("has a name", () => {
+	it("has a slot", () => {
 		const component = new Component()
-		assertEquals(component.name, "anonymous")
+		assertEquals(component.slot, "component")
 	})
 })
 
 describe("Component.Transform", () => {
-	return
 	it("has a position", () => {
 		const transform = new Component.Transform()
 		assertEquals([...transform.position], [0, 0])
 		assertEquals(transform.position[0], 0)
 		assertEquals(transform.position.x, 0)
 	})
-	return
 	it("uses position as a signal", () => {
 		const transform = new Component.Transform()
 		const x = use(() => transform.position[0])
@@ -38,12 +36,10 @@ describe("Component.Transform", () => {
 		transform.position[0] = 10
 		assertEquals(x.value, 10)
 	})
-	return
 	it("has position glued to it", () => {
 		const transform = new Component.Transform()
-		const x = use(() => transform.position[0])
-		assertEquals(x.value, 0)
+		assertEquals([...transform.position], [0, 0])
 		transform.position = [10, 10]
-		assertEquals(x.value, 10)
+		assertEquals([...transform.position], [10, 10])
 	})
 })

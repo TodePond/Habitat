@@ -308,11 +308,11 @@ const HabitatFrogasaurus = {}
 		}
 		
 		const Component = class {
-			name = "anonymous"
+			slot = "component"
 		}
 		
 		Component.Transform = class extends Component {
-			name = "transform"
+			slot = "transform"
 			position = use([0, 0])
 		
 			constructor() {
@@ -1696,7 +1696,7 @@ const HabitatFrogasaurus = {}
 	}
 
 	const { defineAccessor, defineGetter } = HabitatFrogasaurus["./property.js"]
-	const { use } = HabitatFrogasaurus["./signal.js"]
+	const { glueSignals, use } = HabitatFrogasaurus["./signal.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { registerVectorMethods, add, crossProduct, scale, subtract } = HabitatFrogasaurus["./vector.js"]
