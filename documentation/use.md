@@ -3,7 +3,7 @@
 You can make a signal with the `use` function.<br>
 Check out the [Signal](signal.md) documentation for info.
 
-## `use(template)`
+## `use(value)`
 
 Use state based on a value.
 
@@ -17,6 +17,8 @@ use(() => {
 })
 ```
 
+## `use(evaluate)`
+
 Use state based on other state.
 
 ```javascript
@@ -29,6 +31,8 @@ use(() => {
 	display.textContent = doubled
 })
 ```
+
+## `use(object)`
 
 Use state based on an object store.
 
@@ -45,6 +49,8 @@ use(() => {
 	display.textContent = `${player.name}: ${player.score}`
 })
 ```
+
+## `use(array)`
 
 Use state based on an array store.
 
