@@ -9,63 +9,40 @@ Use state based on a value.
 
 ```javascript
 const count = use(0)
-const display = HTML("<div></div>")
-addEventListener("click", () => count.value++)
-
-use(() => {
-	display.textContent = count
-})
 ```
 
-## `use(evaluate)`
+## `use(callback)`
 
 Use state based on other state.
 
 ```javascript
 const count = use(0)
 const doubled = use(() => count * 2)
-const display = HTML("<div></div>")
-addEventListener("click", () => count.value++)
+```
 
-use(() => {
-	display.textContent = doubled
-})
+React to state changes.
+
+```javascript
+const count = use(0)
+use(() => print("Count changed: " + count)
 ```
 
 ## `use(object)`
 
-Use state based on an object store.
+Use an object made of signal properties.
 
 ```javascript
-const player = use({
-	name: "Lu",
-	score: 0,
-})
-
-const display = HTML("<div></div>")
-addEventListener("click", () => player.score++)
-
-use(() => {
-	display.textContent = `${player.name}: ${player.score}`
-})
+const player = use({ name: "Lu", score: 0 })
+const isWinner = use(() => player.score > 9)
 ```
 
 ## `use(array)`
 
-Use state based on an array store.
+Use an array made of signal items.
 
 ```javascript
 const position = use([0, 0])
-const display = HTML("<div></div>")
-
-addEventListener("click", (event) => {
-	position[0] = event.clientX
-	position[1] = event.clientY
-})
-
-use(() => {
-	display.textContent = position.join(", ")
-})
+const isUnderground = use(() => position.y > 100)
 ```
 
 ## `use(template, options)`
@@ -75,6 +52,7 @@ You can override the default behaviour for a template.
 ```javascript
 const count = use(0)
 const doubled = use(() => count * 2, { lazy: true })
+
 const position = use([0, 0], { store: false })
 const increment = use(() => count++, { dynamic: false })
 ```
