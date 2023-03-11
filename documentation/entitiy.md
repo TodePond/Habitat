@@ -6,28 +6,9 @@ You can make an entity that has some components.
 
 ```javascript
 const box = new Entity([
-  new Component.Stage(),
+  new Component.Rectangle(10, 10),
   new Component.Transform(),
 ])
-```
-
-## `new Entity(properties)`
-
-You can make an entity that has some initial properties.
-
-```javascript
-const box = new Entity({
-  components: [
-    new Component.Stage(),
-    new Component.Transform(),
-  ],
-  
-  tick(context) {
-    const [x, y] = this.transform.position
-    context.fillStyle = BLUE
-    context.fillRect(x, y, 10, 10)
-  },
-})
 ```
 
 ## `class extends Entity`
@@ -36,20 +17,16 @@ You might want to make your own Entity class.
 
 ```javascript
 const Box = class extends Entity {
-  constructor() {
+  constructor(colour = ORANGE) {
     super([
-      new Component.Stage(),
+      new Component.Rectangle(10, 10),
       new Component.Transform(),
     ])
-  }
-  
-  tick(context) {
-    const [x, y] = this.transform.position
-    context.fillStyle = BLUE
-    context.fillRect(x, y, 10, 10)
+    
+    this.colour = colour
   }
 }
 
-const box = new Box()
+const box = new Box(BLUE)
 ```
 
