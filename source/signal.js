@@ -70,19 +70,6 @@ const Signal = class extends Function {
 		})
 	}
 
-	_addParent(parent) {
-		this._parents.add(parent)
-
-		// If we're lazy, we need to add all our ancestors too
-		// so that we know what to check when we want to update
-		if (this.lazy) {
-			if (parent._parents === undefined) return
-			for (const grandparent of parent._parents) {
-				this._addParent(grandparent)
-			}
-		}
-	}
-
 	set(value) {
 		// If we're a store, update our properties
 		if (this.store) {
@@ -123,11 +110,33 @@ const Signal = class extends Function {
 		}
 	}
 
+	_isDirty() {
+		if (!this.lazy) {
+			return false
+		}
+
+		if (this._birth < 0) {
+			return true
+		}
+
+		const parents = [...this._parents]
+		for (const parent of parents) {
+			if (parent._birth > this._birth) {
+				return true
+			}
+
+			if (parent._isDirty()) {
+				return true
+			}
+		}
+
+		return false
+	}
+
 	get() {
 		// If we're lazy, update our value if we need to
 		if (this.lazy) {
-			const parents = [...this._parents]
-			if (this._birth < 0 || parents.some((parent) => parent._birth > this._birth)) {
+			if (this._isDirty()) {
 				this.update()
 			}
 		}
@@ -136,7 +145,7 @@ const Signal = class extends Function {
 		// because it's using us as a dependency
 		const { active } = shared
 		if (active !== null) {
-			active._addParent(this)
+			active._parents.add(this)
 			if (active.dynamic && !active.lazy) {
 				this._children.add(active)
 			}

@@ -80,6 +80,17 @@ describe("Pull", () => {
 		assertEquals(doubleClock, 2)
 		assertEquals(tripleClock, 1)
 	})
+
+	it("updates its value when its grandparent has changed", () => {
+		const count = use(0)
+		const doubled = use(() => count.get() * 2, { lazy: true })
+		const tripled = use(() => doubled.get() * 3, { lazy: true })
+
+		count.set(1)
+		assertEquals(tripled.get(), 6)
+		count.set(2)
+		assertEquals(tripled.get(), 12)
+	})
 })
 
 describe("Push", () => {

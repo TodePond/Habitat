@@ -11,18 +11,33 @@
 		},
 	})
 
-	const box = new Entity({
+	const mouse = getMouse()
+
+	const addBox = (entity) => {
+		const box = new Entity({
+			components: [new Component.Transform(), new Component.Stage()],
+			tick(context) {
+				const [x, y] = this.transform.absolutePosition
+				context.fillStyle = BLUE
+				context.fillRect(x, y, 20, 20)
+			},
+			update() {
+				this.transform.position = mouse.position
+			},
+		})
+
+		entity.add(box)
+		return box
+	}
+
+	const holder = new Entity({
 		components: [new Component.Transform(), new Component.Stage()],
-		tick(context) {
-			const position = this.transform.position
-			context.fillStyle = BLUE
-			context.fillRect(position.x, position.y, 100, 100)
-		},
-		update() {
-			this.transform.position.x += 1
-			this.transform.position.y += 1
-		},
 	})
 
-	scene.add(box)
+	let box = addBox(holder)
+	holder.transform.position = [0, 0]
+	for (const i of range(0, 10)) {
+		box = addBox(box)
+	}
+	scene.add(holder)
 </script>
