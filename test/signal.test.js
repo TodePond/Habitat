@@ -91,6 +91,20 @@ describe("Pull", () => {
 		count.set(2)
 		assertEquals(tripled.get(), 12)
 	})
+
+	it("updates its ancestors", () => {
+		const count = use(0)
+		const paused = use(true)
+		const doubled = use(() => count.get() * 2, { lazy: true })
+		const tripled = use(() => (paused.value ? -1 : doubled.get() * 3), { lazy: true })
+
+		assertEquals(doubled.get(), 0)
+
+		assertEquals(tripled.get(), -1)
+		count.set(1)
+		paused.set(false)
+		assertEquals(tripled.get(), 6)
+	})
 })
 
 describe("Push", () => {

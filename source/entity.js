@@ -1,5 +1,5 @@
 import { glueSignals, use } from "./signal.js"
-import { add } from "./vector.js"
+import { add, rotate } from "./vector.js"
 
 export const Entity = class {
 	parent = use(null)
@@ -66,7 +66,11 @@ Component.Transform = class extends Component {
 			if (!parent || !parent.transform) {
 				return this.position
 			}
-			return add(this.position, parent.transform.absolutePosition)
+
+			// This also factors in rotation
+			const rotatedPosition = rotate(this.position, parent.transform.absoluteRotation)
+
+			return add(parent.transform.absolutePosition, rotatedPosition)
 		},
 		{ lazy: true },
 	)

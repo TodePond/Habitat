@@ -380,11 +380,13 @@ const HabitatFrogasaurus = {}
 				self.setInternalProperty("_birth", -Infinity)
 				self.setInternalProperty("_children", new Set())
 				self.setInternalProperty("_parents", new Set())
+				self.setInternalProperty("_ancestors", new Set())
 				self.setInternalProperty("_properties", new Map())
 				self.setInternalProperty("_store", undefined)
 				self.setInternalProperty("_current", undefined)
 				self.setInternalProperty("_previous", undefined)
 				self.setInternalProperty("_evaluate", () => self._current)
+				self.setInternalProperty("_ancestorsDirty", true)
 				Reflect.defineProperty(self, "length", {
 					get: () => {
 						if (Array.isArray(self._current)) {
@@ -465,6 +467,28 @@ const HabitatFrogasaurus = {}
 				}
 			}
 		
+			_getAncestors() {
+				if (!this.lazy) {
+					return this._parents
+				}
+		
+				if (!this._ancestorsDirty) {
+					return this._ancestors
+				}
+		
+				this._ancestorsDirty = false
+				this._ancestors.clear()
+		
+				for (const parent of this._parents) {
+					this._ancestors.add(parent)
+					for (const ancestor of parent._getAncestors()) {
+						this._ancestors.add(ancestor)
+					}
+				}
+		
+				return this._ancestors
+			}
+		
 			_isDirty() {
 				if (!this.lazy) {
 					return false
@@ -474,13 +498,9 @@ const HabitatFrogasaurus = {}
 					return true
 				}
 		
-				const parents = [...this._parents]
-				for (const parent of parents) {
-					if (parent._birth > this._birth) {
-						return true
-					}
-		
-					if (parent._isDirty()) {
+				const ancestors = this._getAncestors()
+				for (const ancestor of ancestors) {
+					if (ancestor._birth > this._birth) {
 						return true
 					}
 				}
@@ -501,6 +521,11 @@ const HabitatFrogasaurus = {}
 				const { active } = shared
 				if (active !== null) {
 					active._parents.add(this)
+					/*if (active.dynamic && active.lazy) {
+						for (const parent of this._parents) {
+							active._parents.add(parent)
+						}
+					}*/
 					if (active.dynamic && !active.lazy) {
 						this._children.add(active)
 					}
@@ -519,11 +544,13 @@ const HabitatFrogasaurus = {}
 		
 				// If we're dynamic, run away from our parents
 				// because we might not need them this time
-				const parents = [...this._parents]
-				for (const parent of parents) {
-					parent._children.delete(this)
+				if (!this.lazy) {
+					for (const parent of this._parents) {
+						parent._children.delete(this)
+					}
 				}
 				this._parents.clear()
+				//this._ancestorsDirty = true
 		
 				// Keep hold of the active signal
 				// It's our turn! We're the active signal now!
@@ -1693,7 +1720,11 @@ const HabitatFrogasaurus = {}
 					if (!parent || !parent.transform) {
 						return this.position
 					}
-					return add(this.position, parent.transform.absolutePosition)
+		
+					// This also factors in rotation
+					const rotatedPosition = rotate(this.position, parent.transform.absoluteRotation)
+		
+					return add(parent.transform.absolutePosition, rotatedPosition)
 				},
 				{ lazy: true },
 			)
@@ -1846,7 +1877,7 @@ const HabitatFrogasaurus = {}
 
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
-	const { registerVectorMethods, add, crossProduct, scale, subtract } = HabitatFrogasaurus["./vector.js"]
+	const { registerVectorMethods, add, crossProduct, scale, subtract, rotate } = HabitatFrogasaurus["./vector.js"]
 	const { defineGetter, defineAccessor } = HabitatFrogasaurus["./property.js"]
 	const { on, fireEvent } = HabitatFrogasaurus["./event.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
