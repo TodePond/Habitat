@@ -30,6 +30,27 @@ const Info = class extends Component {
 const player = new Entity([new Info()])
 ```
 
+## `Component.prototype.entity`
+
+The entity that a component is attached to.
+
+```javascript
+const transform = new Component.Transform()
+const box = new Entity([transform])
+
+print(component.entity) //box
+```
+
+## `Component.prototype.name`
+
+The name of the component.
+
+```javascript
+const transform = new Component.Transform()
+
+print(transform.name) //"transform"
+```
+
 # In-Built Components
 
 ## `new Component.Transform()`
