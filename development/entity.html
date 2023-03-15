@@ -28,17 +28,16 @@
 	const boxes = []
 
 	const addBox = (entity) => {
-		const box = new Entity([new Component.Transform(), new Component.Stage()], {
+		const box = new Entity([new Component.Transform(), new Component.Stage(), new Component.Rectangle()], {
 			tick(context) {
-				/*
-				const [x, y] = this.transform.absolutePosition
-				context.save()
-				context.translate(x, y)
-				context.rotate(this.transform.absoluteRotation)
-				context.fillStyle = BLUE
-				context.fillRect(0, 0, 20, 20)
-				context.restore()
-				*/
+				context.fillStyle = WHITE
+				const { absoluteBounds, absoluteDimensions } = this.rectangle
+				context.fillRect(
+					absoluteBounds.left,
+					absoluteBounds.top,
+					absoluteDimensions.width,
+					absoluteDimensions.height,
+				)
 			},
 			update() {
 				const cursorDisplacement = scale(subtract(mouse.position, [innerWidth / 2, innerHeight / 2]), 1.0)

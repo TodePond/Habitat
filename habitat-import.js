@@ -1159,13 +1159,20 @@ const HabitatFrogasaurus = {}
 		}
 		
 		Component.Rectangle = class extends Component {
-			constructor() {
+			constructor(dimensions = [10, 10]) {
 				super("rectangle")
+				this.dimensions = dimensions
 				glue(this)
 			}
 		
 			dimensions = use([10, 10])
 			scaledDimensions = snuse(() => {
+				const [width, height] = this.dimensions
+				const [scaleX, scaleY] = this._entity.transform.scale
+				return [width * scaleX, height * scaleY]
+			})
+		
+			absoluteDimensions = snuse(() => {
 				const [width, height] = this.dimensions
 				const [scaleX, scaleY] = this._entity.transform.absoluteScale
 				return [width * scaleX, height * scaleY]
@@ -1198,7 +1205,7 @@ const HabitatFrogasaurus = {}
 			absoluteBounds = snuse(() => {
 				const { _entity } = this
 				const [x, y] = _entity.transform.absolutePosition
-				const [width, height] = this.scaledDimensions
+				const [width, height] = this.absoluteDimensions
 				return {
 					left: x,
 					right: x + width,

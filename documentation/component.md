@@ -65,12 +65,13 @@ Make a component that represents a rectangle.
 | ------------ | ---------- | ------------------- |
 | `dimensions` | `[10, 10]` | Relative dimensions |
 
-| Dynamic Property   | Description       |
-| ------------------ | ----------------- |
-| `scaledDimensions` | Scaled dimensions |
-| `bounds`           | Relative bounds   |
-| `scaledBounds`     | Scaled bounds     |
-| `absoluteBounds`   | Absolute bounds   |
+| Dynamic Property     | Description         |
+| -------------------- | ------------------- |
+| `scaledDimensions`   | Scaled dimensions   |
+| `absoluteDimensions` | Absolute dimensions |
+| `bounds`             | Relative bounds     |
+| `scaledBounds`       | Scaled bounds       |
+| `absoluteBounds`     | Absolute bounds     |
 
 ```javascript
 const box = new Entity([new Component.Transform(), new Component.Rectangle(10, 10)])
