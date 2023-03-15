@@ -51,9 +51,9 @@ const transform = new Component.Transform()
 print(transform.name) //"transform"
 ```
 
-# In-Built Components
+## In-Built Components
 
-## `new Component.Transform()`
+#### `new Component.Transform()`
 
 | Property   | Default  | Description       |
 | ---------- | -------- | ----------------- |
@@ -78,7 +78,7 @@ child.transform.position = [20, 20]
 print(child.transform.absolutePosition) //[30, 30]
 ```
 
-## `new Component.Rectangle(dimensions = [10, 10])`
+#### `new Component.Rectangle(dimensions = [10, 10])`
 
 Make a component that represents a rectangle.
 
@@ -106,7 +106,7 @@ print(box.rectangle.bounds) //{left: 0, top: 0, right: 10, bottom: 10}
 print(box.rectangle.absoluteBounds) //{left: 10, top: 10, right: 30, bottom: 30}
 ```
 
-## `new Component.Stage(stage?)`
+#### `new Component.Stage(stage?)`
 
 Make a component that provides some methods for drawing to a stage.<br>
 It connects to a `stage` that you pass to it.
