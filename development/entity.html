@@ -56,7 +56,7 @@
 					return
 				}
 
-				this.transform.position = scale(this.parent.transform.position, 0.99)
+				this.transform.position = scale(this.parent.transform.position, 0.98)
 				this.transform.rotation = this.parent.transform.rotation * 1.0
 			},
 		})
@@ -73,7 +73,7 @@
 
 	let box = addBox(holder)
 	holder.transform.position = [0, 0]
-	for (const i of range(0, 500)) {
+	for (const i of range(0, 200)) {
 		box = addBox(box)
 	}
 	scene.add(holder)

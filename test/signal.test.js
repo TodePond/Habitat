@@ -25,6 +25,14 @@ describe("Pull", () => {
 		const doubled = use(() => count.get() * 2, { lazy: true })
 		assertEquals(doubled.get(), 0)
 	})
+
+	it("gets parents", () => {
+		const count = use(0)
+		const doubled = use(() => count.get() * 2, { lazy: true })
+		doubled.get()
+		assertEquals([...doubled._parents], [count])
+	})
+
 	it("doesn't update its value when it doesn't have to", () => {
 		let clock = 0
 
@@ -92,7 +100,7 @@ describe("Pull", () => {
 		assertEquals(tripled.get(), 12)
 	})
 
-	it("updates its ancestors", () => {
+	it("updates from its ancestors", () => {
 		const count = use(0)
 		const paused = use(true)
 		const doubled = use(() => count.get() * 2, { lazy: true })
@@ -104,6 +112,15 @@ describe("Pull", () => {
 		count.set(1)
 		paused.set(false)
 		assertEquals(tripled.get(), 6)
+	})
+
+	it("skips over non-root parents", () => {
+		const count = use(0)
+		const doubled = use(() => count.get() * 2, { lazy: true })
+		const quadrupled = use(() => doubled.get() * 2, { lazy: true })
+		const octupled = use(() => quadrupled.get() * 2, { lazy: true })
+		octupled.get()
+		assertEquals([...octupled._parents], [count])
 	})
 })
 

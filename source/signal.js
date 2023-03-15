@@ -25,13 +25,11 @@ const Signal = class extends Function {
 		self.setInternalProperty("_birth", -Infinity)
 		self.setInternalProperty("_children", new Set())
 		self.setInternalProperty("_parents", new Set())
-		self.setInternalProperty("_ancestors", new Set())
 		self.setInternalProperty("_properties", new Map())
 		self.setInternalProperty("_store", undefined)
 		self.setInternalProperty("_current", undefined)
 		self.setInternalProperty("_previous", undefined)
 		self.setInternalProperty("_evaluate", () => self._current)
-		self.setInternalProperty("_ancestorsDirty", true)
 		Reflect.defineProperty(self, "length", {
 			get: () => {
 				if (Array.isArray(self._current)) {
@@ -112,28 +110,6 @@ const Signal = class extends Function {
 		}
 	}
 
-	_getAncestors() {
-		if (!this.lazy) {
-			return this._parents
-		}
-
-		if (!this._ancestorsDirty) {
-			return this._ancestors
-		}
-
-		this._ancestorsDirty = false
-		this._ancestors.clear()
-
-		for (const parent of this._parents) {
-			this._ancestors.add(parent)
-			for (const ancestor of parent._getAncestors()) {
-				this._ancestors.add(ancestor)
-			}
-		}
-
-		return this._ancestors
-	}
-
 	_isDirty() {
 		if (!this.lazy) {
 			return false
@@ -143,9 +119,8 @@ const Signal = class extends Function {
 			return true
 		}
 
-		const ancestors = this._getAncestors()
-		for (const ancestor of ancestors) {
-			if (ancestor._birth > this._birth) {
+		for (const parent of this._parents) {
+			if (parent._birth > this._birth) {
 				return true
 			}
 		}
@@ -154,23 +129,22 @@ const Signal = class extends Function {
 	}
 
 	get() {
-		// If we're lazy, update our value if we need to
-		if (this.lazy) {
-			if (this._isDirty()) {
-				this.update()
-			}
+		// If our value is out-of-date, update our value
+		if (this._isDirty()) {
+			this.update()
 		}
 
 		// If there's an active signal, adopt it as a child
 		// because it's using us as a dependency
 		const { active } = shared
 		if (active !== null) {
-			active._parents.add(this)
-			/*if (active.dynamic && active.lazy) {
+			if (!this.dynamic) {
+				active._parents.add(this)
+			} else {
 				for (const parent of this._parents) {
 					active._parents.add(parent)
 				}
-			}*/
+			}
 			if (active.dynamic && !active.lazy) {
 				this._children.add(active)
 			}
@@ -195,7 +169,6 @@ const Signal = class extends Function {
 			}
 		}
 		this._parents.clear()
-		//this._ancestorsDirty = true
 
 		// Keep hold of the active signal
 		// It's our turn! We're the active signal now!
