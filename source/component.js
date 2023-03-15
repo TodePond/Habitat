@@ -96,3 +96,53 @@ Component.Stage = class extends Component {
 		stage.resize = this.resize.bind(this)
 	}
 }
+
+Component.Rectangle = class extends Component {
+	constructor() {
+		super("rectangle")
+		glue(this)
+	}
+
+	dimensions = use([10, 10])
+	scaledDimensions = snuse(() => {
+		const [width, height] = this.dimensions
+		const [scaleX, scaleY] = this._entity.transform.absoluteScale
+		return [width * scaleX, height * scaleY]
+	})
+
+	bounds = snuse(() => {
+		const { _entity } = this
+		const [x, y] = _entity.transform.position
+		const [width, height] = this.dimensions
+		return {
+			left: x,
+			right: x + width,
+			top: y,
+			bottom: y + height,
+		}
+	})
+
+	scaledBounds = snuse(() => {
+		const { _entity } = this
+		const [x, y] = _entity.transform.position
+		const [width, height] = this.scaledDimensions
+		return {
+			left: x,
+			right: x + width,
+			top: y,
+			bottom: y + height,
+		}
+	})
+
+	absoluteBounds = snuse(() => {
+		const { _entity } = this
+		const [x, y] = _entity.transform.absolutePosition
+		const [width, height] = this.scaledDimensions
+		return {
+			left: x,
+			right: x + width,
+			top: y,
+			bottom: y + height,
+		}
+	})
+}

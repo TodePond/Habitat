@@ -34,17 +34,17 @@ const player = new Entity([new Info()])
 
 ## `new Component.Transform()`
 
-| Property   | Default  | Description                 |
-| ---------- | -------- | --------------------------- |
-| `position` | `[0, 0]` | Position relative to parent |
-| `scale`    | `[1, 1]` | Scale relative to parent    |
-| `rotation` | `0`      | Rotation relative to parent |
+| Property   | Default  | Description       |
+| ---------- | -------- | ----------------- |
+| `position` | `[0, 0]` | Relative position |
+| `scale`    | `[1, 1]` | Relative scale    |
+| `rotation` | `0`      | Relative rotation |
 
-| Dynamic Property   | Description                    |
-| ------------------ | ------------------------------ |
-| `absolutePostion`  | Absolute position in the world |
-| `absoluteScale`    | Absolute scale in the world    |
-| `absoluteRotation` | Absolute rotation in the world |
+| Dynamic Property   | Description       |
+| ------------------ | ----------------- |
+| `absolutePostion`  | Absolute position |
+| `absoluteScale`    | Absolute scale    |
+| `absoluteRotation` | Absolute rotation |
 
 ```javascript
 const parent = new Entity([new Component.Transform()])
@@ -55,6 +55,33 @@ parent.transform.position = [10, 10]
 child.transform.position = [20, 20]
 
 print(child.transform.absolutePosition) //[30, 30]
+```
+
+## `new Component.Rectangle(dimensions = [10, 10])`
+
+Make a component that represents a rectangle.
+
+| Property     | Default    | Description         |
+| ------------ | ---------- | ------------------- |
+| `dimensions` | `[10, 10]` | Relative dimensions |
+
+| Dynamic Property   | Description       |
+| ------------------ | ----------------- |
+| `scaledDimensions` | Scaled dimensions |
+| `bounds`           | Relative bounds   |
+| `scaledBounds`     | Scaled bounds     |
+| `absoluteBounds`   | Absolute bounds   |
+
+```javascript
+const box = new Entity([new Component.Transform(), new Component.Rectangle(10, 10)])
+box.transform.position = [10, 10]
+box.transform.scale = [2, 2]
+
+print(box.rectangle.dimensions) //[10, 10]
+print(box.rectangle.scaledDimensions) //[20, 20]
+
+print(box.rectangle.bounds) //{left: 0, top: 0, right: 10, bottom: 10}
+print(box.rectangle.absoluteBounds) //{left: 10, top: 10, right: 30, bottom: 30}
 ```
 
 ## `new Component.Stage(stage?)`
