@@ -18,15 +18,13 @@ You might want to make your own component class.
 
 ```javascript
 const Info = class extends Component {
-  
-  health = use(10)
-  isAlive = use(() => this.health > 0)
-  
-  construct() {
-    super("info")
-    glueSignals(this)
-  }
-  
+	health = use(10)
+	isAlive = use(() => this.health > 0)
+
+	construct() {
+		super("info")
+		glue(this)
+	}
 }
 
 const player = new Entity([new Info()])
