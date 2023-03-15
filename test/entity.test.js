@@ -1,4 +1,5 @@
-import { Component, Entity } from "../source/entity.js"
+import { Component } from "../source/component.js"
+import { Entity } from "../source/entity.js"
 import { registerMethods } from "../source/habitat.js"
 import { use } from "../source/signal.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
@@ -11,14 +12,14 @@ describe("Entity", () => {
 	it("gets a component", () => {
 		const component = new Component()
 		const entity = new Entity([component])
-		assertEquals(entity[component.slot], component)
+		assertEquals(entity[component.name], component)
 	})
 })
 
 describe("Component", () => {
-	it("has a slot", () => {
+	it("has a name", () => {
 		const component = new Component()
-		assertEquals(component.slot, "component")
+		assertEquals(component.name, "component")
 	})
 })
 
