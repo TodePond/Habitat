@@ -12,7 +12,7 @@ const player = new Entity([component])
 print(player.stats.health) //10
 ```
 
-## class extends Component
+## `class extends Component`
 
 You might want to make your own component class.
 
