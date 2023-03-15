@@ -1,4 +1,4 @@
-import { glue, use } from "./signal.js"
+import { glue, snuse, use } from "./signal.js"
 import { add, rotate } from "./vector.js"
 
 export const Component = class {
@@ -9,61 +9,49 @@ export const Component = class {
 }
 
 Component.Transform = class extends Component {
-	_name = "transform"
+	constructor() {
+		super("transform")
+		glue(this)
+	}
+
 	position = use([0, 0])
 	scale = use([1, 1])
 	rotation = use(0)
 
-	absolutePosition = use(
-		() => {
-			const { _entity } = this
-			const { parent } = _entity
-			if (!parent || !parent.transform) {
-				return this.position
-			}
-			const rotatedPosition = rotate(this.position, parent.transform.absoluteRotation)
-			return add(parent.transform.absolutePosition, rotatedPosition)
-		},
-		{ lazy: true },
-	)
+	absolutePosition = snuse(() => {
+		const { _entity } = this
+		const { parent } = _entity
+		if (!parent || !parent.transform) {
+			return this.position
+		}
+		const rotatedPosition = rotate(this.position, parent.transform.absoluteRotation)
+		return add(parent.transform.absolutePosition, rotatedPosition)
+	})
 
-	absoluteScale = use(
-		() => {
-			const { _entity } = this
-			const { parent } = _entity
-			if (!parent || !parent.transform) {
-				return this.scale
-			}
-			const [x, y] = this.scale
-			const [px, py] = parent.transform.absoluteScale
-			return [x * px, y * py]
-		},
-		{ lazy: true },
-	)
+	absoluteScale = snuse(() => {
+		const { _entity } = this
+		const { parent } = _entity
+		if (!parent || !parent.transform) {
+			return this.scale
+		}
+		const [x, y] = this.scale
+		const [px, py] = parent.transform.absoluteScale
+		return [x * px, y * py]
+	})
 
-	absoluteRotation = use(
-		() => {
-			const { _entity } = this
-			const { parent } = _entity
-			if (!parent || !parent.transform) {
-				return this.rotation
-			}
-			return this.rotation + parent.transform.absoluteRotation
-		},
-		{ lazy: true },
-	)
-
-	constructor() {
-		super()
-		glue(this)
-	}
+	absoluteRotation = snuse(() => {
+		const { _entity } = this
+		const { parent } = _entity
+		if (!parent || !parent.transform) {
+			return this.rotation
+		}
+		return this.rotation + parent.transform.absoluteRotation
+	})
 }
 
 Component.Stage = class extends Component {
-	_name = "stage"
-
 	constructor(stage) {
-		super()
+		super("stage")
 		if (stage) {
 			this.connect(stage)
 		}
