@@ -1,4 +1,4 @@
-import { glueSignals, use } from "./signal.js"
+import { glue, use } from "./signal.js"
 
 export const Entity = class {
 	parent = use(null)
@@ -17,7 +17,7 @@ export const Entity = class {
 
 		Object.assign(this, properties, options)
 
-		glueSignals(this)
+		glue(this)
 	}
 
 	add(entity) {

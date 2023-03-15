@@ -309,7 +309,7 @@ const HabitatFrogasaurus = {}
 		
 			constructor() {
 				super()
-				glueSignals(this)
+				glue(this)
 			}
 		}
 		
@@ -432,7 +432,7 @@ const HabitatFrogasaurus = {}
 		
 				Object.assign(this, properties, options)
 		
-				glueSignals(this)
+				glue(this)
 			}
 		
 			add(entity) {
@@ -1354,7 +1354,7 @@ const HabitatFrogasaurus = {}
 			return signal
 		}
 		
-		const glueSignals = (source, target = source) => {
+		const glue = (source, target = source) => {
 			for (const key in source) {
 				const value = source[key]
 				if (value?._isSignal) {
@@ -1366,7 +1366,7 @@ const HabitatFrogasaurus = {}
 
 		HabitatFrogasaurus["./signal.js"].ArrayView = ArrayView
 		HabitatFrogasaurus["./signal.js"].use = use
-		HabitatFrogasaurus["./signal.js"].glueSignals = glueSignals
+		HabitatFrogasaurus["./signal.js"].glue = glue
 	}
 
 	//====== ./stage.js ======
@@ -1856,7 +1856,7 @@ const HabitatFrogasaurus = {}
 	}
 
 	const { defineAccessor, defineGetter } = HabitatFrogasaurus["./property.js"]
-	const { glueSignals, use } = HabitatFrogasaurus["./signal.js"]
+	const { glue, use } = HabitatFrogasaurus["./signal.js"]
 	const { add, rotate, registerVectorMethods, crossProduct, scale, subtract } = HabitatFrogasaurus["./vector.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
@@ -1937,7 +1937,7 @@ const Habitat = {
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
 	ArrayView: HabitatFrogasaurus["./signal.js"].ArrayView,
 	use: HabitatFrogasaurus["./signal.js"].use,
-	glueSignals: HabitatFrogasaurus["./signal.js"].glueSignals,
+	glue: HabitatFrogasaurus["./signal.js"].glue,
 	Stage: HabitatFrogasaurus["./stage.js"].Stage,
 	divideString: HabitatFrogasaurus["./string.js"].divideString,
 	SVG: HabitatFrogasaurus["./svg.js"].SVG,

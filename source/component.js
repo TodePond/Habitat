@@ -1,4 +1,4 @@
-import { glueSignals, use } from "./signal.js"
+import { glue, use } from "./signal.js"
 import { add, rotate } from "./vector.js"
 
 export const Component = class {
@@ -56,7 +56,7 @@ Component.Transform = class extends Component {
 
 	constructor() {
 		super()
-		glueSignals(this)
+		glue(this)
 	}
 }
 

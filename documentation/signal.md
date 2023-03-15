@@ -101,7 +101,7 @@ player.score = 1
 print(score.value) //1
 ```
 
-## `glueSignals(target, source = target)`
+## `glue(target, source = target)`
 
 Glue all signal properties of a `source` object to a `target` object.
 
@@ -109,7 +109,7 @@ Glue all signal properties of a `source` object to a `target` object.
 const player = {
 	score: use(0),
 }
-glueSignals(player)
+glue(player)
 player.score = 1
 print(player.score) //1
 ```

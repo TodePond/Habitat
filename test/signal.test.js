@@ -1,5 +1,5 @@
 import { registerMethods } from "../source/habitat.js"
-import { glueSignals, use } from "../source/signal.js"
+import { glue, use } from "../source/signal.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Setup", () => {
@@ -416,7 +416,7 @@ describe("Glue", () => {
 		const player = {
 			count: use(0),
 		}
-		glueSignals(player)
+		glue(player)
 		const doubled = use(() => player.count * 2)
 		assertEquals(player.count, 0)
 		assertEquals(doubled.value, 0)
@@ -430,7 +430,7 @@ describe("Glue", () => {
 			position: use({ x: 0, y: 0 }),
 		}
 		const left = use(() => player.position.x)
-		glueSignals(player)
+		glue(player)
 		assertEquals(player.position.x, 0)
 		assertEquals(left.value, 0)
 		player.position.x = 1
@@ -442,7 +442,7 @@ describe("Glue", () => {
 		const player = {
 			position: use({ x: 0, y: 0 }),
 		}
-		glueSignals(player)
+		glue(player)
 		assertEquals(player.position.x, 0)
 		player.position = { x: 10, y: 10 }
 		assertEquals(player.position.x, 10)
@@ -453,7 +453,7 @@ describe("Glue", () => {
 			position: use({ x: 0, y: 0 }),
 		}
 		const left = use(() => player.position.x)
-		glueSignals(player)
+		glue(player)
 		assertEquals(left.value, 0)
 		player.position = { x: 10, y: 10 }
 		assertEquals(left.value, 10)
@@ -463,7 +463,7 @@ describe("Glue", () => {
 		const player = {
 			position: use([0, 0]),
 		}
-		glueSignals(player)
+		glue(player)
 		assertEquals(player.position[0], 0)
 		player.position[0] = 1
 		assertEquals(player.position[0], 1)
@@ -473,7 +473,7 @@ describe("Glue", () => {
 		const player = {
 			position: use([0, 0]),
 		}
-		glueSignals(player)
+		glue(player)
 		assertEquals(player.position[0], 0)
 		player.position = [10, 10]
 		assertEquals(player.position[0], 10)
@@ -484,7 +484,7 @@ describe("Glue", () => {
 			position: use([0, 0]),
 		}
 		const left = use(() => player.position[0])
-		glueSignals(player)
+		glue(player)
 		assertEquals(left.value, 0)
 		player.position = [10, 10]
 		assertEquals(left.value, 10)
