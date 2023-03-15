@@ -12,14 +12,14 @@ describe("Entity", () => {
 	it("gets a component", () => {
 		const component = new Component()
 		const entity = new Entity([component])
-		assertEquals(entity[component._name], component)
+		assertEquals(entity[component.name], component)
 	})
 })
 
 describe("Component", () => {
 	it("has a name", () => {
 		const component = new Component()
-		assertEquals(component._name, "component")
+		assertEquals(component.name, "component")
 	})
 })
 

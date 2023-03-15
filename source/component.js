@@ -3,8 +3,8 @@ import { add, rotate } from "./vector.js"
 
 export const Component = class {
 	constructor(name = "component") {
-		this._name = name
-		this._entity = use(undefined)
+		this.name = name
+		this.entity = use(undefined)
 	}
 }
 
@@ -19,8 +19,8 @@ Component.Transform = class extends Component {
 	rotation = use(0)
 
 	absolutePosition = snuse(() => {
-		const { _entity } = this
-		const { parent } = _entity
+		const { entity } = this
+		const { parent } = entity
 		if (!parent || !parent.transform) {
 			return this.position
 		}
@@ -29,8 +29,8 @@ Component.Transform = class extends Component {
 	})
 
 	absoluteScale = snuse(() => {
-		const { _entity } = this
-		const { parent } = _entity
+		const { entity } = this
+		const { parent } = entity
 		if (!parent || !parent.transform) {
 			return this.scale
 		}
@@ -40,8 +40,8 @@ Component.Transform = class extends Component {
 	})
 
 	absoluteRotation = snuse(() => {
-		const { _entity } = this
-		const { parent } = _entity
+		const { entity } = this
+		const { parent } = entity
 		if (!parent || !parent.transform) {
 			return this.rotation
 		}
@@ -58,33 +58,33 @@ Component.Stage = class extends Component {
 	}
 
 	tick(context) {
-		const { _entity } = this
-		_entity.tick?.(context)
-		for (const child of _entity.children) {
+		const { entity } = this
+		entity.tick?.(context)
+		for (const child of entity.children) {
 			child.stage?.tick(context)
 		}
 	}
 
 	update(context) {
-		const { _entity } = this
-		_entity.update?.(context)
-		for (const child of _entity.children) {
+		const { entity } = this
+		entity.update?.(context)
+		for (const child of entity.children) {
 			child.stage?.update(context)
 		}
 	}
 
 	start(context) {
-		const { _entity } = this
-		_entity.start?.(context)
-		for (const child of _entity.children) {
+		const { entity } = this
+		entity.start?.(context)
+		for (const child of entity.children) {
 			child.stage?.start(context)
 		}
 	}
 
 	resize(context) {
-		const { _entity } = this
-		_entity.resize?.(context)
-		for (const child of _entity.children) {
+		const { entity } = this
+		entity.resize?.(context)
+		for (const child of entity.children) {
 			child.stage?.resize(context)
 		}
 	}
@@ -107,19 +107,19 @@ Component.Rectangle = class extends Component {
 	dimensions = use([10, 10])
 	scaledDimensions = snuse(() => {
 		const [width, height] = this.dimensions
-		const [scaleX, scaleY] = this._entity.transform.scale
+		const [scaleX, scaleY] = this.entity.transform.scale
 		return [width * scaleX, height * scaleY]
 	})
 
 	absoluteDimensions = snuse(() => {
 		const [width, height] = this.dimensions
-		const [scaleX, scaleY] = this._entity.transform.absoluteScale
+		const [scaleX, scaleY] = this.entity.transform.absoluteScale
 		return [width * scaleX, height * scaleY]
 	})
 
 	bounds = snuse(() => {
-		const { _entity } = this
-		const [x, y] = _entity.transform.position
+		const { entity } = this
+		const [x, y] = entity.transform.position
 		const [width, height] = this.dimensions
 		return {
 			left: x,
@@ -130,8 +130,8 @@ Component.Rectangle = class extends Component {
 	})
 
 	scaledBounds = snuse(() => {
-		const { _entity } = this
-		const [x, y] = _entity.transform.position
+		const { entity } = this
+		const [x, y] = entity.transform.position
 		const [width, height] = this.scaledDimensions
 		return {
 			left: x,
@@ -142,8 +142,8 @@ Component.Rectangle = class extends Component {
 	})
 
 	absoluteBounds = snuse(() => {
-		const { _entity } = this
-		const [x, y] = _entity.transform.absolutePosition
+		const { entity } = this
+		const [x, y] = entity.transform.absolutePosition
 		const [width, height] = this.absoluteDimensions
 		return {
 			left: x,

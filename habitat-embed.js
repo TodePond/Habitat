@@ -1064,8 +1064,8 @@ const HabitatFrogasaurus = {}
 		
 		const Component = class {
 			constructor(name = "component") {
-				this._name = name
-				this._entity = use(undefined)
+				this.name = name
+				this.entity = use(undefined)
 			}
 		}
 		
@@ -1080,8 +1080,8 @@ const HabitatFrogasaurus = {}
 			rotation = use(0)
 		
 			absolutePosition = snuse(() => {
-				const { _entity } = this
-				const { parent } = _entity
+				const { entity } = this
+				const { parent } = entity
 				if (!parent || !parent.transform) {
 					return this.position
 				}
@@ -1090,8 +1090,8 @@ const HabitatFrogasaurus = {}
 			})
 		
 			absoluteScale = snuse(() => {
-				const { _entity } = this
-				const { parent } = _entity
+				const { entity } = this
+				const { parent } = entity
 				if (!parent || !parent.transform) {
 					return this.scale
 				}
@@ -1101,8 +1101,8 @@ const HabitatFrogasaurus = {}
 			})
 		
 			absoluteRotation = snuse(() => {
-				const { _entity } = this
-				const { parent } = _entity
+				const { entity } = this
+				const { parent } = entity
 				if (!parent || !parent.transform) {
 					return this.rotation
 				}
@@ -1119,33 +1119,33 @@ const HabitatFrogasaurus = {}
 			}
 		
 			tick(context) {
-				const { _entity } = this
-				_entity.tick?.(context)
-				for (const child of _entity.children) {
+				const { entity } = this
+				entity.tick?.(context)
+				for (const child of entity.children) {
 					child.stage?.tick(context)
 				}
 			}
 		
 			update(context) {
-				const { _entity } = this
-				_entity.update?.(context)
-				for (const child of _entity.children) {
+				const { entity } = this
+				entity.update?.(context)
+				for (const child of entity.children) {
 					child.stage?.update(context)
 				}
 			}
 		
 			start(context) {
-				const { _entity } = this
-				_entity.start?.(context)
-				for (const child of _entity.children) {
+				const { entity } = this
+				entity.start?.(context)
+				for (const child of entity.children) {
 					child.stage?.start(context)
 				}
 			}
 		
 			resize(context) {
-				const { _entity } = this
-				_entity.resize?.(context)
-				for (const child of _entity.children) {
+				const { entity } = this
+				entity.resize?.(context)
+				for (const child of entity.children) {
 					child.stage?.resize(context)
 				}
 			}
@@ -1168,19 +1168,19 @@ const HabitatFrogasaurus = {}
 			dimensions = use([10, 10])
 			scaledDimensions = snuse(() => {
 				const [width, height] = this.dimensions
-				const [scaleX, scaleY] = this._entity.transform.scale
+				const [scaleX, scaleY] = this.entity.transform.scale
 				return [width * scaleX, height * scaleY]
 			})
 		
 			absoluteDimensions = snuse(() => {
 				const [width, height] = this.dimensions
-				const [scaleX, scaleY] = this._entity.transform.absoluteScale
+				const [scaleX, scaleY] = this.entity.transform.absoluteScale
 				return [width * scaleX, height * scaleY]
 			})
 		
 			bounds = snuse(() => {
-				const { _entity } = this
-				const [x, y] = _entity.transform.position
+				const { entity } = this
+				const [x, y] = entity.transform.position
 				const [width, height] = this.dimensions
 				return {
 					left: x,
@@ -1191,8 +1191,8 @@ const HabitatFrogasaurus = {}
 			})
 		
 			scaledBounds = snuse(() => {
-				const { _entity } = this
-				const [x, y] = _entity.transform.position
+				const { entity } = this
+				const [x, y] = entity.transform.position
 				const [width, height] = this.scaledDimensions
 				return {
 					left: x,
@@ -1203,8 +1203,8 @@ const HabitatFrogasaurus = {}
 			})
 		
 			absoluteBounds = snuse(() => {
-				const { _entity } = this
-				const [x, y] = _entity.transform.absolutePosition
+				const { entity } = this
+				const [x, y] = entity.transform.absolutePosition
 				const [width, height] = this.absoluteDimensions
 				return {
 					left: x,
@@ -1800,8 +1800,8 @@ const HabitatFrogasaurus = {}
 		
 			constructor(components = [], properties = {}) {
 				for (const component of components) {
-					this[component._name] = component
-					component._entity = this
+					this[component.name] = component
+					component.entity = this
 				}
 		
 				Object.assign(this, properties)

@@ -6,8 +6,8 @@ export const Entity = class {
 
 	constructor(components = [], properties = {}) {
 		for (const component of components) {
-			this[component._name] = component
-			component._entity = this
+			this[component.name] = component
+			component.entity = this
 		}
 
 		Object.assign(this, properties)
