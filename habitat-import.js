@@ -1354,6 +1354,10 @@ const HabitatFrogasaurus = {}
 			return signal
 		}
 		
+		const snuse = (value, options = {}) => {
+			return use(value, { lazy: true, ...options })
+		}
+		
 		const glue = (source, target = source) => {
 			for (const key in source) {
 				const value = source[key]
@@ -1366,6 +1370,7 @@ const HabitatFrogasaurus = {}
 
 		HabitatFrogasaurus["./signal.js"].ArrayView = ArrayView
 		HabitatFrogasaurus["./signal.js"].use = use
+		HabitatFrogasaurus["./signal.js"].snuse = snuse
 		HabitatFrogasaurus["./signal.js"].glue = glue
 	}
 
@@ -1936,6 +1941,7 @@ export const oneIn = HabitatFrogasaurus["./random.js"].oneIn
 export const maybe = HabitatFrogasaurus["./random.js"].maybe
 export const ArrayView = HabitatFrogasaurus["./signal.js"].ArrayView
 export const use = HabitatFrogasaurus["./signal.js"].use
+export const snuse = HabitatFrogasaurus["./signal.js"].snuse
 export const glue = HabitatFrogasaurus["./signal.js"].glue
 export const Stage = HabitatFrogasaurus["./stage.js"].Stage
 export const divideString = HabitatFrogasaurus["./string.js"].divideString
@@ -2022,6 +2028,7 @@ export const Habitat = {
 	maybe: HabitatFrogasaurus["./random.js"].maybe,
 	ArrayView: HabitatFrogasaurus["./signal.js"].ArrayView,
 	use: HabitatFrogasaurus["./signal.js"].use,
+	snuse: HabitatFrogasaurus["./signal.js"].snuse,
 	glue: HabitatFrogasaurus["./signal.js"].glue,
 	Stage: HabitatFrogasaurus["./stage.js"].Stage,
 	divideString: HabitatFrogasaurus["./string.js"].divideString,

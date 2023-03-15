@@ -70,3 +70,12 @@ By default, options are inferred from the template.
 | Function       | `true`    | `false` | `false` |
 | Array / Object | `false`   | `false` | `true`  |
 | Value          | `false`   | `false` | `false` |
+
+## `snuse(template, options)`
+
+Just like `use`, but it defaults to lazy instead.
+
+```javascript
+const count = snuse(0)
+const doubled = snuse(() => count * 2)
+```

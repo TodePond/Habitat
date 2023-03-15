@@ -1,5 +1,5 @@
 import { registerMethods } from "../source/habitat.js"
-import { glue, use } from "../source/signal.js"
+import { glue, snuse, use } from "../source/signal.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Setup", () => {
@@ -595,5 +595,31 @@ describe("Implicit", () => {
 	it("becomes a number", () => {
 		const age = use(10)
 		assertEquals(age + 1, 11)
+	})
+})
+
+describe("Snuse", () => {
+	it("makes a signal", () => {
+		const count = use(0)
+		const doubled = snuse(() => count * 2)
+		assertEquals(doubled.value, 0)
+		count.value = 1
+		assertEquals(doubled.value, 2)
+	})
+
+	it("is lazy", () => {
+		let clock = 0
+		const count = use(0)
+		const doubled = snuse(() => {
+			clock++
+			return count * 2
+		})
+		assertEquals(clock, 0)
+		assertEquals(doubled.value, 0)
+		assertEquals(clock, 1)
+		count.value = 1
+		assertEquals(clock, 1)
+		assertEquals(doubled.value, 2)
+		assertEquals(clock, 2)
 	})
 })

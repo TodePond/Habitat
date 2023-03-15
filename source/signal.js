@@ -342,6 +342,10 @@ export const use = (value, options = {}) => {
 	return signal
 }
 
+export const snuse = (value, options = {}) => {
+	return use(value, { lazy: true, ...options })
+}
+
 export const glue = (source, target = source) => {
 	for (const key in source) {
 		const value = source[key]
