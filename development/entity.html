@@ -5,8 +5,7 @@
 	const colour = randomFrom(HUES)
 
 	const stage = new Stage()
-	const scene = new Entity({
-		components: [new Component.Stage(stage)],
+	const scene = new Entity([new Component.Stage(stage)], {
 		tick(context) {
 			const { canvas } = context
 			context.clearRect(0, 0, canvas.width, canvas.height)
@@ -29,8 +28,7 @@
 	const boxes = []
 
 	const addBox = (entity) => {
-		const box = new Entity({
-			components: [new Component.Transform(), new Component.Stage()],
+		const box = new Entity([new Component.Transform(), new Component.Stage()], {
 			tick(context) {
 				/*
 				const [x, y] = this.transform.absolutePosition
@@ -67,9 +65,7 @@
 		return box
 	}
 
-	const holder = new Entity({
-		components: [new Component.Transform(), new Component.Stage()],
-	})
+	const holder = new Entity([new Component.Transform(), new Component.Stage()])
 
 	let box = addBox(holder)
 	holder.transform.position = [0, 0]

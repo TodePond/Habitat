@@ -2,27 +2,26 @@ import { glue, use } from "./signal.js"
 import { add, rotate } from "./vector.js"
 
 export const Component = class {
-	name = "component"
-	entity = undefined
+	constructor(name = "component") {
+		this._name = name
+		this._entity = use(undefined)
+	}
 }
 
 Component.Transform = class extends Component {
-	name = "transform"
+	_name = "transform"
 	position = use([0, 0])
 	scale = use([1, 1])
 	rotation = use(0)
 
 	absolutePosition = use(
 		() => {
-			const { entity } = this
-			const { parent } = entity
+			const { _entity } = this
+			const { parent } = _entity
 			if (!parent || !parent.transform) {
 				return this.position
 			}
-
-			// This also factors in rotation
 			const rotatedPosition = rotate(this.position, parent.transform.absoluteRotation)
-
 			return add(parent.transform.absolutePosition, rotatedPosition)
 		},
 		{ lazy: true },
@@ -30,8 +29,8 @@ Component.Transform = class extends Component {
 
 	absoluteScale = use(
 		() => {
-			const { entity } = this
-			const { parent } = entity
+			const { _entity } = this
+			const { parent } = _entity
 			if (!parent || !parent.transform) {
 				return this.scale
 			}
@@ -44,8 +43,8 @@ Component.Transform = class extends Component {
 
 	absoluteRotation = use(
 		() => {
-			const { entity } = this
-			const { parent } = entity
+			const { _entity } = this
+			const { parent } = _entity
 			if (!parent || !parent.transform) {
 				return this.rotation
 			}
@@ -61,7 +60,7 @@ Component.Transform = class extends Component {
 }
 
 Component.Stage = class extends Component {
-	name = "stage"
+	_name = "stage"
 
 	constructor(stage) {
 		super()
@@ -71,33 +70,33 @@ Component.Stage = class extends Component {
 	}
 
 	tick(context) {
-		const { entity } = this
-		entity.tick?.(context)
-		for (const child of entity.children) {
+		const { _entity } = this
+		_entity.tick?.(context)
+		for (const child of _entity.children) {
 			child.stage?.tick(context)
 		}
 	}
 
 	update(context) {
-		const { entity } = this
-		entity.update?.(context)
-		for (const child of entity.children) {
+		const { _entity } = this
+		_entity.update?.(context)
+		for (const child of _entity.children) {
 			child.stage?.update(context)
 		}
 	}
 
 	start(context) {
-		const { entity } = this
-		entity.start?.(context)
-		for (const child of entity.children) {
+		const { _entity } = this
+		_entity.start?.(context)
+		for (const child of _entity.children) {
 			child.stage?.start(context)
 		}
 	}
 
 	resize(context) {
-		const { entity } = this
-		entity.resize?.(context)
-		for (const child of entity.children) {
+		const { _entity } = this
+		_entity.resize?.(context)
+		for (const child of _entity.children) {
 			child.stage?.resize(context)
 		}
 	}
