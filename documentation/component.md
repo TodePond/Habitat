@@ -5,10 +5,14 @@
 Make a component for use with an [entity](Entity.md).
 
 ```javascript
-const component = new Component("stats")
-component.health = 10
+const Stats = class extends Component {
+    health = 10    
+    constructor() {
+        super("stats")
+    }
+}
 
-const player = new Entity([component])
+const player = new Entity([new Stats()])
 print(player.stats.health) //10
 ```
 
