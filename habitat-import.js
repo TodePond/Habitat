@@ -1495,6 +1495,54 @@ const HabitatFrogasaurus = {}
 
 	}
 
+	//====== ./state.js ======
+	{
+		HabitatFrogasaurus["./state.js"] = {}
+		const State = class {
+			root = this
+			current = this
+			parent = undefined
+			children = new Map()
+		
+			constructor(name) {
+				this.name = name
+			}
+		
+			add(state) {
+				if (state.parent !== undefined) {
+					state.parent.delete(state)
+				}
+				state.parent = this
+				state.root = this.root
+				this.children.set(state.name, state)
+				this[state.name] = state
+			}
+		
+			delete(state) {
+				this.children.delete(state.name)
+				delete this[state.name]
+				state.parent = undefined
+				state.root = state
+			}
+		
+			transition(state) {
+				if (this.root !== this) {
+					return this.root.transition(state)
+				}
+			}
+		
+			fire(name, event) {
+				this[name]?.()
+				if (this.current) {
+					this.current.fire(name, event)
+				}
+			}
+		}
+		
+
+		HabitatFrogasaurus["./state.js"].State = State
+	}
+
 	//====== ./colour.js ======
 	{
 		HabitatFrogasaurus["./colour.js"] = {}
@@ -1966,6 +2014,7 @@ export const getPointer = HabitatFrogasaurus["./pointer.js"].getPointer
 export const getKeyboard = HabitatFrogasaurus["./keyboard.js"].getKeyboard
 export const keyDown = HabitatFrogasaurus["./keyboard.js"].keyDown
 export const keyUp = HabitatFrogasaurus["./keyboard.js"].keyUp
+export const State = HabitatFrogasaurus["./state.js"].State
 export const Colour = HabitatFrogasaurus["./colour.js"].Colour
 export const Splash = HabitatFrogasaurus["./colour.js"].Splash
 export const showColour = HabitatFrogasaurus["./colour.js"].showColour
@@ -2053,6 +2102,7 @@ export const Habitat = {
 	getKeyboard: HabitatFrogasaurus["./keyboard.js"].getKeyboard,
 	keyDown: HabitatFrogasaurus["./keyboard.js"].keyDown,
 	keyUp: HabitatFrogasaurus["./keyboard.js"].keyUp,
+	State: HabitatFrogasaurus["./state.js"].State,
 	Colour: HabitatFrogasaurus["./colour.js"].Colour,
 	Splash: HabitatFrogasaurus["./colour.js"].Splash,
 	showColour: HabitatFrogasaurus["./colour.js"].showColour,

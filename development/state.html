@@ -1,0 +1,35 @@
+<script src="../habitat-embed.js"></script>
+<script>
+	Habitat.registerEverything()
+
+	const root = new State("root")
+	const pointing = new State("pointing")
+	const dragging = new State("dragging")
+
+	root.add(pointing)
+	pointing.add(dragging)
+
+	addEventListener("pointerdown", () => {
+		root.fire("pointerdown")
+	})
+
+	addEventListener("pointermove", () => {
+		root.fire("pointermove")
+	})
+
+	addEventListener("pointerup", () => {
+		root.fire("pointerup")
+	})
+
+	root.pointerdown = () => {
+		root.set(root.pointing)
+	}
+
+	pointing.pointermove = () => {
+		pointing.transition(pointing.dragging)
+	}
+
+	pointing.pointerup = () => {
+		pointing.transition(pointing.parent)
+	}
+</script>
