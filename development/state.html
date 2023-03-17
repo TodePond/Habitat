@@ -3,11 +3,15 @@
 	Habitat.registerEverything()
 
 	const root = new State("root")
+	const idle = new State("idle")
 	const pointing = new State("pointing")
+	const clicking = new State("clicking")
 	const dragging = new State("dragging")
 
 	root.add(pointing)
+	root.add(idle)
 	pointing.add(dragging)
+	pointing.add(clicking)
 
 	addEventListener("pointerdown", () => {
 		root.fire("pointerdown")
@@ -22,14 +26,14 @@
 	})
 
 	root.pointerdown = () => {
-		root.set(root.pointing)
-	}
-
-	pointing.pointermove = () => {
-		pointing.transition(pointing.dragging)
+		return clicking
 	}
 
 	pointing.pointerup = () => {
-		pointing.transition(pointing.parent)
+		return root
+	}
+
+	pointing.pointermove = () => {
+		return dragging
 	}
 </script>
