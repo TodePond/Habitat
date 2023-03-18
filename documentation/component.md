@@ -1,19 +1,15 @@
 # Component
 
-## `new Component(name)`
+> This page + library is a work in progress.
 
-Make a component for use with an [entity](Entity.md).
+## `new Component(name, properties = {})`
+
+Make a component.
 
 ```javascript
-const Stats = class extends Component {
-    health = 10    
-    constructor() {
-        super("stats")
-    }
-}
-
-const player = new Entity([new Stats()])
-print(player.stats.health) //10
+const stats = new Component("stats", {
+	health: 10,
+})
 ```
 
 ## `class extends Component`
@@ -21,17 +17,16 @@ print(player.stats.health) //10
 You might want to make your own component class.
 
 ```javascript
-const Info = class extends Component {
-	health = use(10)
-	isAlive = use(() => this.health > 0)
-
-	construct() {
-		super("info")
-		glue(this)
+const Stats = class extends Component {
+	name = "stats"
+	health = 10
+	isAlive() {
+		return this.health > 0
 	}
 }
 
-const player = new Entity([new Info()])
+const stats = new Stats()
+print(stats.isAlive()) //true
 ```
 
 ## `Component.prototype.entity`
@@ -39,7 +34,9 @@ const player = new Entity([new Info()])
 The entity that a component is attached to.
 
 ```javascript
-const transform = new Component.Transform()
+const stats = new Component("stats", {
+	health: 10,
+})
 const box = new Entity([transform])
 
 print(component.entity) //box
