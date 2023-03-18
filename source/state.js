@@ -1,30 +1,23 @@
 export const State = class {
-	current = undefined
-	children = new Set()
+	parent = undefined
+	child = undefined
 
-	constructor(name) {
-		this.name = name
-	}
+	transition(state) {}
 
-	add(state) {
-		this.children.add(state)
-		this[state.name] = state
-	}
+	fireDown(name, args) {}
 
-	delete(state) {
-		this.children.delete(state.name)
-		delete this[state.name]
-	}
+	fire(name, args) {
+		// Fire my method
+		const method = this[name]
+		if (method === undefined) return
+		const result = method.apply(this, args)
 
-	fire(name, event) {
-		const result = this[name]?.()
-		if (result !== undefined) {
-			this.current = result
-			return result.fire(name, event)
+		// If I don't have a parent, we can't transition
+		// so just return the result
+		if (this.parent === undefined) {
+			return result
 		}
 
-		if (this.current !== undefined) {
-			return this.current.fire(name, event)
-		}
+		// If I have a parent, transition if the result is a state
 	}
 }
