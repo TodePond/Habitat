@@ -1,7 +1,5 @@
 # Component
 
-> This page + library is a work in progress.
-
 ## `new Component(name, properties = {})`
 
 Make a component.
@@ -12,21 +10,13 @@ const stats = new Component("stats", {
 })
 ```
 
-## `class extends Component`
+## `Component.prototype.name`
 
-You might want to make your own component class.
+The name of the component.
 
 ```javascript
-const Stats = class extends Component {
-	name = "stats"
-	health = 10
-	isAlive() {
-		return this.health > 0
-	}
-}
-
-const stats = new Stats()
-print(stats.isAlive()) //true
+const stats = new Component("stats", { health: 10 })
+print(stats.name) //"stats"
 ```
 
 ## `Component.prototype.entity`
@@ -34,22 +24,20 @@ print(stats.isAlive()) //true
 The entity that a component is attached to.
 
 ```javascript
-const stats = new Component("stats", {
-	health: 10,
-})
-const box = new Entity([transform])
-
-print(component.entity) //box
+const stats = new Component("stats", { health: 10 })
+const box = new Entity([stats])
+print(stats.entity) //box
 ```
 
-## `Component.prototype.name`
+## `class extends Component`
 
-The name of the component.
+You can extend the `Component` class.
 
 ```javascript
-const transform = new Component.Transform()
-
-print(transform.name) //"transform"
+class Stats extends Component {
+	name = "stats"
+	health = 10
+}
 ```
 
 ## In-Built Components
@@ -102,9 +90,6 @@ box.transform.scale = [2, 2]
 
 print(box.rectangle.dimensions) //[10, 10]
 print(box.rectangle.scaledDimensions) //[20, 20]
-
-print(box.rectangle.bounds) //{left: 0, top: 0, right: 10, bottom: 10}
-print(box.rectangle.absoluteBounds) //{left: 10, top: 10, right: 30, bottom: 30}
 ```
 
 #### `new Component.Stage(stage?)`

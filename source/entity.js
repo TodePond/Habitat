@@ -1,11 +1,18 @@
 import { glue, use } from "./signal.js"
 
 export const Entity = class {
+	components = []
 	parent = use(null)
 	children = new Set() //TODO: use a signal here once other signal types are implemented
 
-	constructor(components = [], properties = {}) {
-		for (const component of components) {
+	constructor(arg = [], properties = {}) {
+		Object.assign(this, properties)
+		if (Array.isArray(arg)) {
+			const components = arg
+			this.components.push(...components)
+		}
+
+		for (const component of this.components) {
 			this[component.name] = component
 			component.entity = this
 		}

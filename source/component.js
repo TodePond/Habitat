@@ -2,21 +2,25 @@ import { glue, snuse, use } from "./signal.js"
 import { add, rotate } from "./vector.js"
 
 export const Component = class {
-	constructor(name = "component") {
+	constructor(name = "component", properties = {}) {
 		this.name = name
 		this.entity = use(undefined)
+		Object.assign(this, properties)
+		glue(this)
 	}
 }
 
 Component.Transform = class extends Component {
-	constructor() {
-		super("transform")
-		glue(this)
-	}
-
+	name = "transform"
 	position = use([0, 0])
 	scale = use([1, 1])
 	rotation = use(0)
+
+	constructor(properties = {}) {
+		super()
+		Object.assign(this, properties)
+		glue(this)
+	}
 
 	absolutePosition = snuse(() => {
 		const { entity } = this

@@ -1063,21 +1063,25 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./component.js"] = {}
 		
 		const Component = class {
-			constructor(name = "component") {
+			constructor(name = "component", properties = {}) {
 				this.name = name
 				this.entity = use(undefined)
+				Object.assign(this, properties)
+				glue(this)
 			}
 		}
 		
 		Component.Transform = class extends Component {
-			constructor() {
-				super("transform")
-				glue(this)
-			}
-		
+			name = "transform"
 			position = use([0, 0])
 			scale = use([1, 1])
 			rotation = use(0)
+		
+			constructor(properties = {}) {
+				super()
+				Object.assign(this, properties)
+				glue(this)
+			}
 		
 			absolutePosition = snuse(() => {
 				const { entity } = this
@@ -1499,43 +1503,26 @@ const HabitatFrogasaurus = {}
 	{
 		HabitatFrogasaurus["./state.js"] = {}
 		const State = class {
-			root = this
-			current = this
 			parent = undefined
-			children = new Map()
+			child = undefined
 		
-			constructor(name) {
-				this.name = name
-			}
+			transition(state) {}
 		
-			add(state) {
-				if (state.parent !== undefined) {
-					state.parent.delete(state)
+			fireDown(name, args) {}
+		
+			fire(name, args) {
+				// Fire my method
+				const method = this[name]
+				if (method === undefined) return
+				const result = method.apply(this, args)
+		
+				// If I don't have a parent, we can't transition
+				// so just return the result
+				if (this.parent === undefined) {
+					return result
 				}
-				state.parent = this
-				state.root = this.root
-				this.children.set(state.name, state)
-				this[state.name] = state
-			}
 		
-			delete(state) {
-				this.children.delete(state.name)
-				delete this[state.name]
-				state.parent = undefined
-				state.root = state
-			}
-		
-			transition(state) {
-				if (this.root !== this) {
-					return this.root.transition(state)
-				}
-			}
-		
-			fire(name, event) {
-				this[name]?.()
-				if (this.current) {
-					this.current.fire(name, event)
-				}
+				// If I have a parent, transition if the result is a state
 			}
 		}
 		
@@ -1843,11 +1830,18 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./entity.js"] = {}
 		
 		const Entity = class {
+			components = []
 			parent = use(null)
 			children = new Set() //TODO: use a signal here once other signal types are implemented
 		
-			constructor(components = [], properties = {}) {
-				for (const component of components) {
+			constructor(arg = [], properties = {}) {
+				Object.assign(this, properties)
+				if (Array.isArray(arg)) {
+					const components = arg
+					this.components.push(...components)
+				}
+		
+				for (const component of this.components) {
 					this[component.name] = component
 					component.entity = this
 				}
