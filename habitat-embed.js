@@ -221,6 +221,31 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./console.js"].registerDebugMethods = registerDebugMethods
 	}
 
+	//====== ./options.js ======
+	{
+		HabitatFrogasaurus["./options.js"] = {}
+		const Options = class extends Function {
+			constructor(head, tail = {}) {
+				super("head", "tail = {}", "return this.parse(head, tail)")
+			}
+		
+			parse(head, tail = {}) {
+				return parse(this.default, this.defaults, [head, tail])
+			}
+		}
+		
+		const parse = (_default, defaults = {}, [head, tail = {}]) => {
+			return {
+				...defaults,
+		
+				...tail,
+			}
+		}
+		
+
+		HabitatFrogasaurus["./options.js"].Options = Options
+	}
+
 	//====== ./property.js ======
 	{
 		HabitatFrogasaurus["./property.js"] = {}
@@ -1976,6 +2001,7 @@ const Habitat = {
 	print: HabitatFrogasaurus["./console.js"].print,
 	print9: HabitatFrogasaurus["./console.js"].print9,
 	registerDebugMethods: HabitatFrogasaurus["./console.js"].registerDebugMethods,
+	Options: HabitatFrogasaurus["./options.js"].Options,
 	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
 	defineAccessor: HabitatFrogasaurus["./property.js"].defineAccessor,
 	LinkedList: HabitatFrogasaurus["./linked-list.js"].LinkedList,
