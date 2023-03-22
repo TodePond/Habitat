@@ -21,14 +21,12 @@ const box = new Entity([
 
 You might want to make your own Entity class.
 
-<!-- prettier-ignore -->
 ```javascript
 const Box = class extends Entity {
-	components = [
-		new Component.Rectangle(10, 10),
-		new Component.Transform(),
-	]
+	constructor() {
+		super([new Component.Rectangle(10, 10), new Component.Transform()])
+	}
 }
 
-const box = new Box(BLUE)
+const box = new Box()
 ```
