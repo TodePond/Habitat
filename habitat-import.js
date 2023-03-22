@@ -1533,7 +1533,7 @@ const HabitatFrogasaurus = {}
 			}
 		
 			fireStart = () => {
-				document.body.style["background-color"] = "#06070a"
+				document.body.style["background-color"] = BLACK
 				document.body.style["margin"] = "0px"
 				document.body.style["overflow"] = "hidden"
 		
@@ -2040,7 +2040,7 @@ const HabitatFrogasaurus = {}
 	const { Options } = HabitatFrogasaurus["./options.js"]
 	const { glue, snuse, use } = HabitatFrogasaurus["./signal.js"]
 	const { add, rotate, registerVectorMethods, crossProduct, scale, subtract } = HabitatFrogasaurus["./vector.js"]
-	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
+	const { registerColourMethods, BLACK } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]

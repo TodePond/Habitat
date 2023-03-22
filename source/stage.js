@@ -1,3 +1,4 @@
+import { BLACK } from "./colour.js"
 import { on } from "./event.js"
 import { keyDown } from "./keyboard.js"
 import { Options } from "./options.js"
@@ -46,7 +47,7 @@ export const Stage = class {
 	}
 
 	fireStart = () => {
-		document.body.style["background-color"] = "#06070a"
+		document.body.style["background-color"] = BLACK
 		document.body.style["margin"] = "0px"
 		document.body.style["overflow"] = "hidden"
 
