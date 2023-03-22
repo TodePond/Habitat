@@ -54,3 +54,22 @@ stage.start = ([background, html, foreground]) => {
 	foreground.canvas.style["pointer-events"] = "none"
 }
 ```
+
+Or you can use an object to name the layers.
+
+```javascript
+const stage = new Stage({
+	context: { background: "2d", html: "html", foreground: "2d" },
+})
+
+stage.start = ({ background, html, foreground }) => {
+	background.fillStyle = BLUE
+	background.fillRect(0, 0, background.canvas.width, background.canvas.height)
+
+	html.innerHTML = "Hello, world!"
+
+	foreground.fillStyle = RED
+	foreground.fillRect(30, 30, 100, 100)
+	foreground.canvas.style["pointer-events"] = "none"
+}
+```
