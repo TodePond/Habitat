@@ -1,23 +1,56 @@
+import { Options } from "./options.js"
+
 export const State = class {
-	parent = undefined
-	child = undefined
+	static options = {
+		default: "name",
+		isDefault: (v) => typeof v === "string",
+		name: () => "state",
+	}
 
-	transition(state) {}
+	constructor(head, tail) {
+		const options = new Options(State.options)(head, tail)
+		Object.assign(this, options)
+	}
 
-	fireDown(name, args) {}
+	fire = (name) => {
+		const method = this[name]
+		if (method) {
+			return method()
+		}
+	}
+}
+
+export const Machine = class {
+	current = undefined
+
+	constructor(initial) {
+		if (initial) {
+			this.set(initial)
+		}
+	}
+
+	set(state) {
+		if (this.current) {
+			this.current.fire("exit")
+		}
+		this.current = state
+		if (this.current === undefined) {
+			return
+		}
+		this.current.fire("enter")
+	}
 
 	fire(name, args) {
-		// Fire my method
-		const method = this[name]
-		if (method === undefined) return
-		const result = method.apply(this, args)
-
-		// If I don't have a parent, we can't transition
-		// so just return the result
-		if (this.parent === undefined) {
-			return result
+		if (this.current === undefined) {
+			return
 		}
 
-		// If I have a parent, transition if the result is a state
+		const result = this.current.fire(name, args)
+		if (result instanceof State) {
+			this.set(result)
+			return this.fire(name, args)
+		}
+
+		return result
 	}
 }
