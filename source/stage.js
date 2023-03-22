@@ -15,12 +15,12 @@ export const Stage = class {
 		update: () => () => {},
 	}
 
-	constructor(options) {
-		const properties = new Options(Stage.options)(options)
+	constructor(head, tail) {
+		const options = new Options(Stage.options)(head, tail)
 
-		const layered = typeof properties.context !== "string"
+		const layered = typeof options.context !== "string"
 
-		const contextTypes = layered ? properties.context : [properties.context]
+		const contextTypes = layered ? options.context : [options.context]
 		const layers = contextTypes.map((v) => new Layer(v))
 		const context = layered ? layers.map((v) => v.context) : layers[0].context
 
@@ -32,7 +32,7 @@ export const Stage = class {
 		}
 
 		Object.assign(this, {
-			...properties,
+			...options,
 			...internal,
 		})
 

@@ -1,3 +1,4 @@
+import { Options } from "./options.js"
 import { glue, use } from "./signal.js"
 
 export const Entity = class {
@@ -5,19 +6,21 @@ export const Entity = class {
 	parent = use(null)
 	children = new Set() //TODO: use a signal here once other signal types are implemented
 
-	constructor(arg = [], properties = {}) {
-		Object.assign(this, properties)
-		if (Array.isArray(arg)) {
-			const components = arg
-			this.components.push(...components)
-		}
+	static options = {
+		default: "components",
+		isDefault: (v) => Array.isArray(v),
+		components: () => [],
+	}
 
-		for (const component of this.components) {
+	constructor(head, tail) {
+		const options = new Options(Entity.options)(head, tail)
+
+		for (const component of options.components) {
 			this[component.name] = component
 			component.entity = this
 		}
 
-		Object.assign(this, properties)
+		Object.assign(this, options)
 		glue(this)
 	}
 

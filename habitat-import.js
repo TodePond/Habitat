@@ -468,19 +468,21 @@ const HabitatFrogasaurus = {}
 			parent = use(null)
 			children = new Set() //TODO: use a signal here once other signal types are implemented
 		
-			constructor(arg = [], properties = {}) {
-				Object.assign(this, properties)
-				if (Array.isArray(arg)) {
-					const components = arg
-					this.components.push(...components)
-				}
+			static options = {
+				default: "components",
+				isDefault: (v) => Array.isArray(v),
+				components: () => [],
+			}
 		
-				for (const component of this.components) {
+			constructor(head, tail) {
+				const options = new Options(Entity.options)(head, tail)
+		
+				for (const component of options.components) {
 					this[component.name] = component
 					component.entity = this
 				}
 		
-				Object.assign(this, properties)
+				Object.assign(this, options)
 				glue(this)
 			}
 		
@@ -987,6 +989,13 @@ const HabitatFrogasaurus = {}
 					const value = arg === undefined ? this.options[key]() : arg
 					result[key] = value
 				}
+		
+				for (const key in options) {
+					if (this.options[key] === undefined) {
+						result[key] = options[key]
+					}
+				}
+		
 				return result
 			}
 		}
@@ -1487,12 +1496,12 @@ const HabitatFrogasaurus = {}
 				update: () => () => {},
 			}
 		
-			constructor(options) {
-				const properties = new Options(Stage.options)(options)
+			constructor(head, tail) {
+				const options = new Options(Stage.options)(head, tail)
 		
-				const layered = typeof properties.context !== "string"
+				const layered = typeof options.context !== "string"
 		
-				const contextTypes = layered ? properties.context : [properties.context]
+				const contextTypes = layered ? options.context : [options.context]
 				const layers = contextTypes.map((v) => new Layer(v))
 				const context = layered ? layers.map((v) => v.context) : layers[0].context
 		
@@ -1504,7 +1513,7 @@ const HabitatFrogasaurus = {}
 				}
 		
 				Object.assign(this, {
-					...properties,
+					...options,
 					...internal,
 				})
 		
@@ -1991,11 +2000,11 @@ const HabitatFrogasaurus = {}
 	const { defineAccessor, defineGetter } = HabitatFrogasaurus["./property.js"]
 	const { glue, snuse, use } = HabitatFrogasaurus["./signal.js"]
 	const { add, rotate, registerVectorMethods, crossProduct, scale, subtract } = HabitatFrogasaurus["./vector.js"]
+	const { Options } = HabitatFrogasaurus["./options.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
-	const { Options } = HabitatFrogasaurus["./options.js"]
 	const { lerp } = HabitatFrogasaurus["./lerp.js"]
 
 }

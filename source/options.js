@@ -34,6 +34,13 @@ export const Options = class extends Function {
 			const value = arg === undefined ? this.options[key]() : arg
 			result[key] = value
 		}
+
+		for (const key in options) {
+			if (this.options[key] === undefined) {
+				result[key] = options[key]
+			}
+		}
+
 		return result
 	}
 }
