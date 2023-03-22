@@ -28,35 +28,41 @@
 	const boxes = []
 
 	const addBox = (entity) => {
-		const box = new Entity([new Component.Transform(), new Component.Stage(), new Component.Rectangle()], {
-			tick(context) {
-				context.fillStyle = WHITE
-				const { absoluteBounds, absoluteDimensions } = this.rectangle
-				context.fillRect(
-					absoluteBounds.left,
-					absoluteBounds.top,
-					absoluteDimensions.width,
-					absoluteDimensions.height,
-				)
-			},
-			update() {
-				const cursorDisplacement = scale(subtract(mouse.position, [innerWidth / 2, innerHeight / 2]), 1.0)
-				const cursorDistance = distanceBetween(cursorDisplacement, [0, 0])
-				const cursorAngle = angleBetween(cursorDisplacement, [0, 0])
-				if (this.parent === holder) {
-					this.transform.position = [innerWidth / 2, innerHeight / 2]
-					this.transform.rotation = cursorAngle
-					return
-				} else if (this.parent.parent === holder) {
-					this.transform.position = [cursorDistance, 0]
-					this.transform.rotation = cursorAngle
-					return
-				}
+		const box = new Entity(
+			[new Component.Transform(), new Component.Stage(), new Component.Rectangle()],
+			{
+				tick(context) {
+					context.fillStyle = WHITE
+					const { absoluteBounds, absoluteDimensions } = this.rectangle
+					context.fillRect(
+						absoluteBounds.left,
+						absoluteBounds.top,
+						absoluteDimensions.width,
+						absoluteDimensions.height,
+					)
+				},
+				update() {
+					const cursorDisplacement = scale(
+						subtract(mouse.position, [innerWidth / 2, innerHeight / 2]),
+						1.0,
+					)
+					const cursorDistance = distanceBetween(cursorDisplacement, [0, 0])
+					const cursorAngle = angleBetween(cursorDisplacement, [0, 0])
+					if (this.parent === holder) {
+						this.transform.position = [innerWidth / 2, innerHeight / 2]
+						this.transform.rotation = cursorAngle
+						return
+					} else if (this.parent.parent === holder) {
+						this.transform.position = [cursorDistance, 0]
+						this.transform.rotation = cursorAngle
+						return
+					}
 
-				this.transform.position = scale(this.parent.transform.position, 0.98)
-				this.transform.rotation = this.parent.transform.rotation * 1.0
+					this.transform.position = scale(this.parent.transform.position, 0.98)
+					this.transform.rotation = this.parent.transform.rotation * 1.0
+				},
 			},
-		})
+		)
 
 		boxes.push(box)
 

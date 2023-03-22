@@ -1476,18 +1476,18 @@ const HabitatFrogasaurus = {}
 		
 		const Stage = class {
 			constructor(options) {
-				const properties = {
-					context: "2d",
-		
-					speed: 1.0,
-					paused: false,
-		
-					start: () => {},
-					resize: () => {},
-					tick: () => {},
-					update: () => {},
-					...options,
-				}
+				const StageOptions = new Options({
+					default: "context",
+					isDefault: (v) => Array.isArray(v) || typeof v === "string",
+					context: () => "2d",
+					speed: () => 1.0,
+					paused: () => false,
+					start: () => () => {},
+					resize: () => () => {},
+					tick: () => () => {},
+					update: () => () => {},
+				})
+				const properties = StageOptions(options)
 		
 				const layered = typeof properties.context !== "string"
 		
@@ -1994,6 +1994,7 @@ const HabitatFrogasaurus = {}
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
+	const { Options } = HabitatFrogasaurus["./option.js"]
 	const { lerp } = HabitatFrogasaurus["./lerp.js"]
 
 }

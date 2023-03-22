@@ -3,7 +3,7 @@
 	Habitat.registerEverything()
 </script>
 <script>
-	const stage = new Stage({ context: ["2d", "html", "2d", "svg"] })
+	const stage = new Stage(["2d", "html", "2d", "svg"])
 
 	stage.start = ([background, html, foreground, svg]) => {
 		background.fillStyle = BLUE

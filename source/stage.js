@@ -1,20 +1,21 @@
 import { on } from "./event.js"
 import { keyDown } from "./keyboard.js"
+import { Options } from "./option.js"
 
 export const Stage = class {
 	constructor(options) {
-		const properties = {
-			context: "2d",
-
-			speed: 1.0,
-			paused: false,
-
-			start: () => {},
-			resize: () => {},
-			tick: () => {},
-			update: () => {},
-			...options,
-		}
+		const StageOptions = new Options({
+			default: "context",
+			isDefault: (v) => Array.isArray(v) || typeof v === "string",
+			context: () => "2d",
+			speed: () => 1.0,
+			paused: () => false,
+			start: () => () => {},
+			resize: () => () => {},
+			tick: () => () => {},
+			update: () => () => {},
+		})
+		const properties = StageOptions(options)
 
 		const layered = typeof properties.context !== "string"
 
