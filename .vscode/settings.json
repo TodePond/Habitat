@@ -7,5 +7,6 @@
 	},
 	"extensions": {
 		"recommendations": ["prettier.prettier-vscode", "deno.vscode-deno"]
-	}
+	},
+	"editor.tabSize": 3
 }
