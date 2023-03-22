@@ -1,4 +1,4 @@
-# Option
+# Options
 
 ## `new Options(definition)`
 

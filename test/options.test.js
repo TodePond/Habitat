@@ -1,4 +1,4 @@
-import { Options } from "../source/option.js"
+import { Options } from "../source/options.js"
 import { assertEquals, describe, it } from "./libraries/deno-test.js"
 
 describe("Options", () => {

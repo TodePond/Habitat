@@ -31,6 +31,6 @@
 -  [SVG](svg.md)
 -  [Touch](touch.md)
 -  [Tween](tween.md)
--  [Option](option.md)
+-  [Options](options.md)
 -  [Use](use.md)
 -  [Vector](vector.md)

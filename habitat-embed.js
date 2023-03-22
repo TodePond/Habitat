@@ -948,9 +948,9 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./number.js"].range = range
 	}
 
-	//====== ./option.js ======
+	//====== ./options.js ======
 	{
-		HabitatFrogasaurus["./option.js"] = {}
+		HabitatFrogasaurus["./options.js"] = {}
 		const Options = class extends Function {
 			constructor({ default: _default, isDefault, ...options }) {
 				super("head", "tail", "return this.self.match(head, tail)")
@@ -992,7 +992,7 @@ const HabitatFrogasaurus = {}
 		}
 		
 
-		HabitatFrogasaurus["./option.js"].Options = Options
+		HabitatFrogasaurus["./options.js"].Options = Options
 	}
 
 	//====== ./pointer.js ======
@@ -1475,19 +1475,20 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./stage.js"] = {}
 		
 		const Stage = class {
+			static options = {
+				default: "context",
+				isDefault: (v) => Array.isArray(v) || typeof v === "string",
+				context: () => "2d",
+				speed: () => 1.0,
+				paused: () => false,
+				start: () => () => {},
+				resize: () => () => {},
+				tick: () => () => {},
+				update: () => () => {},
+			}
+		
 			constructor(options) {
-				const StageOptions = new Options({
-					default: "context",
-					isDefault: (v) => Array.isArray(v) || typeof v === "string",
-					context: () => "2d",
-					speed: () => 1.0,
-					paused: () => false,
-					start: () => () => {},
-					resize: () => () => {},
-					tick: () => () => {},
-					update: () => () => {},
-				})
-				const properties = StageOptions(options)
+				const properties = new Options(Stage.options)(options)
 		
 				const layered = typeof properties.context !== "string"
 		
@@ -1994,7 +1995,7 @@ const HabitatFrogasaurus = {}
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]
 	const { keyDown } = HabitatFrogasaurus["./keyboard.js"]
-	const { Options } = HabitatFrogasaurus["./option.js"]
+	const { Options } = HabitatFrogasaurus["./options.js"]
 	const { lerp } = HabitatFrogasaurus["./lerp.js"]
 
 }
@@ -2060,7 +2061,7 @@ const Habitat = {
 	gcd: HabitatFrogasaurus["./number.js"].gcd,
 	simplifyRatio: HabitatFrogasaurus["./number.js"].simplifyRatio,
 	range: HabitatFrogasaurus["./number.js"].range,
-	Options: HabitatFrogasaurus["./option.js"].Options,
+	Options: HabitatFrogasaurus["./options.js"].Options,
 	getPointer: HabitatFrogasaurus["./pointer.js"].getPointer,
 	defineGetter: HabitatFrogasaurus["./property.js"].defineGetter,
 	defineAccessor: HabitatFrogasaurus["./property.js"].defineAccessor,
