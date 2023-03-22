@@ -1,4 +1,5 @@
 import { Options } from "./options.js"
+import { glue, use } from "./signal.js"
 
 export const State = class {
 	static options = {
@@ -21,9 +22,10 @@ export const State = class {
 }
 
 export const Machine = class {
-	state = undefined
+	state = use(undefined)
 
 	constructor(initial) {
+		glue(this)
 		if (initial) {
 			this.set(initial)
 		}

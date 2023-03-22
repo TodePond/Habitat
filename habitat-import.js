@@ -1664,9 +1664,10 @@ const HabitatFrogasaurus = {}
 		}
 		
 		const Machine = class {
-			state = undefined
+			state = use(undefined)
 		
 			constructor(initial) {
+				glue(this)
 				if (initial) {
 					this.set(initial)
 				}
