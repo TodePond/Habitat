@@ -14,6 +14,16 @@ describe("Entity", () => {
 		const entity = new Entity([component])
 		assertEquals(entity[component.name], component)
 	})
+
+	it("can be assigned via options", () => {
+		const component = new Component()
+		const entity1 = new Entity([component], { foo: "bar" })
+		const entity2 = new Entity({ components: [component], foo: "bar" })
+		assertEquals(entity1[component.name], component)
+		assertEquals(entity2[component.name], component)
+		assertEquals(entity1.foo, "bar")
+		assertEquals(entity2.foo, "bar")
+	})
 })
 
 describe("Component", () => {
