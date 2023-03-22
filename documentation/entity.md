@@ -1,8 +1,13 @@
 # Entity
 
-## `new Entity(components = [])`
+## `new Entity(options)`
 
 You can make an entity that has some components.
+
+| Option                 | Description                   | Default |
+| ---------------------- | ----------------------------- | ------- |
+| `components` (default) | The entity's components       | `[]`    |
+| `...properties`        | The entity's other properties | `{}`    |
 
 <!-- prettier-ignore -->
 ```javascript

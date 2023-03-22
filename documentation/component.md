@@ -1,8 +1,13 @@
 # Component
 
-## `new Component(name, properties = {})`
+## `new Component(options)`
 
 Make a component.
+
+| Option           | Description          | Default       |
+| ---------------- | -------------------- | ------------- |
+| `name` (default) | The component's name | `"component"` |
+| `...properties`  | The component's data | `{}`          |
 
 ```javascript
 const stats = new Component("stats", {

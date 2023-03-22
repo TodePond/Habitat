@@ -1,18 +1,18 @@
 # Stage
 
-## `new Stage(properties)`
+## `new Stage(options)`
 
-Create a simple animated canvas with the following `properties`.
+Create a simple animated canvas with the following `options`.
 
-| Property  | Description                                                     | Default    |
-| --------- | --------------------------------------------------------------- | ---------- |
-| `context` | What type of stage to create                                    | `"2d"`     |
-| `tick`    | Function that runs every frame                                  | `() => {}` |
-| `update`  | Function that runs every frame (except when `paused`)           | `() => {}` |
-| `start`   | Function that runs after the stage starts                       | `() => {}` |
-| `resize`  | Function that runs after the screen resizes                     | `() => {}` |
-| `paused`  | Whether `update` runs or not (toggled by pressing the spacebar) | `false`    |
-| `speed`   | How many `tick` functions should run per frame                  | `1.0`      |
+| Option              | Description                                                     | Default    |
+| ------------------- | --------------------------------------------------------------- | ---------- |
+| `context` (default) | What type of stage to create                                    | `"2d"`     |
+| `tick`              | Function that runs every frame                                  | `() => {}` |
+| `update`            | Function that runs every frame (except when `paused`)           | `() => {}` |
+| `start`             | Function that runs after the stage starts                       | `() => {}` |
+| `resize`            | Function that runs after the screen resizes                     | `() => {}` |
+| `paused`            | Whether `update` runs or not (toggled by pressing the spacebar) | `false`    |
+| `speed`             | How many `tick` functions should run per frame                  | `1.0`      |
 
 Here is a simple example:
 
