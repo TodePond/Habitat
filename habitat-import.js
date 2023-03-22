@@ -255,10 +255,16 @@ const HabitatFrogasaurus = {}
 		HabitatFrogasaurus["./component.js"] = {}
 		
 		const Component = class {
-			constructor(name = "component", properties = {}) {
-				this.name = name
+			static options = {
+				default: "name",
+				isDefault: (v) => typeof v === "string",
+				name: () => "component",
+			}
+		
+			constructor(head, tail) {
+				const options = new Options(Component.options)(head, tail)
+				Object.assign(this, options)
 				this.entity = use(undefined)
-				Object.assign(this, properties)
 				glue(this)
 			}
 		}
@@ -1998,9 +2004,9 @@ const HabitatFrogasaurus = {}
 	}
 
 	const { defineAccessor, defineGetter } = HabitatFrogasaurus["./property.js"]
+	const { Options } = HabitatFrogasaurus["./options.js"]
 	const { glue, snuse, use } = HabitatFrogasaurus["./signal.js"]
 	const { add, rotate, registerVectorMethods, crossProduct, scale, subtract } = HabitatFrogasaurus["./vector.js"]
-	const { Options } = HabitatFrogasaurus["./options.js"]
 	const { registerColourMethods } = HabitatFrogasaurus["./colour.js"]
 	const { registerDebugMethods } = HabitatFrogasaurus["./console.js"]
 	const { fireEvent, on } = HabitatFrogasaurus["./event.js"]

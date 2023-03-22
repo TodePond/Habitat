@@ -1,11 +1,18 @@
+import { Options } from "./options.js"
 import { glue, snuse, use } from "./signal.js"
 import { add, rotate } from "./vector.js"
 
 export const Component = class {
-	constructor(name = "component", properties = {}) {
-		this.name = name
+	static options = {
+		default: "name",
+		isDefault: (v) => typeof v === "string",
+		name: () => "component",
+	}
+
+	constructor(head, tail) {
+		const options = new Options(Component.options)(head, tail)
+		Object.assign(this, options)
 		this.entity = use(undefined)
-		Object.assign(this, properties)
 		glue(this)
 	}
 }
