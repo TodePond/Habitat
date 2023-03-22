@@ -10,7 +10,7 @@ Make a template for an options argument.<br>
 | `isDefault`  | Function  | Is the value the default option?       |
 | `...options` | Functions | Get the default value for each option. |
 
-```js
+```javascript
 const Player = new Options({
 	default: "health",
 	isDefault: (v) => typeof v === "number",

@@ -9,7 +9,7 @@ Make a state for use in a state machine.
 | `name` (default) | `string` | The name of the state. |
 | `...properties`  | `any`    | Any other properties.  |
 
-```js
+```javascript
 const pointing = new State()
 ```
 
@@ -17,7 +17,7 @@ const pointing = new State()
 
 Make a state machine with an `initial` state.
 
-```js
+```javascript
 const pointing = new State()
 const machine = new Machine(pointing)
 ```
@@ -26,7 +26,7 @@ const machine = new Machine(pointing)
 
 A machine's current state.
 
-```js
+```javascript
 const pointing = new State()
 const machine = new Machine(pointing)
 print(machine.current) // pointing
@@ -37,7 +37,7 @@ print(machine.current) // pointing
 Fire a method on the current state.<br>
 If the method returns a state, transition to it.
 
-```js
+```javascript
 const clicked = new State()
 const idle = new State({
 	click: () => clicked,
@@ -52,7 +52,7 @@ machine.fire("click") // Transitions to clicked
 Transition to a new `state`.<br>
 This also fires the `enter` and `exit` methods on the states.
 
-```js
+```javascript
 const pointing = new State()
 const dragging = new State()
 const machine = new Machine(pointing)
