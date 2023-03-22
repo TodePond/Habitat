@@ -21,7 +21,7 @@ export const State = class {
 }
 
 export const Machine = class {
-	current = undefined
+	state = undefined
 
 	constructor(initial) {
 		if (initial) {
@@ -30,22 +30,22 @@ export const Machine = class {
 	}
 
 	set(state) {
-		if (this.current) {
-			this.current.fire("exit")
+		if (this.state) {
+			this.state.fire("exit")
 		}
-		this.current = state
-		if (this.current === undefined) {
+		this.state = state
+		if (this.state === undefined) {
 			return
 		}
-		this.current.fire("enter")
+		this.state.fire("enter")
 	}
 
 	fire(name, args) {
-		if (this.current === undefined) {
+		if (this.state === undefined) {
 			return
 		}
 
-		const result = this.current.fire(name, args)
+		const result = this.state.fire(name, args)
 		if (result instanceof State) {
 			this.set(result)
 			return this.fire(name, args)

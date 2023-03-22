@@ -11,7 +11,7 @@ describe("State", () => {
 		const state = new State()
 		const machine = new Machine()
 		machine.set(state)
-		assertEquals(machine.current, state)
+		assertEquals(machine.state, state)
 	})
 
 	it("fires enter and exit", () => {

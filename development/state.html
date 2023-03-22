@@ -2,38 +2,35 @@
 <script>
 	Habitat.registerEverything()
 
-	const root = new State("root")
-	const idle = new State("idle")
-	const pointing = new State("pointing")
-	const clicking = new State("clicking")
-	const dragging = new State("dragging")
-
-	root.add(pointing)
-	root.add(idle)
-	pointing.add(dragging)
-	pointing.add(clicking)
-
-	addEventListener("pointerdown", () => {
-		root.fire("pointerdown")
+	const idle = new State("idle", {
+		pointerdown: () => pointing,
 	})
 
-	addEventListener("pointermove", () => {
-		root.fire("pointermove")
+	const pointing = new State("pointing", {
+		pointerup: () => idle,
+		pointermove: () => dragging,
 	})
 
-	addEventListener("pointerup", () => {
-		root.fire("pointerup")
+	const dragging = new State("dragging", {
+		pointerup: () => idle,
 	})
 
-	root.pointerdown = () => {
-		return clicking
+	const machine = new Machine(idle)
+
+	addEventListener("pointerdown", () => machine.fire("pointerdown"))
+	addEventListener("pointerup", () => machine.fire("pointerup"))
+	addEventListener("pointermove", () => machine.fire("pointermove"))
+
+	const tick = (context) => {
+		const { canvas } = context
+		context.clearRect(0, 0, canvas.width, canvas.height)
+
+		context.textAlign = "center"
+		context.textBaseline = "middle"
+		context.font = "48px sans-serif"
+		context.fillStyle = "black"
+		context.fillText(machine.state.name, canvas.width / 2, canvas.height / 2)
 	}
 
-	pointing.pointerup = () => {
-		return root
-	}
-
-	pointing.pointermove = () => {
-		return dragging
-	}
+	const stage = new Stage({ tick })
 </script>
