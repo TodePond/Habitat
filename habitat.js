@@ -66,7 +66,10 @@ export const RED = t([255, 67, 70]);
 export const ORANGE = t([255, 128, 70]);
 export const YELLOW = t([255, 255, 70]);
 
+/** All monochrome colours. */
 export const SHADES = [VOID, BLACK, DARK_GREY, GREY, LIGHT_GREY, SILVER, WHITE];
+
+/** All colourful colours. (?) */
 export const HUES = [
   GREEN,
   CYAN,
@@ -78,11 +81,18 @@ export const HUES = [
   ORANGE,
   YELLOW,
 ];
+
+/** All colours. */
 export const COLOURS = [...SHADES, ...HUES];
 
 //===========//
 // COMPONENT //
 //===========//
+/**
+ * A component can attach and unattach other components.
+ * It's useful for adding custom behaviour that should happen on creation and destruction.
+ * For example, the EventListener component attaches event listeners on creation and removes them on destruction.
+ */
 export class Component {
   /**
    * A set of components attached to this component.
@@ -108,6 +118,20 @@ export class Component {
       component.dispose();
     }
   }
+
+  static EventListener = class extends Component {
+    constructor(event, callback, options) {
+      super();
+      window.addEventListener(event, callback, options);
+      this.event = event;
+      this.callback = callback;
+    }
+
+    dispose() {
+      window.removeEventListener(this.event, this.callback);
+      super.dispose();
+    }
+  };
 }
 
 //=========//
