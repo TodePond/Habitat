@@ -6,7 +6,13 @@ declare type Colour = Vector3 | Vector4;
 //======//
 // TYPE //
 //======//
-declare function asConst<
+declare type Primitive = string | number | boolean | null | undefined;
+declare type Seralisable =
+  | Primitive
+  | [...Serialisable]
+  | Record<string, Serialisable>;
+
+declare function asConstant<
   V extends Primitive,
   T extends V | Record<string, T> | [...V],
   R extends T
@@ -20,7 +26,7 @@ declare function asTuple<V extends any, T extends [...V], R extends T>(
   return v;
 };
 
-declare type AsConst = typeof asConst;
+declare type AsConstant = typeof asConstant;
 declare type AsTuple = typeof asTuple;
 
 //========//

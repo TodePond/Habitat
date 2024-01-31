@@ -51,7 +51,9 @@ export function toHex(colour) {
 
 export const VOID = t([6, 7, 10]);
 export const BLACK = t([23, 29, 40]);
+export const DARK_GREY = t([31, 39, 54]);
 export const GREY = t([55, 67, 98]);
+export const LIGHT_GREY = t([87, 101, 147]);
 export const SILVER = t([159, 174, 204]);
 export const WHITE = t([255, 255, 255]);
 export const GREEN = t([70, 255, 128]);
@@ -63,6 +65,50 @@ export const CORAL = t([255, 128, 128]);
 export const RED = t([255, 67, 70]);
 export const ORANGE = t([255, 128, 70]);
 export const YELLOW = t([255, 255, 70]);
+
+export const SHADES = [VOID, BLACK, DARK_GREY, GREY, LIGHT_GREY, SILVER, WHITE];
+export const HUES = [
+  GREEN,
+  CYAN,
+  BLUE,
+  PURPLE,
+  PINK,
+  CORAL,
+  RED,
+  ORANGE,
+  YELLOW,
+];
+export const COLOURS = [...SHADES, ...HUES];
+
+//===========//
+// COMPONENT //
+//===========//
+export class Component {
+  /**
+   * A set of components attached to this component.
+   * @type {Set<Component>}
+   **/
+  components = new Set();
+
+  /**
+   * Attach a component to this component.
+   * @param {Component} component - The component to attach.
+   * @returns {Component} - The attached component.
+   */
+  attach(component) {
+    this.components.add(component);
+    return component;
+  }
+
+  /**
+   * Dispose of this component and all attached components.
+   */
+  dispose() {
+    for (const component of this.components) {
+      component.dispose();
+    }
+  }
+}
 
 //=========//
 // CONSOLE //
@@ -84,7 +130,7 @@ export const print = console.log.bind(console);
 //======//
 // TYPE //
 //======//
-/** @type {AsConst} */
+/** @type {AsConstant} */
 export function c(v) {
   return v;
 }
