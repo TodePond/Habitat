@@ -49,6 +49,21 @@ export function toHex(colour) {
     .join("");
 }
 
+export const VOID = t([6, 7, 10]);
+export const BLACK = t([23, 29, 40]);
+export const GREY = t([55, 67, 98]);
+export const SILVER = t([159, 174, 204]);
+export const WHITE = t([255, 255, 255]);
+export const GREEN = t([70, 255, 128]);
+export const CYAN = t([70, 204, 255]);
+export const BLUE = t([70, 128, 255]);
+export const PURPLE = t([128, 67, 255]);
+export const PINK = t([255, 128, 222]);
+export const CORAL = t([255, 128, 128]);
+export const RED = t([255, 67, 70]);
+export const ORANGE = t([255, 128, 70]);
+export const YELLOW = t([255, 255, 70]);
+
 //=========//
 // CONSOLE //
 //=========//
