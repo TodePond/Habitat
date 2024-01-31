@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "lib": ["ES2022", "DOM"],
+    "target": "ES2022",
+    "moduleResolution": "nodenext",
+    "module": "NodeNext",
+    "strict": true,
+    "noImplicitAny": false
+  }
+}
