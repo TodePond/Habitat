@@ -49,10 +49,6 @@ export function toHex(colour) {
     .join("");
 }
 
-const BLUE = t([0, 0, 255, 255]);
-
-toHex([0, 0, 255, 255]);
-
 //=========//
 // CONSOLE //
 //=========//
