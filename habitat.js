@@ -6,14 +6,11 @@
  * @template T
  * @param {T[]} array - The array to shuffle.
  * @returns {T[]}
- *
- * @example
- * shuffle([2, 3, 5]) // returns [2, 3, 5] in a random order
  */
 export function shuffle(array) {
   // Go backwards through the array
+  // Swap each value with a random value before it (which might include itself)
   for (let i = array.length - 1; i > 0; i--) {
-    // Swap each value with a random value before it (which might include itself)
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
@@ -25,10 +22,7 @@ export function shuffle(array) {
 //=======//
 /**
  * Wait for a given duration.
- * @param {number} duration - The duration to wait in milliseconds.
- *
- * @example
- * await sleep(1000) // waits for 1 second
+ * @param {number} duration
  */
 export async function sleep(duration) {
   new Promise((resolve) => setTimeout(resolve, duration));
@@ -49,22 +43,22 @@ export function toHex(colour) {
     .join("");
 }
 
-export const VOID = t([6, 7, 10]);
-export const BLACK = t([23, 29, 40]);
-export const DARK_GREY = t([31, 39, 54]);
-export const GREY = t([55, 67, 98]);
-export const LIGHT_GREY = t([87, 101, 147]);
-export const SILVER = t([159, 174, 204]);
-export const WHITE = t([255, 255, 255]);
-export const GREEN = t([70, 255, 128]);
-export const CYAN = t([70, 204, 255]);
-export const BLUE = t([70, 128, 255]);
-export const PURPLE = t([128, 67, 255]);
-export const PINK = t([255, 128, 222]);
-export const CORAL = t([255, 128, 128]);
-export const RED = t([255, 67, 70]);
-export const ORANGE = t([255, 128, 70]);
-export const YELLOW = t([255, 255, 70]);
+export const VOID = c([6, 7, 10]);
+export const BLACK = c([23, 29, 40]);
+export const DARK_GREY = c([31, 39, 54]);
+export const GREY = c([55, 67, 98]);
+export const LIGHT_GREY = c([87, 101, 147]);
+export const SILVER = c([159, 174, 204]);
+export const WHITE = c([255, 255, 255]);
+export const GREEN = c([70, 255, 128]);
+export const CYAN = c([70, 204, 255]);
+export const BLUE = c([70, 128, 255]);
+export const PURPLE = c([128, 67, 255]);
+export const PINK = c([255, 128, 222]);
+export const CORAL = c([255, 128, 128]);
+export const RED = c([255, 67, 70]);
+export const ORANGE = c([255, 128, 70]);
+export const YELLOW = c([255, 255, 70]);
 
 /** All monochrome colours. */
 export const SHADES = [VOID, BLACK, DARK_GREY, GREY, LIGHT_GREY, SILVER, WHITE];
@@ -88,68 +82,177 @@ export const COLOURS = [...SHADES, ...HUES];
 //===========//
 // COMPONENT //
 //===========//
-/**
- * A component can attach and unattach other components.
- * It's useful for adding custom behaviour that should happen on creation and destruction.
- * For example, the EventListener component attaches event listeners on creation and removes them on destruction.
- */
-export class Component {
-  /**
-   * A set of components attached to this component.
-   * @type {Set<Component>}
-   **/
-  components = new Set();
-
-  /**
-   * Attach a component to this component.
-   * @param {Component} component - The component to attach.
-   * @returns {Component} - The attached component.
-   */
-  attach(component) {
-    this.components.add(component);
-    return component;
-  }
-
-  /**
-   * Dispose of this component and all attached components.
-   */
-  dispose() {
-    for (const component of this.components) {
-      component.dispose();
-    }
-  }
-
-  static EventListener = class extends Component {
-    constructor(event, callback, options) {
-      super();
-      window.addEventListener(event, callback, options);
-      this.event = event;
-      this.callback = callback;
-    }
-
-    dispose() {
-      window.removeEventListener(this.event, this.callback);
-      super.dispose();
-    }
-  };
-}
 
 //=========//
 // CONSOLE //
 //=========//
-/**
- * Print to the console.
- *
- * @example
- * print("ribbit") // prints "ribbit"
- *
- * @example
- * print("ribbit", "croak") // prints "ribbit croak"
- *
- * @example
- * print("ribbit", 3, true) // prints "ribbit 3 true"
- */
+/** Print to the console. */
 export const print = console.log.bind(console);
+
+/** Register the .d debugger */
+export function registerDebugger() {
+  Reflect.defineProperty(Object.prototype, "d", {
+    get() {
+      const value = this.valueOf();
+      console.log(value);
+      return value;
+    },
+    set(value) {
+      Reflect.defineProperty(this, "d", {
+        value,
+        configurable: true,
+        writable: true,
+        enumerable: true,
+      });
+    },
+    configurable: true,
+    enumerable: false,
+  });
+}
+
+//==========//
+// DOCUMENT //
+//==========//
+/**
+ * Select an element from the document.
+ * @param {string} selector
+ */
+export function $(selector) {
+  return document.querySelector(selector);
+}
+
+/**
+ * Select all elements from the document.
+ * @param {string} selector
+ */
+export function $$(selector) {
+  return document.querySelectorAll(selector);
+}
+
+//======//
+// HTML //
+//======//
+/**
+ * Generate an element from some HTML.
+ * @param {string} tag
+ * @param {Object.<string, string>} attributes
+ * @param {Element[]} children
+ * @returns {Element}
+ */
+export function HTML(tag, attributes, children) {
+  const element = document.createElement(tag);
+  for (const [key, value] of Object.entries(attributes)) {
+    element.setAttribute(key, value);
+  }
+  for (const child of children) {
+    element.appendChild(child);
+  }
+  return element;
+}
+
+//============//
+// JAVASCRIPT //
+//============//
+/**
+ * Evaluate some JavaScript.
+ * @param {string} source
+ */
+export function JS(source) {
+  const func = new Function("return " + source);
+  return func();
+}
+
+//======//
+// LERP //
+//======//
+// export function lerp([start, end], distance) {
+//   const range = subtract(start, end);
+//   const displacement = scale(range, distance);
+//   return add(start, displacement);
+// }
+
+//=============//
+// LINKED LIST //
+//=============//
+export const LinkedList = class {
+  /**
+   * @param {Iterable} iterable
+   */
+  constructor(iterable = []) {
+    this.start = undefined;
+    this.end = undefined;
+    this.isEmpty = true;
+
+    for (const value of iterable) {
+      this.push(value);
+    }
+  }
+
+  *[Symbol.iterator]() {
+    let link = this.start;
+    while (link !== undefined) {
+      yield link.value;
+      link = link.next;
+    }
+  }
+
+  toString() {
+    return [...this].toString();
+  }
+
+  push(...values) {
+    for (const value of values) {
+      const link = makeLink(value);
+      if (this.isEmpty) {
+        this.start = link;
+        this.end = link;
+        this.isEmpty = false;
+      } else {
+        this.end.next = link;
+        link.previous = this.end;
+        this.end = link;
+      }
+    }
+  }
+
+  pop() {
+    if (this.isEmpty) {
+      return undefined;
+    }
+
+    const value = this.start.value;
+    if (this.start === this.end) {
+      this.clear();
+      return value;
+    }
+
+    this.end = this.end.previous;
+    this.end.next = undefined;
+    return value;
+  }
+
+  shift() {
+    if (this.isEmpty) {
+      return undefined;
+    }
+
+    const value = this.start.value;
+    if (this.start === this.end) {
+      this.clear();
+      return value;
+    }
+
+    this.start = this.start.next;
+    this.start.previous = undefined;
+    return value;
+  }
+
+  clear() {
+    this.start = undefined;
+    this.end = undefined;
+    this.isEmpty = true;
+  }
+};
 
 //======//
 // TYPE //
@@ -163,3 +266,7 @@ export function c(v) {
 export function t(v) {
   return v;
 }
+
+//========//
+// VECTOR //
+//========//
