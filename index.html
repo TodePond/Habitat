@@ -1,4 +1,17 @@
 <script type="module">
-  import { print } from "./habitat.js";
-  print("Hello world!");
+  import { Signal } from "./habitat.js";
+  const age = new Signal(30);
+  console.log(age.get());
+
+  const firstName = new Signal("Luke");
+  const lastName = new Signal("Wilson");
+  const fullName = new Signal(
+    () => `${firstName.get()} ${lastName.get()}`,
+    [firstName, lastName]
+  );
+
+  console.log(fullName.get());
+
+  firstName.set("Lu");
+  console.log(fullName.get());
 </script>
