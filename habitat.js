@@ -69,7 +69,7 @@ export class Signal {
 
   /**
    * Create a new signal.
-   * @param {(previous?: T) => T|T} template
+   * @param {((previous?: T) => T) | T} template
    * @param {Signal[]} dependencies
    * @param {(a: T, b: T) => boolean} equals
    */
@@ -82,6 +82,8 @@ export class Signal {
     }
 
     if (typeof template === "function") {
+      /** @type {((previous?: T) => T)} */
+      // @ts-expect-error: trust me
       this.callback = template;
       this.value = this.callback();
     } else {
@@ -118,5 +120,46 @@ export class Signal {
     for (const dependency of this.dependencies) {
       dependency.dependants.delete(this);
     }
+
+    for (const dependant of this.dependants) {
+      dependant.dispose();
+    }
+  }
+}
+
+export class State {
+  /** @type {State | null} */
+  state = null;
+
+  /**
+   * @param {string} name
+   * @param {object} event
+   */
+  fire(name, event) {
+    if (!this.state) {
+      const method = this[name];
+      return method?.call(this, event);
+    }
+
+    return this.state.fire(name, event);
+  }
+
+  /**
+   * @param {State | null} state
+   */
+  transition(state) {
+    const previous = this.state;
+    const next = state;
+
+    if (previous === next) return;
+
+    this.state = next;
+    previous?.fire("exit", { previous, next });
+
+    // If the exit event caused a transition, we should stop here.
+    if (this.state !== next) return;
+
+    // Otherwise, carry on!
+    next?.fire("enter", { previous, next });
   }
 }
