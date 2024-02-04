@@ -148,24 +148,30 @@ export class State {
   }
 
   /**
+   * @param {string} name
+   */
+  method(name) {
+    /**
+     * @param {object} event
+     */
+    return (event) => this.fire(name, event);
+  }
+
+  /**
    * @param {State | null} state
    */
   transition(state) {
     const previous = this.child;
     const next = state;
 
-    // Remove the previous state
-    if (previous) {
-      previous.parent = null;
-      this.child = null;
+    if (previous === next) {
+      throw new Error("Can't transition to the same state.");
     }
 
-    // Double check we aren't stealing another state's child
     if (next?.parent) {
       throw new Error("Can't transition to a state that already has a parent.");
     }
 
-    // Add the new state
     if (next) next.parent = this;
     this.child = next;
 

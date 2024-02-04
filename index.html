@@ -11,7 +11,7 @@
       console.log("Idle: exit");
     }
     pointerDown() {
-      this.transition(new Pointing());
+      this.parent.transition(new Pointing());
     }
   }
 
@@ -23,10 +23,13 @@
       console.log("Pointing: exit");
     }
     pointerUp() {
-      this.transition(new Idle());
+      this.parent.transition(new Idle());
     }
   }
 
   const root = new Root();
   root.transition(new Idle());
+
+  addEventListener("pointerdown", root.method("pointerDown"));
+  addEventListener("pointerup", root.method("pointerUp"));
 </script>
