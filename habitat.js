@@ -129,37 +129,51 @@ export class Signal {
 
 export class State {
   /** @type {State | null} */
-  state = null;
+  child = null;
+
+  /** @type {State | null} */
+  parent = null;
 
   /**
    * @param {string} name
    * @param {object} event
    */
   fire(name, event) {
-    if (!this.state) {
+    if (!this.child) {
       const method = this[name];
       return method?.call(this, event);
     }
 
-    return this.state.fire(name, event);
+    return this.child.fire(name, event);
   }
 
   /**
    * @param {State | null} state
    */
   transition(state) {
-    const previous = this.state;
+    const previous = this.child;
     const next = state;
 
-    if (previous === next) return;
+    // Remove the previous state
+    if (previous) {
+      previous.parent = null;
+      this.child = null;
+    }
 
-    this.state = next;
+    // Double check we aren't stealing another state's child
+    if (next?.parent) {
+      throw new Error("Can't transition to a state that already has a parent.");
+    }
+
+    // Add the new state
+    if (next) next.parent = this;
+    this.child = next;
+
+    // Fire the exit event! If it causes a transition, stop there.
     previous?.fire("exit", { previous, next });
+    if (this.child !== next) return;
 
-    // If the exit event caused a transition, we should stop here.
-    if (this.state !== next) return;
-
-    // Otherwise, carry on!
+    // Otherwise, carry on with the enter event!
     next?.fire("enter", { previous, next });
   }
 }

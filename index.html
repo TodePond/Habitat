@@ -1,17 +1,32 @@
 <script type="module">
-  import { Signal } from "./habitat.js";
-  const age = new Signal(30);
-  console.log(age.get());
+  import { State } from "./habitat.js";
 
-  const firstName = new Signal("Luke");
-  const lastName = new Signal("Wilson");
-  const fullName = new Signal(
-    () => `${firstName.get()} ${lastName.get()}`,
-    [firstName, lastName]
-  );
+  class Root extends State {}
 
-  console.log(fullName.get());
+  class Idle extends State {
+    enter() {
+      console.log("Idle: enter");
+    }
+    exit() {
+      console.log("Idle: exit");
+    }
+    pointerDown() {
+      this.transition(new Pointing());
+    }
+  }
 
-  firstName.set("Lu");
-  console.log(fullName.get());
+  class Pointing extends State {
+    enter() {
+      console.log("Pointing: enter");
+    }
+    exit() {
+      console.log("Pointing: exit");
+    }
+    pointerUp() {
+      this.transition(new Idle());
+    }
+  }
+
+  const root = new Root();
+  root.transition(new Idle());
 </script>
