@@ -12,36 +12,45 @@ import { Observer, Signal } from "./habitat.js";
 // firstName.set("Lu");
 // console.log(fullName.get());
 
-import { StateNode } from "./habitat.js";
+// import { StateNode } from "./habitat.js";
 
-class Root extends StateNode {}
+// class Root extends StateNode {}
 
-class Idle extends StateNode {
-  enter() {
-    console.log("Idle: enter");
-  }
-  exit() {
-    console.log("Idle: exit");
-  }
-  pointerDown() {
-    this.parent?.transition(new Pointing());
-  }
-}
+// class Idle extends StateNode {
+//   enter() {
+//     console.log("Idle: enter");
+//   }
+//   exit() {
+//     console.log("Idle: exit");
+//   }
+//   pointerDown() {
+//     this.parent?.transition(new Pointing());
+//   }
+// }
 
-class Pointing extends StateNode {
-  enter() {
-    console.log("Pointing: enter");
-  }
-  exit() {
-    console.log("Pointing: exit");
-  }
-  pointerUp() {
-    this.parent?.transition(new Idle());
-  }
-}
+// class Pointing extends StateNode {
+//   enter() {
+//     console.log("Pointing: enter");
+//   }
+//   exit() {
+//     console.log("Pointing: exit");
+//   }
+//   pointerUp() {
+//     this.parent?.transition(new Idle());
+//   }
+// }
 
-const root = new Root();
-root.transition(new Idle());
+// const root = new Root();
+// root.transition(new Idle());
 
-addEventListener("pointerdown", (e) => root.fire("pointerDown", [e]));
-addEventListener("pointerup", (e) => root.fire("pointerUp", [e]));
+// addEventListener("pointerdown", (e) => root.fire("pointerDown", [e]));
+// addEventListener("pointerup", (e) => root.fire("pointerUp", [e]));
+
+import { DeepMap } from "./habitat.js";
+
+const map = new DeepMap();
+
+map.set(["a", "b"], "foo");
+// map.set(["a", "b", "c"], "bar");
+// console.log(map.get(["a", "b", "c"]));
+console.log(map.get(["a", "b"]));

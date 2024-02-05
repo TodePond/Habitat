@@ -42,7 +42,6 @@ export const GREY = SHADES[5];
 export const SILVER = SHADES[8];
 export const WHITE = SHADES[10];
 
-/** All colourful colours. (?) */
 export const HUES = [
   GREEN,
   CYAN,
@@ -55,8 +54,49 @@ export const HUES = [
   YELLOW,
 ];
 
-/** All colours. */
 export const COLOURS = [...SHADES, ...HUES];
+
+//==========//
+// DEEP MAP //
+//==========//
+/** @template T */
+export class DeepMap {
+  /** @type {Map<any, T | Map>} */
+  items = new Map();
+
+  /**
+   * @param {any[]} keys
+   * @param {T} value
+   */
+  set(keys, value) {
+    let map = this.items;
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i];
+      if (!map.has(key)) {
+        map.set(key, new Map());
+      }
+      // @ts-expect-error: trust me, I just added it
+      map = map.get(key);
+    }
+    map.set(keys[keys.length - 1], value);
+  }
+
+  /**
+   * @param {any[]} keys
+   */
+  get(keys) {
+    let map = this.items;
+    for (let i = 0; i < keys.length - 1; i++) {
+      const key = keys[i];
+      if (!map.has(key)) {
+        return undefined;
+      }
+      // @ts-expect-error: trust me, I just checked it
+      map = map.get(key);
+    }
+    return map.get(keys[keys.length - 1]);
+  }
+}
 
 //======//
 // HTML //
