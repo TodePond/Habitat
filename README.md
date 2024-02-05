@@ -16,3 +16,9 @@ Import from it.
 ```
 
 If you want to embed it instead, just Ctrl+F and delete every `export` in the file.
+
+```html
+<script src="habitat.js">
+  print("Hello world!")
+</script>
+```
