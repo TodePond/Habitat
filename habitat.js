@@ -56,6 +56,31 @@ export const HUES = [
 
 export const COLOURS = [...SHADES, ...HUES];
 
+//=========//
+// CONSOLE //
+//=========//
+export const print = console.log.bind(console);
+
+export function registerDotDee() {
+  Reflect.defineProperty(Object.prototype, "d", {
+    get() {
+      const value = this.valueOf();
+      console.log(value);
+      return value;
+    },
+    set(value) {
+      Reflect.defineProperty(this, "d", {
+        value,
+        configurable: true,
+        writable: true,
+        enumerable: true,
+      });
+    },
+    configurable: true,
+    enumerable: false,
+  });
+}
+
 //==========//
 // DEEP MAP //
 //==========//
