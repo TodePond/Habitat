@@ -15,7 +15,7 @@ Import from it.
 </script>
 ```
 
-If you want to embed it instead, just Ctrl+F and delete every `export` in the file.
+If you want to embed it instead, just Ctrl+F and delete every `export` in the file. Then...
 
 ```html
 <script src="habitat.js">
