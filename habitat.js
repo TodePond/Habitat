@@ -61,77 +61,67 @@ export const COLOURS = [...SHADES, ...HUES];
 //========//
 // SIGNAL //
 //========//
-/**
- * @template T
- */
+/** @template T */
 export class Signal {
-  dependants = new Set();
+  /** @type {Set<Observer>} */
+  children = new Set();
 
-  /**
-   * Create a new signal.
-   * @param {((previous?: T) => T) | T} template
-   * @param {Signal[]} dependencies
-   * @param {(a: T, b: T) => boolean} equals
-   */
-  constructor(template, dependencies = [], equals = (a, b) => a === b) {
-    this.equals = equals;
-    this.dependencies = dependencies;
+  /** @param {T} value */
+  constructor(value) {
+    this.value = value;
+  }
 
-    for (const dependency of dependencies) {
-      dependency.dependants.add(this);
-    }
-
-    if (typeof template === "function") {
-      /** @type {((previous?: T) => T)} */
-      // @ts-expect-error: trust me
-      this.callback = template;
-      this.value = this.callback();
-    } else {
-      this.value = template;
+  /** @param {T} value */
+  set(value) {
+    this.value = value;
+    for (const child of this.children) {
+      child.update();
     }
   }
 
-  update() {
-    if (this.callback) {
-      this.value = this.callback(this.value);
-    }
-    for (const dependant of this.dependants) {
-      dependant.update();
-    }
-  }
-
-  /**
-   * @returns {T}
-   */
   get() {
     return this.value;
   }
+}
+
+/** @template T */
+export class Observer {
+  /** @type {Set<Observer>} */
+  children = new Set();
 
   /**
-   * @param {T} value
+   * @param {(previous: T) => T} callback
+   * @param {(Signal | Observer)[]} dependencies
    */
-  set(value) {
-    if (this.equals(this.value, value)) return;
-    this.value = value;
+  constructor(callback, dependencies) {
+    this.callback = callback;
+    this.dependencies = dependencies;
+    for (const dependency of dependencies) {
+      dependency.children.add(this);
+    }
     this.update();
   }
 
-  dispose() {
-    for (const dependency of this.dependencies) {
-      dependency.dependants.delete(this);
+  update() {
+    this.value = this.callback(this.value);
+    for (const child of this.children) {
+      child.update();
     }
+  }
 
-    for (const dependant of this.dependants) {
-      dependant.dispose();
-    }
+  get() {
+    return this.value;
   }
 }
 
-export class State {
-  /** @type {State | null} */
+//===============//
+// STATE MACHINE //
+//===============//
+export class StateNode {
+  /** @type {StateNode | null} */
   child = null;
 
-  /** @type {State | null} */
+  /** @type {StateNode | null} */
   parent = null;
 
   /**
@@ -140,25 +130,14 @@ export class State {
    */
   fire(name, event) {
     if (!this.child) {
-      const method = this[name];
-      return method?.call(this, event);
+      return this[name]?.call(this, event);
     }
 
     return this.child.fire(name, event);
   }
 
   /**
-   * @param {string} name
-   */
-  method(name) {
-    /**
-     * @param {object} event
-     */
-    return (event) => this.fire(name, event);
-  }
-
-  /**
-   * @param {State | null} state
+   * @param {StateNode | null} state
    */
   transition(state) {
     const previous = this.child;
