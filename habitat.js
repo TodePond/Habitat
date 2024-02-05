@@ -80,6 +80,104 @@ export function HTML(tag, attributes, children = []) {
   return element;
 }
 
+//======//
+// POOL //
+//======//
+/** @template T */
+export class Pool {
+  /** @param {() => T} create */
+  constructor(create) {
+    this.create = create;
+    this.values = [];
+  }
+
+  borrow() {
+    if (this.values.length === 0) {
+      const value = this.create();
+      this.values.push(value);
+      return value;
+    }
+
+    return this.values.pop();
+  }
+
+  /** @param {T} value */
+  return(value) {
+    this.values.push(value);
+  }
+}
+
+//=======//
+// QUEUE //
+//=======//
+/** @template T */
+export class Queue {
+  /** @param {Iterable<T>} iterable */
+  constructor(iterable = []) {
+    this.values = [...iterable];
+  }
+
+  /** @param {T} value */
+  push(value) {
+    this.values.push(value);
+  }
+
+  shift() {
+    return this.values.shift();
+  }
+
+  get length() {
+    return this.values.length;
+  }
+
+  [Symbol.iterator]() {
+    return this.values[Symbol.iterator]();
+  }
+}
+
+//==========//
+// REGISTER //
+//==========//
+/** @template T */
+export class Register {
+  /** @type {Map<number, T>} */
+  items = new Map();
+
+  /** @type {number[]} */
+  freeKeys = [];
+
+  /** @param {T} value */
+  add(value) {
+    const key = this.freeKeys.pop() ?? this.items.size;
+    this.items.set(key, value);
+    return key;
+  }
+
+  /** @param {number} key */
+  remove(key) {
+    this.items.delete(key);
+    this.freeKeys.push(key);
+  }
+
+  /** @param {number} key */
+  get(key) {
+    return this.items.get(key);
+  }
+
+  /** @param {number} key */
+  has(key) {
+    return this.items.has(key);
+  }
+
+  /**
+   * @param {number} key
+   * @param {T} value
+   */
+  set(key, value) {
+    this.items.set(key, value);
+  }
+}
+
 //========//
 // SIGNAL //
 //========//
@@ -136,9 +234,37 @@ export class Observer {
   }
 }
 
-//===============//
-// STATE MACHINE //
-//===============//
+//=======//
+// STACK //
+//=======//
+/** @template T */
+export class Stack {
+  /** @param {Iterable<T>} iterable */
+  constructor(iterable = []) {
+    this.values = [...iterable];
+  }
+
+  /** @param {T} value */
+  push(value) {
+    this.values.push(value);
+  }
+
+  pop() {
+    return this.values.pop();
+  }
+
+  get length() {
+    return this.values.length;
+  }
+
+  [Symbol.iterator]() {
+    return this.values[Symbol.iterator]();
+  }
+}
+
+//============//
+// STATE NODE //
+//============//
 export class StateNode {
   /** @type {StateNode | null} */
   child = null;
@@ -204,3 +330,102 @@ export function SVG(tag, attributes, children = []) {
   }
   return element;
 }
+
+//=========//
+// VECTOR2 //
+//=========//
+export const Vector2D = {
+  /**
+   * @param {[number, number]} a
+   * @param {[number, number]} b
+   * @returns {[number, number]}
+   */
+  add([ax, ay], [bx, by]) {
+    return [ax + bx, ay + by];
+  },
+
+  /**
+   * @param {[number, number]} a
+   * @param {[number, number]} b
+   * @returns {[number, number]}
+   */
+  subtract([ax, ay], [bx, by]) {
+    return [ax - bx, ay - by];
+  },
+
+  /**
+   * @param {[number, number]} a
+   * @param {number} scalar
+   * @returns {[number, number]}
+   */
+  multiply([x, y], scalar) {
+    return [x * scalar, y * scalar];
+  },
+
+  /**
+   * @param {[number, number]} a
+   * @param {[number, number]} b
+   * @returns {number}
+   */
+  dotProduct([ax, ay], [bx, by]) {
+    return ax * bx + ay * by;
+  },
+
+  /**
+   * @param {[number, number]} a
+   * @param {[number, number]} b
+   * @returns {number}
+   */
+  crossProduct([ax, ay], [bx, by]) {
+    return ax * by - ay * bx;
+  },
+
+  /**
+   * @param {[number, number]} a
+   * @param {[number, number]} b
+   * @returns {number}
+   */
+  distanceBetween([ax, ay], [bx, by]) {
+    return Math.hypot(ax - bx, ay - by);
+  },
+
+  /**
+   * @param {[number, number]} vector
+   * @returns {number}
+   */
+  distance([x, y]) {
+    return Math.hypot(x, y);
+  },
+
+  /**
+   * @param {[number, number]} a
+   * @param {[number, number]} b
+   * @returns {number}
+   */
+  angleBetween([ax, ay], [bx, by]) {
+    return Math.atan2(by - ay, bx - ax);
+  },
+
+  /**
+   * @param {[number, number]} a
+   * @param {number} angle
+   * @param {[number, number]} [origin]
+   * @returns {[number, number]}
+   */
+  rotate([x, y], angle, [ox, oy] = [0, 0]) {
+    const dx = x - ox;
+    const dy = y - oy;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return [ox + dx * cos - dy * sin, oy + dx * sin + dy * cos];
+  },
+
+  /**
+   * @param {[number, number]} vector
+   * @returns {[number, number]}
+   */
+  normalise([x, y]) {
+    const length = Math.hypot(x, y);
+    return [x / length, y / length];
+  },
+};
