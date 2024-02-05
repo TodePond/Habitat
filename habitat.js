@@ -58,6 +58,28 @@ export const HUES = [
 /** All colours. */
 export const COLOURS = [...SHADES, ...HUES];
 
+//======//
+// HTML //
+//======//
+/**
+ * Create an HTML element.
+ * @param {string} tag
+ * @param {Record<string, string>} attributes
+ * @param {(Node | string)[]} children
+ */
+export function HTML(tag, attributes, children = []) {
+  const element = document.createElement(tag);
+  for (const [key, value] of Object.entries(attributes)) {
+    element.setAttribute(key, value);
+  }
+
+  for (const child of children) {
+    element.append(child);
+  }
+
+  return element;
+}
+
 //========//
 // SIGNAL //
 //========//
@@ -161,4 +183,24 @@ export class StateNode {
     // Otherwise, carry on with the enter event!
     next?.fire("enter", { previous, next });
   }
+}
+
+//=====//
+// SVG //
+//=====//
+/**
+ * Create an SVG element.
+ * @param {string} tag
+ * @param {Record<string, string>} attributes
+ * @param {(Node)[]} children
+ */
+export function SVG(tag, attributes, children = []) {
+  const element = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [key, value] of Object.entries(attributes)) {
+    element.setAttribute(key, value);
+  }
+  for (const child of children) {
+    element.append(child);
+  }
+  return element;
 }
