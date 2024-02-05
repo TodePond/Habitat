@@ -2,28 +2,17 @@
 
 # Habitat
 
-Habitat is a collection of JavaScript helpers that I use in my hobby projects.<br>
-A list of its functions is in the [documentation](https://todepond.gitbook.io/habitat).
+Habitat is a bunch of jumpyscript helpers that I use in my projects.
 
 ## How to use it
 
-You can embed it, like this:
+Import from it.
 
 ```html
-<script src="habitat-embed.js"></script>
-<script>
-	const { print } = Habitat
-	print("Hello world!")
+<script type="module">
+  import { print } from "./habitat.js";
+  print("Hello world!");
 </script>
 ```
 
-Or import it like this:
-
-```javascript
-import { print } from "./habitat-import.js"
-print("Hello world!")
-```
-
-## How to build it
-
-If you want to help develop Habitat, you can build it with [Frogasaurus](https://github.com/TodePond/Frogasaurus).
+If you want to embed it instead, just Ctrl+F and delete every `export` in the file.
