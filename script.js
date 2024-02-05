@@ -1,4 +1,4 @@
-import { Observer, Signal } from "./habitat.js";
+// import { Observer, Signal } from "./habitat.js";
 
 // const firstName = new Signal("Luke");
 // const lastName = new Signal("Wilson");
@@ -46,11 +46,11 @@ import { Observer, Signal } from "./habitat.js";
 // addEventListener("pointerdown", (e) => root.fire("pointerDown", [e]));
 // addEventListener("pointerup", (e) => root.fire("pointerUp", [e]));
 
-import { DeepMap } from "./habitat.js";
+// import { DeepMap } from "./habitat.js";
 
-const map = new DeepMap();
+// const map = new DeepMap();
 
-map.set(["a", "b"], "foo");
-// map.set(["a", "b", "c"], "bar");
-// console.log(map.get(["a", "b", "c"]));
-console.log(map.get(["a", "b"]));
+// map.set(["a", "b"], "foo");
+// // map.set(["a", "b", "c"], "bar");
+// // console.log(map.get(["a", "b", "c"]));
+// console.log(map.get(["a", "b"]));
