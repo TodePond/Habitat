@@ -14,3 +14,5 @@ Import from it.
   print("Hello world!");
 </script>
 ```
+
+If you want to embed it instead, just Ctrl+F and delete every `export` in the file.
