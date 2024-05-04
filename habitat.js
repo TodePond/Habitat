@@ -81,6 +81,10 @@ export const COLOURS = [...SHADES, ...HUES];
 //=========//
 export const print = console.log.bind(console);
 
+/**
+ * Create the `d` property on all objects.
+ * You can use it for quick debugging.
+ */
 export function registerDotDee() {
   Reflect.defineProperty(Object.prototype, "d", {
     get() {
@@ -104,7 +108,12 @@ export function registerDotDee() {
 //==========//
 // DEEP MAP //
 //==========//
-/** @template T */
+/**
+ * A map where values can be set and retrieved with an array of keys.
+ * It can be more performant than combining these multiple values into a single key
+ * because it avoids unnecessary checks (it bails out early when part of the key is missing).
+ * @template T
+ **/
 export class DeepMap {
   /** @type {Map<any, T | Map>} */
   items = new Map();
@@ -187,7 +196,7 @@ export class Pool {
   }
 
   /** @param {T} value */
-  return(value) {
+  free(value) {
     this.values.push(value);
   }
 }
