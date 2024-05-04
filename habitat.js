@@ -11,17 +11,37 @@ export function toHex([red, green, blue, alpha = 255]) {
     .join("");
 }
 
+/**
+ * Convert a colour to a string that can be used in a shader.
+ * @param {[number, number, number, number?]} colour
+ */
+export function toShaderVector([red, green, blue, alpha = 255]) {
+  return [red, green, blue, alpha].map((v) => (v / 255).toString()).join(", ");
+}
+
+/** @type {[number, number, number]} */
 export const GREEN = [70, 255, 128];
+/** @type {[number, number, number]} */
 export const CYAN = [70, 204, 255];
+/** @type {[number, number, number]} */
 export const BLUE = [70, 128, 255];
+/** @type {[number, number, number]} */
 export const PURPLE = [128, 67, 255];
+/** @type {[number, number, number]} */
 export const PINK = [255, 128, 222];
+/** @type {[number, number, number]} */
 export const CORAL = [255, 128, 128];
+/** @type {[number, number, number]} */
 export const RED = [255, 67, 70];
+/** @type {[number, number, number]} */
 export const ORANGE = [255, 128, 70];
+/** @type {[number, number, number]} */
 export const YELLOW = [255, 255, 70];
 
-/** All monochrome colours. */
+/**
+ * All monochrome colours.
+ * @type {[number, number, number][]}
+ **/
 export const SHADES = [
   [6, 7, 10], //VOID
   [14, 16, 22],

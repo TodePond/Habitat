@@ -1,0 +1,31 @@
+:root {
+  --green: rgb(70, 255, 70);
+  --cyan: rgb(70, 204, 255);
+  --blue: rgb(70, 128, 255);
+  --purple: rgb(128, 67, 255);
+  --pink: rgb(255, 128, 222);
+  --coral: rgb(255, 128, 128);
+  --red: rgb(255, 67, 70);
+  --orange: rgb(255, 128, 70);
+  --yellow: rgb(255, 255, 70);
+
+  --shade-0: rgb(6, 7, 10);
+  --shade-1: rgb(14, 16, 22);
+  --shade-2: rgb(24, 29, 39);
+  --shade-3: rgb(33, 39, 53);
+  --shade-4: rgb(47, 56, 75);
+  --shade-5: rgb(55, 67, 98);
+  --shade-6: rgb(87, 101, 147);
+  --shade-7: rgb(135, 146, 171);
+  --shade-8: rgb(159, 174, 204);
+  --shade-9: rgb(224, 224, 224);
+  --shade-10: rgb(255, 255, 255);
+
+  --void: var(--shade-0);
+  --black: var(--shade-2);
+  --dark-grey: var(--shade-3);
+  --grey: var(--shade-5);
+  --light-grey: var(--shade-6);
+  --silver: var(--shade-8);
+  --white: var(--shade-10);
+}
