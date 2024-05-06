@@ -174,6 +174,26 @@ export function HTML(tag, attributes, children = []) {
   return element;
 }
 
+//========//
+// OBJECT //
+//========//
+/**
+ * Check if two objects are equal.
+ * @param {object} a
+ * @param {object} b
+ */
+export function equals(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length !== b.length) return false;
+
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+
+  return true;
+}
+
 //======//
 // POOL //
 //======//
@@ -280,21 +300,24 @@ export class Signal {
   /** @type {Set<Observer>} */
   children = new Set();
 
+  /** @type {T} */
+  #value;
+
   /** @param {T} value */
   constructor(value) {
-    this.value = value;
+    this.#value = value;
   }
 
   /** @param {T} value */
   set(value) {
-    this.value = value;
+    this.#value = value;
     for (const child of this.children) {
       child.update();
     }
   }
 
   get() {
-    return this.value;
+    return this.#value;
   }
 }
 
@@ -326,6 +349,20 @@ export class Observer {
   get() {
     return this.value;
   }
+}
+
+/**
+ * @template T
+ * @param {(previous: T) => T | T} value
+ * @param {(Signal | Observer)[]} dependencies
+ */
+export function use(value, dependencies) {
+  if (typeof value === "function") {
+    const callback = value;
+    return new Observer(callback, dependencies);
+  }
+
+  return new Signal(value);
 }
 
 //=======//
